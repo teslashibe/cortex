@@ -11,3 +11,9 @@
 /tmp/
 *.dump
 *.sql.gz
+*.jsonl
+/evaluations/
+*.aux
+*.log
+*.out
+*.toc

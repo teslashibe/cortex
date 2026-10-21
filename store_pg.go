@@ -95,10 +95,35 @@ func (s *Store) WriteObservations(ctx context.Context, obs []Observation) (int, 
 		return 0, fmt.Errorf("begin observations: %w", err)
 	}
 	defer tx.Rollback(ctx)
+	// Imports share a short barrier with forgetting, separate from inference's
+	// session lock. Ordered acquisition permits a batch spanning several users.
+	users := map[string]bool{}
+	for _, o := range obs {
+		users[o.UserID] = true
+	}
+	ordered := make([]string, 0, len(users))
+	for user := range users {
+		ordered = append(ordered, user)
+	}
+	sort.Strings(ordered)
+	for _, user := range ordered {
+		if _, err := tx.Exec(ctx, `SELECT pg_advisory_xact_lock_shared(214015,hashtext($1))`, user); err != nil {
+			return 0, err
+		}
+	}
 	inserted := 0
 	for _, o := range obs {
 		if o.ID == "" || o.UserID == "" || strings.TrimSpace(o.Content) == "" {
 			return 0, fmt.Errorf("observation id, user_id, and content required")
+		}
+		var forgotten bool
+		if err := tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM forgotten_observations
+			WHERE user_id=$1 AND ((kind='content' AND fingerprint=$2) OR (kind='idempotency' AND fingerprint=$3)))`,
+			o.UserID, contentHash(o.Content), contentHash(o.IdempotencyKey)).Scan(&forgotten); err != nil {
+			return 0, err
+		}
+		if forgotten {
+			continue
 		}
 		refs, err := json.Marshal(o.Refs)
 		if err != nil {
@@ -155,8 +180,8 @@ func unconsolidatedObservations(ctx context.Context, conn *pgxpool.Conn, userID 
 }
 
 const memoryColumns = `id, user_id, kind, summary, confidence, reinforced_count, born_at, last_seen_at,
-	COALESCE(contradicted_by,''), expires_at, sources`
-const currentMemories = ` FROM memories WHERE user_id=$1 AND contradicted_by IS NULL AND (expires_at IS NULL OR expires_at > now())`
+	COALESCE(contradicted_by,''), expires_at, sources, archived_at, pinned, utility, outcome_count`
+const currentMemories = ` FROM memories WHERE user_id=$1 AND contradicted_by IS NULL AND archived_at IS NULL AND (expires_at IS NULL OR expires_at > now())`
 
 func (s *Store) Memories(ctx context.Context, userID string) ([]Memory, error) {
 	conn, err := s.pool.Acquire(ctx)
@@ -176,6 +201,32 @@ func memoriesForUser(ctx context.Context, conn *pgxpool.Conn, userID string) ([]
 	return scanMemories(rows)
 }
 
+func (s *Store) retrievalMemories(ctx context.Context, user string) ([]Memory, error) {
+	rows, err := s.pool.Query(ctx, `SELECT `+memoryColumns+currentMemories+` ORDER BY id LIMIT $2`, user, MaxRecallMemories+1)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	memories, err := scanMemories(rows)
+	if len(memories) > MaxRecallMemories {
+		return nil, ErrRecallCapacity
+	}
+	return memories, err
+}
+
+func consolidationMemories(ctx context.Context, conn *pgxpool.Conn, user string) ([]Memory, error) {
+	rows, err := conn.Query(ctx, `SELECT `+memoryColumns+currentMemories+` ORDER BY id LIMIT $2`, user, MaxRecallMemories+1)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	memories, err := scanMemories(rows)
+	if len(memories) > MaxRecallMemories {
+		return nil, ErrRecallCapacity
+	}
+	return memories, err
+}
+
 func (s *Store) RecallByText(ctx context.Context, userID, query string, limit int) ([]Memory, error) {
 	rows, err := s.pool.Query(ctx, `SELECT `+memoryColumns+currentMemories+`
 		AND (summary ILIKE '%'||$2||'%' OR similarity(summary, $2) > 0.2)
@@ -193,7 +244,7 @@ func scanMemories(rows pgx.Rows) ([]Memory, error) {
 		var m Memory
 		var srcRaw []byte
 		if err := rows.Scan(&m.ID, &m.UserID, &m.Kind, &m.Summary, &m.Confidence, &m.ReinforcedCount,
-			&m.BornAt, &m.LastSeenAt, &m.ContradictedBy, &m.ExpiresAt, &srcRaw); err != nil {
+			&m.BornAt, &m.LastSeenAt, &m.ContradictedBy, &m.ExpiresAt, &srcRaw, &m.ArchivedAt, &m.Pinned, &m.Utility, &m.OutcomeCount); err != nil {
 			return nil, fmt.Errorf("scan memory: %w", err)
 		}
 		if err := json.Unmarshal(srcRaw, &m.Sources); err != nil {
@@ -265,6 +316,10 @@ func failConsolidation(conn *pgxpool.Conn, run *Consolidation, cause error) erro
 // op, acknowledging exactly those IDs, and completing the run are one commit.
 // It must use the same dedicated connection that claimed the user.
 func completeConsolidation(ctx context.Context, conn *pgxpool.Conn, userID, runID string, ops []Op, tokens int) (Consolidation, error) {
+	return completeConsolidationWithModel(ctx, conn, userID, runID, ops, tokens, "")
+}
+
+func completeConsolidationWithModel(ctx context.Context, conn *pgxpool.Conn, userID, runID string, ops []Op, tokens int, resolvedModel string) (Consolidation, error) {
 	var run Consolidation
 	tx, err := conn.Begin(ctx)
 	if err != nil {
@@ -272,10 +327,10 @@ func completeConsolidation(ctx context.Context, conn *pgxpool.Conn, userID, runI
 	}
 	defer tx.Rollback(ctx)
 	err = tx.QueryRow(ctx, `SELECT id,user_id,status,observation_ids,model,prompt_version,started_at,completed_at,
-		observations_processed,memories_created,memories_reinforced,tokens_used,COALESCE(error_message,'')
+		observations_processed,memories_created,memories_reinforced,tokens_used,COALESCE(error_message,''),resolved_model
 		FROM consolidations WHERE id=$1 AND user_id=$2 FOR UPDATE`, runID, userID).Scan(
 		&run.ID, &run.UserID, &run.Status, &run.ObservationIDs, &run.Model, &run.PromptVersion, &run.StartedAt, &run.CompletedAt,
-		&run.Counts.ObservationsProcessed, &run.Counts.MemoriesCreated, &run.Counts.MemoriesReinforced, &run.Counts.TokensUsed, &run.ErrorMessage)
+		&run.Counts.ObservationsProcessed, &run.Counts.MemoriesCreated, &run.Counts.MemoriesReinforced, &run.Counts.TokensUsed, &run.ErrorMessage, &run.ResolvedModel)
 	if err != nil {
 		return run, fmt.Errorf("load consolidation: %w", err)
 	}
@@ -318,7 +373,7 @@ func completeConsolidation(ctx context.Context, conn *pgxpool.Conn, userID, runI
 		}
 		for _, id := range refs {
 			var exists bool
-			if err := tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM memories WHERE id=$1 AND user_id=$2 AND contradicted_by IS NULL AND (expires_at IS NULL OR expires_at > now()))`, id, userID).Scan(&exists); err != nil {
+			if err := tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM memories WHERE id=$1 AND user_id=$2 AND contradicted_by IS NULL AND archived_at IS NULL AND (expires_at IS NULL OR expires_at > now()))`, id, userID).Scan(&exists); err != nil {
 				return run, err
 			}
 			if !exists {
@@ -334,7 +389,11 @@ func completeConsolidation(ctx context.Context, conn *pgxpool.Conn, userID, runI
 	}
 	now := time.Now().UTC()
 	for _, op := range ops {
-		if err := applyOpTx(ctx, tx, userID, op, now, &run.Counts); err != nil {
+		var evidenceAt time.Time
+		if err := tx.QueryRow(ctx, `SELECT max(at) FROM observations WHERE user_id=$1 AND id=ANY($2)`, userID, op.Sources).Scan(&evidenceAt); err != nil {
+			return run, err
+		}
+		if err := applyOpTx(ctx, tx, userID, op, now, evidenceAt, &run.Counts); err != nil {
 			return run, err
 		}
 	}
@@ -348,8 +407,8 @@ func completeConsolidation(ctx context.Context, conn *pgxpool.Conn, userID, runI
 	run.Counts.ObservationsProcessed = len(run.ObservationIDs)
 	run.Counts.TokensUsed = tokens
 	if _, err := tx.Exec(ctx, `UPDATE consolidations SET status='completed', completed_at=$3, observations_processed=$4,
-		memories_created=$5, memories_reinforced=$6, tokens_used=$7 WHERE id=$1 AND user_id=$2`,
-		run.ID, userID, now, run.Counts.ObservationsProcessed, run.Counts.MemoriesCreated, run.Counts.MemoriesReinforced, tokens); err != nil {
+		memories_created=$5, memories_reinforced=$6, tokens_used=$7, resolved_model=$8 WHERE id=$1 AND user_id=$2`,
+		run.ID, userID, now, run.Counts.ObservationsProcessed, run.Counts.MemoriesCreated, run.Counts.MemoriesReinforced, tokens, resolvedModel); err != nil {
 		return run, err
 	}
 	if err := tx.Commit(ctx); err != nil {
@@ -357,10 +416,11 @@ func completeConsolidation(ctx context.Context, conn *pgxpool.Conn, userID, runI
 	}
 	run.Status = "completed"
 	run.CompletedAt = &now
+	run.ResolvedModel = resolvedModel
 	return run, nil
 }
 
-func applyOpTx(ctx context.Context, tx pgx.Tx, userID string, op Op, now time.Time, c *ConsolidationCounts) error {
+func applyOpTx(ctx context.Context, tx pgx.Tx, userID string, op Op, now, evidenceAt time.Time, c *ConsolidationCounts) error {
 	switch op.Kind {
 	case OpInsert, OpContradict:
 		id := "mem_" + rand.Text()
@@ -369,7 +429,7 @@ func applyOpTx(ctx context.Context, tx pgx.Tx, userID string, op Op, now time.Ti
 			return err
 		}
 		if _, err := tx.Exec(ctx, `INSERT INTO memories (id,user_id,kind,summary,confidence,reinforced_count,born_at,last_seen_at,sources)
-			VALUES ($1,$2,$3,$4,$5,1,$6,$6,$7)`, id, userID, op.Memory.Kind, op.Memory.Summary, op.Memory.Confidence, now, sources); err != nil {
+			VALUES ($1,$2,$3,$4,$5,1,$6,$7,$8)`, id, userID, op.Memory.Kind, op.Memory.Summary, op.Memory.Confidence, now, evidenceAt, sources); err != nil {
 			return fmt.Errorf("insert memory: %w", err)
 		}
 		if op.Kind == OpContradict {
@@ -390,9 +450,9 @@ func applyOpTx(ctx context.Context, tx pgx.Tx, userID string, op Op, now time.Ti
 		if err != nil {
 			return err
 		}
-		tag, err := tx.Exec(ctx, `UPDATE memories SET reinforced_count=reinforced_count+1,last_seen_at=$3,
+		tag, err := tx.Exec(ctx, `UPDATE memories SET reinforced_count=reinforced_count+1,last_seen_at=GREATEST(last_seen_at,$3),
 			sources=(SELECT COALESCE(jsonb_agg(value ORDER BY value),'[]'::jsonb) FROM (SELECT DISTINCT value FROM jsonb_array_elements_text(sources || $4::jsonb)) merged)
-			WHERE id=$1 AND user_id=$2 AND contradicted_by IS NULL`, op.OldID, userID, now, sources)
+			WHERE id=$1 AND user_id=$2 AND contradicted_by IS NULL AND archived_at IS NULL`, op.OldID, userID, evidenceAt, sources)
 		if err != nil {
 			return fmt.Errorf("reinforce: %w", err)
 		}

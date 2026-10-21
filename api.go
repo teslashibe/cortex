@@ -29,6 +29,12 @@ func (a *API) Routes() *http.ServeMux {
 	mux.HandleFunc("POST /v1/dream", a.postConsolidate) // legacy route alias
 	mux.HandleFunc("GET /v1/profile/{user}", a.getProfile)
 	mux.HandleFunc("POST /v1/signals", a.postSignals)
+	mux.HandleFunc("POST /v1/feedback", a.postFeedback)
+	mux.HandleFunc("POST /v1/index", a.postIndex)
+	mux.HandleFunc("POST /v1/maintain", a.postMaintain)
+	mux.HandleFunc("PUT /v1/memories/{id}/retention", a.putRetention)
+	mux.HandleFunc("DELETE /v1/memories/{id}", a.forgetMemory)
+	mux.HandleFunc("GET /v1/evidence", a.getEvidence)
 	return mux
 }
 
@@ -125,12 +131,12 @@ func (a *API) getRecall(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
-	hits, err := a.engine.Recall(r.Context(), userID, q, limit)
+	result, err := a.engine.RecallWithOptions(r.Context(), userID, q, RecallOptions{Limit: limit, LexicalOnly: r.URL.Query().Get("mode") == "lexical"})
 	if err != nil {
 		writeErr(w, http.StatusInternalServerError, err)
 		return
 	}
-	writeJSON(w, http.StatusOK, map[string]any{"hits": hits})
+	writeJSON(w, http.StatusOK, result)
 }
 
 func (a *API) postConsolidate(w http.ResponseWriter, r *http.Request) {

@@ -40,7 +40,15 @@ func run() error {
 	if err := store.ApplyMigrations(ctx, cortex.Migrations()); err != nil {
 		return err
 	}
-	engine := cortex.NewEngine(store, client)
+	var options []cortex.Option
+	if model := os.Getenv("CORTEX_EMBEDDING_MODEL"); model != "" {
+		embedder, err := llm.NewEmbeddingClient(llm.Config{BaseURL: os.Getenv("CORTEX_EMBEDDING_URL"), APIKey: os.Getenv("CORTEX_EMBEDDING_KEY"), Model: model, Timeout: cortex.ModelTimeout})
+		if err != nil {
+			return err
+		}
+		options = append(options, cortex.WithEmbedder(embedder))
+	}
+	engine := cortex.NewEngine(store, client, options...)
 	listen := os.Getenv("CORTEX_LISTEN")
 	if listen == "" {
 		listen = "127.0.0.1:8090"

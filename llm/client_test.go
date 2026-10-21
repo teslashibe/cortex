@@ -25,7 +25,7 @@ func TestComplete(t *testing.T) {
 		if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 			t.Fatal(err)
 		}
-		if string(request["model"]) != `"gpt-5.6-luna-max"` {
+		if string(request["model"]) != `"gpt-6-luna-medium"` {
 			t.Errorf("model: %s", request["model"])
 		}
 		for _, key := range []string{"stream", "faithful", "prewarm"} {

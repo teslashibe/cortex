@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.0.1
+
+- Optional semantic embeddings and hybrid rank fusion, with bounded exact vector search in PostgreSQL-backed memory sets.
+- Relevance decay separate from evidence confidence; explicit maintenance, pinning, expiry, and restoration.
+- Forgetting removes connected memory versions, shared source observations, embeddings, and feedback. Hash tombstones reject exact reimports.
+- Retry-safe explicit feedback updates a small utility estimate without model training.
+- Source evidence timestamps and resolved inference model are retained.
+- Consolidation selects at most 500 relevant memories and reports when context is limited.
+- Default inference model is `gpt-6-luna-medium` through Open Agent API.
+- Migration 004 is additive. Upgrade every writer before using maintenance or forgetting; older binaries do not enforce the new policies.
+
 ## v1.0.0
 
 First public release of Cortex under the MIT license.

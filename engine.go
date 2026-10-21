@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"sort"
 	"strings"
 	"time"
 
@@ -14,11 +13,23 @@ import (
 var ErrNoObservations = errors.New("no unconsolidated observations")
 
 type Engine struct {
-	store *Store
-	model Model
+	store    *Store
+	model    Model
+	embedder Embedder
+	policy   RetentionPolicy
 }
 
-func NewEngine(store *Store, model Model) *Engine { return &Engine{store: store, model: model} }
+type Option func(*Engine)
+
+func WithEmbedder(embedder Embedder) Option             { return func(e *Engine) { e.embedder = embedder } }
+func WithRetentionPolicy(policy RetentionPolicy) Option { return func(e *Engine) { e.policy = policy } }
+func NewEngine(store *Store, model Model, options ...Option) *Engine {
+	e := &Engine{store: store, model: model, policy: DefaultRetentionPolicy()}
+	for _, option := range options {
+		option(e)
+	}
+	return e
+}
 
 // Observe writes a batch of raw observations, idempotently within each user.
 func (e *Engine) Observe(ctx context.Context, obs []Observation) (int, error) {
@@ -37,26 +48,8 @@ func (e *Engine) Observe(ctx context.Context, obs []Observation) (int, error) {
 }
 
 func (e *Engine) Recall(ctx context.Context, userID, query string, limit int) ([]Hit, error) {
-	if limit <= 0 {
-		limit = 10
-	}
-	if limit > 200 {
-		limit = 200
-	}
-	candidates, err := e.store.RecallByText(ctx, userID, query, limit*2)
-	if err != nil {
-		return nil, err
-	}
-	now := time.Now().UTC()
-	out := make([]Hit, 0, len(candidates))
-	for _, m := range candidates {
-		out = append(out, Hit{Memory: m, Score: recallScore(query, m, now)})
-	}
-	sort.SliceStable(out, func(i, j int) bool { return out[i].Score > out[j].Score })
-	if len(out) > limit {
-		out = out[:limit]
-	}
-	return out, nil
+	result, err := e.RecallWithOptions(ctx, userID, query, RecallOptions{Limit: limit})
+	return result.Hits, err
 }
 
 type ConsolidationOptions struct {
@@ -65,8 +58,10 @@ type ConsolidationOptions struct {
 }
 
 type ConsolidationResult struct {
-	Runs   []Consolidation     `json:"runs"`
-	Counts ConsolidationCounts `json:"counts"`
+	Runs           []Consolidation     `json:"runs"`
+	Counts         ConsolidationCounts `json:"counts"`
+	ContextLimited bool                `json:"context_limited"`
+	Index          *IndexResult        `json:"index,omitempty"`
 }
 
 // Consolidate processes the pending snapshot sequentially. Successful chunks
@@ -88,7 +83,11 @@ func (e *Engine) Consolidate(ctx context.Context, userID string, opts Consolidat
 	if err != nil {
 		return result, err
 	}
-	defer releaseUser(conn, userID)
+	defer func() {
+		if conn != nil {
+			releaseUser(conn, userID)
+		}
+	}()
 	observations, err := unconsolidatedObservations(ctx, conn, userID, MaxObservationsPerConsolidation)
 	if err != nil {
 		return result, err
@@ -97,9 +96,13 @@ func (e *Engine) Consolidate(ctx context.Context, userID string, opts Consolidat
 		return result, ErrNoObservations
 	}
 	for _, chunk := range chunkObservations(observations, opts.ChunkSize, opts.ByDay) {
-		memories, err := memoriesForUser(ctx, conn, userID)
+		memories, err := consolidationMemories(ctx, conn, userID)
 		if err != nil {
 			return result, err
+		}
+		if len(memories) > 500 {
+			memories = selectContext(chunk, memories, 500)
+			result.ContextLimited = true
 		}
 		// Bound the complete serialized context, not only observation count.
 		// A large chunk is reduced without truncating any individual observation.
@@ -130,7 +133,7 @@ func (e *Engine) Consolidate(ctx context.Context, userID string, opts Consolidat
 			}
 			if callErr == nil {
 				var completed Consolidation
-				completed, callErr = completeConsolidation(ctx, conn, userID, run.ID, ops, response.Usage.TotalTokens)
+				completed, callErr = completeConsolidationWithModel(ctx, conn, userID, run.ID, ops, response.Usage.TotalTokens, response.Model)
 				if callErr == nil {
 					run = completed
 				}
@@ -149,12 +152,25 @@ func (e *Engine) Consolidate(ctx context.Context, userID string, opts Consolidat
 			result.Counts.TokensUsed += run.Counts.TokensUsed
 			chunk = chunk[n:]
 			if len(chunk) > 0 {
-				memories, err = memoriesForUser(ctx, conn, userID)
+				memories, err = consolidationMemories(ctx, conn, userID)
 				if err != nil {
 					return result, err
 				}
+				if len(memories) > 500 {
+					memories = selectContext(chunk, memories, 500)
+					result.ContextLimited = true
+				}
 			}
 		}
+	}
+	releaseUser(conn, userID)
+	conn = nil
+	if e.embedder != nil {
+		indexed, indexErr := e.Index(ctx, userID, 1000)
+		if indexErr != nil {
+			indexed.Incomplete = true
+		}
+		result.Index = &indexed
 	}
 	return result, nil
 }

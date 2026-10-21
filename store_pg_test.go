@@ -29,6 +29,9 @@ func testStore(t *testing.T) *Store {
 	if err != nil {
 		t.Fatal(err)
 	}
+	if _, err = admin.Exec(ctx, `CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public`); err != nil {
+		t.Fatal(err)
+	}
 	schema := "cortex_test_" + strings.ToLower(rand.Text())
 	quoted := pgx.Identifier{schema}.Sanitize()
 	if _, err := admin.Exec(ctx, "CREATE SCHEMA "+quoted); err != nil {
@@ -82,7 +85,9 @@ func TestMigrationRetiresLegacyWithoutAcknowledgement(t *testing.T) {
 	ctx := context.Background()
 	// Reconstruct v2 inside this test's isolated schema, then apply the forward migration.
 	_, err := s.pool.Exec(ctx, `DROP TABLE consolidations;
-		DELETE FROM schema_version WHERE version=3;
+		DELETE FROM schema_version WHERE version IN (3,4);
+		DROP TABLE memory_embeddings,forgotten_observations,forgotten_memories;
+		ALTER TABLE memories DROP COLUMN archived_at, DROP COLUMN pinned, DROP COLUMN utility, DROP COLUMN outcome_count;
 		DROP INDEX observations_idem_idx;
 		CREATE UNIQUE INDEX observations_idem_idx ON observations(idempotency_key) WHERE idempotency_key IS NOT NULL;
 		INSERT INTO dream_sessions(id,user_id,status,batch_key) VALUES
@@ -90,7 +95,9 @@ func TestMigrationRetiresLegacyWithoutAcknowledgement(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	seedObservations(t, s, "a", "legacy_observation")
+	if _, err = s.pool.Exec(ctx, `INSERT INTO observations(id,user_id,source,content) VALUES('legacy_observation','a','test','legacy evidence')`); err != nil {
+		t.Fatal(err)
+	}
 	seedMemory(t, s, "a", "legacy_memory")
 	if err := s.ApplyMigrations(ctx, Migrations()); err != nil {
 		t.Fatal(err)

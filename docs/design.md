@@ -1,60 +1,94 @@
 # Cortex design
 
-Cortex stores observations and uses a model to propose durable memories. The
-database validates and commits those proposals; recall reads current memories.
-The application using Cortex owns identity, authorization, source consent, and
-the choice of model endpoint.
+Cortex stores observations, consolidates durable memories, and retrieves them
+for an application. The host owns authentication, consent, scheduling, and
+provider credentials. The package owns validation and memory state transitions.
 
-## Observations and memories
+## Evidence and state
 
-Observations preserve content, timestamps, source references, and attribution
-metadata. Import idempotency is scoped to a user. A memory records its kind,
-summary, confidence estimate, reinforcement history, and supporting observation
-IDs. Confidence is model-supplied and is not a calibrated probability.
+The five kinds are behavior, preference, relationship, project, and routine.
+Insert, reinforce, and contradict operations require exact observation IDs.
+Replaced memories remain as history. Evidence confidence is a model estimate,
+not a calibrated probability. Processing time and last supporting observation
+time are separate. Replaying older evidence does not refresh the evidence date.
 
-The five memory kinds are behavior, preference, relationship, project, and
-routine. Supported model operations insert a memory, reinforce an existing
-memory with new evidence, or replace a contradicted memory. Replaced memories
-remain as history and are excluded from current recall and profiles.
+A memory can be current, superseded, expired, archived, or permanently forgotten.
+Only current memories participate in profiles, consolidation, and recall.
+Archive preserves evidence. Explicit forgetting removes connected versions and
+shared sources, including related vectors and feedback. User-scoped hashes
+reject exact content and import-key replays. A shared import barrier serializes
+forgetting with concurrent imports. Reworded new observations are not compared
+semantically with deleted content.
 
-## Consolidation
+## Consolidation and indexing
 
-A database session lock serializes consolidation for each user. A request takes
-a snapshot of up to 20,000 pending observations and processes sequential chunks
-of at most 200. Each chunk sees the current memories, including earlier committed
-chunks. The complete serialized model request must fit within 1 MiB. Chunks
-shrink to fit; individual observations are not truncated.
+A PostgreSQL session advisory lock serializes each user's consolidation. No
+transaction remains open during model inference. Strict JSON validation rejects
+invalid fields, duplicate keys, out-of-window sources and invalid memory IDs.
+All operations, exact acknowledgements, and the completed run share one commit.
+Retries can repeat provider work but cannot apply a completed chunk twice.
 
-No database transaction stays open during model inference. The model response
-must be a strict operations envelope. Invalid operations, unknown fields,
-duplicate JSON keys, invalid references, or evidence outside the selected chunk
-reject the whole chunk. All memory changes, exact observation acknowledgements,
-and the completed consolidation record share one transaction.
+A call snapshots up to 20,000 observations and processes chunks of at most 200.
+The model sees at most 500 current memories, selected by lexical overlap with
+the chunk, pinning and evidence recency. `context_limited` exposes selection;
+it does not imply that every possible contradiction was examined. The complete
+wire request must fit within 1 MiB. Chunks shrink without truncating observations.
+An oversized individual observation fails visibly and remains pending.
 
-An interrupted chunk leaves observations pending. A later request may repeat
-model work, but cannot apply a completed chunk twice. Earlier successful chunks
-remain committed if a later chunk fails. A model call has a two-minute timeout;
-the enclosing consolidation has a thirty-minute timeout.
+Requested and returned model identifiers are stored separately. A model call
+has a two-minute timeout; consolidation has a thirty-minute timeout.
 
-The session lock requires a direct PostgreSQL connection or session pooling.
-Transaction-pooling proxies are not supported.
+An optional embedder refreshes missing vectors after consolidation releases its
+lock. Embeddings are published only if the memory still exists, is current and
+has the same content. Model identity, content hash and vector accompany each
+record. Incomplete indexing is reported and can be retried with `Index`.
 
-## Recall and limits
+## Retrieval
 
-Recall uses PostgreSQL text candidates and a heuristic combining confidence,
-text overlap, recency, and reinforcement count. It does not use embeddings.
-Reads do not automatically create feedback or change confidence. Signals are
-explicit writes.
+Recall uses lexical token overlap and optional exact cosine similarity. Each
+channel contributes reciprocal rank `1 / (60 + rank)`. Confidence, activation
+and utility add a small adjustment of `0.00001` times their sum. This keeps
+relevance primary: age must not bury an exact match under unrelated facts.
+An English stopword list removes
+common function words; other words and short identifiers remain. These are
+inspectable heuristics, not calibrated relevance probabilities.
 
-All current memories are considered when building consolidation context. A large
-memory set can exceed the request limit and stop further consolidation. Cortex
-does not silently truncate that set or provide automatic compaction.
+Vectors are stored as PostgreSQL arrays. Exact retrieval and consolidation
+support at most 10,000 active memories per user and fail beyond that bound.
+No vector extension or additional database is required. Approximate indexes
+are a future scale decision. `RecallWithOptions` reports lexical/hybrid mode,
+candidate count, indexed count and incomplete coverage. A failed query embed
+does not silently fall back. `LexicalOnly` requests that mode explicitly.
 
-The package has no authentication service, autonomous scheduler, learned memory
-policy, or source-permission revocation mechanism. Raw observations remain stored
-after consolidation. A lower memory-row count is not a measure of storage
-compression or downstream answer quality.
+Recall rechecks current rows after an embedding request, so a memory forgotten
+while that request was running is removed from the result. Reads never mutate
+confidence or fabricate training labels. `Evidence` resolves exact source IDs
+in the same user scope; it is not an independent raw-document search service.
 
-See [the security boundary](../SECURITY.md) before exposing Cortex through an
-application, and [the synthetic walkthrough](../examples/README.md) for a small
-manual example.
+## Decay and feedback
+
+Activation is `2^(-age / (halfLife * (1 + ln(reinforcedCount))))`, using elapsed
+evidence age. Pinned memories have activation one. Confidence is unchanged.
+The default half-life is 90 days. Explicit `Maintain` calls archive memories
+below 0.05 activation after at least 30 days, or at their expiry date. Expiry
+takes precedence over pinning. These defaults have not been optimized on a
+public benchmark; applications can provide another policy.
+
+`Feedback` requires a user-scoped event ID, retrieval ID, memory ID, whether it
+was used, and an optional known success outcome. Identical retries do nothing;
+conflicting retries fail. Only used memories with known outcomes update utility.
+The estimate starts with a symmetric two-observation prior. A positive outcome
+adds one success; a negative adds zero. Utility modestly adjusts ranking and
+does not alter evidence confidence. Legacy `WriteSignal` remains an event log.
+
+## Operational boundary
+
+Migration 004 is additive, but every writer must be upgraded before using the
+new lifecycle operations. Older code does not enforce forgetting tombstones or
+archive state. Session pooling or a direct connection is required; transaction
+pooling is incompatible with consolidation's session advisory lock.
+
+The HTTP service trusts local callers. Profile filtering is a display heuristic,
+not authorization. No autonomous scheduler, source connector, model-training
+job, source-permission reconciliation, or background worker is hidden inside
+the package. See [SECURITY.md](../SECURITY.md) before exposing an API.

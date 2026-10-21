@@ -60,6 +60,10 @@ type Memory struct {
 	ContradictedBy  string     `json:"contradicted_by,omitempty"`
 	ExpiresAt       *time.Time `json:"expires_at,omitempty"`
 	Sources         []string   `json:"sources"`
+	ArchivedAt      *time.Time `json:"archived_at,omitempty"`
+	Pinned          bool       `json:"pinned"`
+	Utility         float64    `json:"utility"`
+	OutcomeCount    int        `json:"outcome_count"`
 }
 
 type Op struct {

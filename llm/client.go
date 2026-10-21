@@ -17,7 +17,7 @@ import (
 
 const (
 	DefaultBaseURL  = "http://127.0.0.1:8088/v1"
-	DefaultModel    = "gpt-5.6-luna-max"
+	DefaultModel    = "gpt-6-luna-medium"
 	DefaultTimeout  = 10 * time.Minute
 	maxRequestSize  = 1 << 20
 	maxResponseSize = 4 << 20

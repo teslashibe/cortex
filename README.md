@@ -3,26 +3,26 @@
 A small PostgreSQL memory engine: `Observe`, `Recall`, and `Consolidate`.
 Inference uses the provider-neutral `llm` package and a normal, non-streaming
 OpenAI-compatible `/chat/completions` endpoint. The default target is
-[Open Agent API](https://github.com/teslashibe/open-agent-api) with `gpt-5.6-luna-max`.
+[Open Agent API](https://github.com/teslashibe/open-agent-api) with `gpt-6-luna-medium`.
 
 ## Install
 
 Use the tagged Go package:
 
 ```sh
-go get github.com/teslashibe/cortex@v1.0.0
+go get github.com/teslashibe/cortex@v1.0.1
 ```
 
 Install the commands with Go:
 
 ```sh
-go install github.com/teslashibe/cortex/cmd/cortex@v1.0.0
-go install github.com/teslashibe/cortex/cmd/cortex-import@v1.0.0
-go install github.com/teslashibe/cortex/cmd/cortex-once@v1.0.0
+go install github.com/teslashibe/cortex/cmd/cortex@v1.0.1
+go install github.com/teslashibe/cortex/cmd/cortex-import@v1.0.1
+go install github.com/teslashibe/cortex/cmd/cortex-once@v1.0.1
 ```
 
 Prebuilt command archives and checksums are available from the
-[v1.0.0 release](https://github.com/teslashibe/cortex/releases/tag/v1.0.0).
+[v1.0.1 release](https://github.com/teslashibe/cortex/releases/tag/v1.0.1).
 For the source examples below, clone this repository and run the commands from
 its root directory.
 
@@ -51,11 +51,11 @@ Configuration:
 - `DATABASE_URL`: required PostgreSQL connection string.
 - `LLM_BASE_URL`: defaults to `http://127.0.0.1:8088/v1`.
 - `LLM_API_KEY`: optional bearer token; required only if the gateway requires it.
-- `CORTEX_MODEL`: defaults to `gpt-5.6-luna-max`.
+- `CORTEX_MODEL`: defaults to `gpt-6-luna-medium`.
 - `CORTEX_LISTEN`: defaults to `127.0.0.1:8090`.
 
 There are no Anthropic keys, effort knobs, batch submit/poll workers, or automatic
-consolidation/decay cron jobs. Model requests have a two-minute timeout and a
+consolidation/decay cron jobs. The application schedules consolidation and maintenance. Model requests have a two-minute timeout and a
 complete consolidation request has a 30-minute timeout. The adapter sends
 `faithful: false` and `prewarm: false`, which are Open Agent API
 extensions. Check support before using another chat endpoint. There are no
@@ -123,10 +123,12 @@ fails. New arrivals are handled on the next request, not acknowledged by a time
 cutoff. A request selects at most 20,000 observations.
 
 Serialized context is capped at 1 MiB and chunks shrink to fit without truncating
-observation content. If even one full observation plus current memories exceeds
-that budget, consolidation fails visibly and leaves it pending. Very large memory
-sets therefore require an explicit selection strategy before they can be processed;
-there is no silent history truncation.
+observation content. Consolidation considers at most 500 memories selected by lexical overlap,
+pinning and evidence recency; `context_limited` reports when the set is a subset.
+It never truncates an individual observation. If one full observation plus the
+selected context still exceeds the budget, the operation fails visibly. Exact
+retrieval and consolidation support at most 10,000 active memories per user and
+fail explicitly beyond that limit.
 
 All model-facing instructions live in `prompts/system.md` and
 `prompts/consolidation.md`. Typed JSON carries complete observations and current
@@ -135,9 +137,10 @@ Prompt versioning is derived from the contents of both embedded Markdown files.
 
 New and reinforced memories preserve observation provenance. Contradictions create
 a replacement and retain the old memory as history; contradicted and expired
-memories are excluded from both current recall and profiles. Confidence is not
-automatically decayed with age. Recall uses PostgreSQL text candidates followed by
-a small heuristic ranker; this is not vector search. There is no fuzzy auto-merge
+memories are excluded from both current recall and profiles. Evidence confidence does not
+automatically decay with age. Relevance does decay, with a 90-day base half-life
+and reinforcement-based preservation. With an embedder configured, recall
+fuses lexical and exact cosine ranks. There is no fuzzy auto-merge
 that might erase distinct facts; the model explicitly reinforces existing IDs.
 
 Observation idempotency keys are unique **within each user**. Generated IDs include
@@ -167,3 +170,53 @@ See [the synthetic walkthrough](examples/README.md) for sample observations and
 ## License
 
 MIT. See [LICENSE](LICENSE) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+## Semantic retrieval and lifecycle
+
+Embeddings are optional. Configure `CORTEX_EMBEDDING_URL`,
+`CORTEX_EMBEDDING_MODEL`, and optionally `CORTEX_EMBEDDING_KEY` to use a standard
+OpenAI-compatible `/embeddings` service. The chat gateway and embedding service
+can be different providers. No model weights or vector extension are bundled.
+Embeddings are stored as PostgreSQL arrays and searched by exact cosine distance
+within the bounded active set. An approximate index is not required.
+
+The Go API accepts `WithEmbedder(embedder)` and
+`WithRetentionPolicy(policy)` options on `NewEngine`. An embedder implements
+`Model() string` and `Embed(context.Context, []string) ([][]float64, error)`.
+Use a model identifier that includes the weights and preprocessing version.
+
+Successful consolidation attempts a bounded embedding refresh. Its `index`
+result reports incomplete indexing without rolling back committed facts.
+`POST /v1/index?user=...` retries missing embeddings. Recall returns its mode,
+indexed count and incomplete flag. A provider error does not silently downgrade
+to lexical search; request `mode=lexical` explicitly when a fallback is wanted.
+
+Additional operations:
+
+- `POST /v1/maintain?user=...`: archive up to 1,000 expired or low-activation memories.
+- `PUT /v1/memories/{id}/retention?user=...`: set `pinned`, `expires_at`, and `restore`.
+- `DELETE /v1/memories/{id}?user=...`: forget a memory and its connected source lineage.
+- `POST /v1/feedback`: record `id`, `user_id`, `memory_id`, `retrieval_id`, `used`, and optional boolean `success`.
+- `GET /v1/evidence?user=...&memory=...`: inspect up to 1,000 supporting observations.
+
+The corresponding Go methods are `Maintain`, `SetRetention`, `Forget`,
+`Feedback`, `Evidence`, `Index`, and `RecallWithOptions`. An identical feedback
+event ID can be retried; a changed event with the same user-scoped ID is rejected.
+Only a used memory with a known outcome changes utility. Reads and unused results
+do not train it. This is an inspectable running estimate, not a learned model.
+
+Decay changes relevance, not evidence confidence. The default policy archives
+unpinned memories below 0.05 activation once they are at least 30 days old, when
+`Maintain` is called. Set a zero half-life to disable age decay. Explicit expiry
+applies to pinned memories too. Archive preserves evidence and can be restored.
+
+Forgetting is permanent. It removes connected contradiction versions and any
+memories sharing source observations, so forgetting one fact from a multi-fact
+observation can remove several facts. It deletes those source observations and
+related embeddings and feedback. User-scoped hashes suppress identical content
+or idempotency keys on reimport. Reworded new evidence is not semantic-matched
+against a deleted secret. Previously sent provider prompts cannot be recalled.
+
+Migration 004 preserves existing facts and derives evidence dates from their
+sources where available. **Upgrade all writers before enabling forgetting or
+maintenance.** Older binaries can write data without these new policies.

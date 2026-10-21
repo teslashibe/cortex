@@ -9,6 +9,7 @@ type Consolidation struct {
 	Status         string              `json:"status"`
 	ObservationIDs []string            `json:"observation_ids"`
 	Model          string              `json:"model"`
+	ResolvedModel  string              `json:"resolved_model,omitempty"`
 	PromptVersion  string              `json:"prompt_version"`
 	StartedAt      time.Time           `json:"started_at"`
 	CompletedAt    *time.Time          `json:"completed_at,omitempty"`
