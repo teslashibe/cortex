@@ -1,0 +1,11 @@
+{
+  "paper_revision": "2.1",
+  "date": "2026-10-21",
+  "software_version": "v1.0.1",
+  "software_commit": "b8bf2da1e06c2e2e73f8b8fbff08fa843327f551",
+  "previous_paper": "../v2-october-2026/",
+  "new_experimental_results": false,
+  "editorial_review": "Humanizer 3.0 embedded pass",
+  "source_sha256": "c1a9b48124e571f3f7045dda7cec39b45f1ddc6e16bf45df40aa51aa335f7aba",
+  "pdf_sha256": "2b7936a115fa3059cd27bf81d887f64f87f93dd72b5d050a35f3c26a44f0914f"
+}
