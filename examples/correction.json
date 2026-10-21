@@ -1,0 +1,13 @@
+{
+  "user_id": "demo-user",
+  "observations": [
+    {
+      "sender": "human",
+      "source": "synthetic_example",
+      "content": "My drink preference changed to coffee. The earlier tea preference is out of date.",
+      "at": "2026-01-02T09:00:00Z",
+      "conversation_uuid": "synthetic-drink-preference",
+      "conversation_name": "Synthetic example"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "user_id": "demo-user",
+  "observations": [
+    {
+      "sender": "human",
+      "source": "synthetic_example",
+      "content": "My preferred hot drink is tea.",
+      "at": "2026-01-01T09:00:00Z",
+      "conversation_uuid": "synthetic-drink-preference",
+      "conversation_name": "Synthetic example"
+    },
+    {
+      "sender": "human",
+      "source": "synthetic_example",
+      "content": "I keep my project notes in Markdown files.",
+      "at": "2026-01-01T09:01:00Z",
+      "conversation_uuid": "synthetic-notes-preference",
+      "conversation_name": "Synthetic example"
+    }
+  ]
+}

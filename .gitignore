@@ -1,0 +1,13 @@
+/bin/
+*.test
+*.out
+.env
+.env.*
+!.env.example
+.envrc
+.DS_Store
+/data/
+/private/
+/tmp/
+*.dump
+*.sql.gz
