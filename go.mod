@@ -1,6 +1,6 @@
 module github.com/teslashibe/cortex
 
-go 1.26
+go 1.26.10
 
 require github.com/jackc/pgx/v5 v5.9.2
 

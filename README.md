@@ -28,7 +28,7 @@ its root directory.
 
 ## Run
 
-Requires Go 1.26 and PostgreSQL with permission to install `pg_trgm`.
+Requires Go 1.26.10 or newer and PostgreSQL with permission to install `pg_trgm`.
 
 ```bash
 export DATABASE_URL='postgres://user:pass@localhost/cortex?sslmode=disable'

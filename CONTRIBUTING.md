@@ -6,7 +6,7 @@ Never attach a personal chat export, production database dump, or credential.
 
 ## Checks
 
-Use Go 1.26 with a current patch release. Run:
+Use Go 1.26.10 or newer with a current patch release. Run:
 
 ```sh
 go test -race -count=1 ./...
