@@ -220,3 +220,7 @@ against a deleted secret. Previously sent provider prompts cannot be recalled.
 Migration 004 preserves existing facts and derives evidence dates from their
 sources where available. **Upgrade all writers before enabling forgetting or
 maintenance.** Older binaries can write data without these new policies.
+
+## Papers
+
+See the [March original and October implementation paper](docs/papers/README.md).
