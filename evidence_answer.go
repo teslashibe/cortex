@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"reflect"
+	"regexp"
 	"sort"
 	"strings"
 	"time"
@@ -299,6 +300,21 @@ func (e *Engine) AnswerEvidence(ctx context.Context, user, question string, opts
 					return out, err
 				}
 			}
+			if fact.Date == "" && (ledger.Calculation.Operation == "days" || ledger.Calculation.Operation == "months") && (f.ID == ledger.Calculation.FromFact || f.ID == ledger.Calculation.ToFact) {
+				if phrase := singleRelativeDatePhrase(f.Quote); phrase != "" {
+					fact.DateExpression = phrase
+					fact.Date, fact.DateRule, err = resolveAnswerDate(phrase, o.At, opts.Timezone)
+					if err != nil {
+						return out, err
+					}
+					fact.DateRule = "candidate_" + fact.DateRule
+					assumption := "This calculation assumes the quoted date phrase refers to the event, rather than only a recollection or discussion."
+					if fact.DateAssumption != "" {
+						fact.DateAssumption += " "
+					}
+					fact.DateAssumption += assumption
+				}
+			}
 			out.Facts = append(out.Facts, fact)
 			ids[f.ID] = true
 		}
@@ -381,6 +397,23 @@ func (e *Engine) AnswerEvidence(ctx context.Context, user, question string, opts
 		out.Status = "conditional"
 	}
 	return out, nil
+}
+
+var simpleRelativeDatePhrase = regexp.MustCompile(`(?i)\b(today|yesterday)\b`)
+
+// Return a literal date candidate, never an assertion about event occurrence.
+// Conflicting phrases remain unresolved; callers must expose the assumption.
+func singleRelativeDatePhrase(quote string) string {
+	phrases := simpleRelativeDatePhrase.FindAllString(quote, -1)
+	if len(phrases) == 0 {
+		return ""
+	}
+	for _, p := range phrases[1:] {
+		if !strings.EqualFold(p, phrases[0]) {
+			return ""
+		}
+	}
+	return phrases[0]
 }
 
 // Retrieval adds a separate lexical channel over all eligible sources so that

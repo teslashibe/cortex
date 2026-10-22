@@ -210,3 +210,32 @@ func TestAnswerRepairsLiteralCopyWithoutRelaxingSourceChecks(t *testing.T) {
 		t.Fatalf("repair: %+v %v", out, err)
 	}
 }
+
+func TestConditionalDateCandidateRemainsExplicit(t *testing.T) {
+	if singleRelativeDatePhrase("Yesterday I thought about today.") != "" {
+		t.Fatal("ambiguous dates were selected")
+	}
+	s := testStore(t)
+	ctx := context.Background()
+	anchor := time.Date(2026, 1, 22, 0, 0, 0, 0, time.UTC)
+	asOf := time.Date(2026, 6, 25, 0, 0, 0, 0, time.UTC)
+	_, err := s.WriteObservations(ctx, []Observation{{ID: "o", UserID: "u", Content: "I recalled the museum visit today.", At: anchor, IdempotencyKey: "o"}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	m := &answerModel{respond: func(call int, _ []llm.Message) (string, error) {
+		switch call {
+		case 1:
+			return `{"queries":["museum visit"],"speaker":"user"}`, nil
+		case 2:
+			return `{"facts":[{"id":"f","source_id":"o","quote":"I recalled the museum visit today.","claim":"Recalled a visit"}],"calculation":{"operation":"months","from_fact":"f","to_as_of":true}}`, nil
+		case 3:
+			return `{"answer":"If today dates the visit, five months.","status":"answered","citations":["f"]}`, nil
+		}
+		return "", errors.New("unexpected call")
+	}}
+	out, err := NewEngine(s, m).AnswerEvidence(ctx, "u", "How many months since the visit?", AnswerOptions{asOf, "UTC", true})
+	if err != nil || out.Status != "conditional" || out.Calculation.Value != 5 || len(out.Assumptions) != 1 || out.Facts[0].DateRule != "candidate_anchor_day" {
+		t.Fatalf("conditional date lost: %+v %v", out, err)
+	}
+}

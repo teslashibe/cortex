@@ -1,7 +1,9 @@
 # Evidence reader
 
 `Engine.AnswerEvidence` and `POST /v1/evidence/answer` provide an optional reader
-for applications that want an answer with a source ledger. Calling either sends
+for applications that want an answer with a source ledger. The generated reader
+remains experimental: the held-out study did not establish a reliable answer-quality
+advantage over direct retrieval and reading. Calling either sends
 selected raw observation excerpts to the configured model. The host must authorize
 that transfer and enforce the caller's owner scope. The HTTP service trusts its
 local caller, as the other Cortex endpoints do.
@@ -37,7 +39,10 @@ claim is a model interpretation. A valid quotation does not prove that a claim i
 true, current, or attributable to the user. The final answer cites fact IDs. A cited date assumption or inferred year makes the response status `conditional`; applications also receive the assumptions separately.
 
 Date phrases must occur verbatim inside a quotation before they can anchor a
-calculation. An unmatched proposed phrase is discarded with the rule
+calculation. For a requested date difference, a single literal `today` or
+`yesterday` can supply a candidate anchor when extraction omitted it; the result
+is always conditional on that phrase referring to the event rather than its
+recollection. Conflicting relative phrases are left unresolved. An unmatched proposed phrase is discarded with the rule
 `rejected_nonverbatim_expression`; it cannot support arithmetic. Missing-year
 month/day forms may use the observation year under the explicit rule
 `assumed_observation_year`. Applications requiring no year inference should use
