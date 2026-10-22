@@ -5,8 +5,28 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"strconv"
 	"time"
 )
+
+func (a *API) getObservationRecall(w http.ResponseWriter, r *http.Request) {
+	limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
+	out, err := a.engine.RecallObservations(r.Context(), r.URL.Query().Get("user"), r.URL.Query().Get("q"), RecallOptions{Limit: limit, LexicalOnly: r.URL.Query().Get("mode") == "lexical"})
+	if err != nil {
+		writeErr(w, http.StatusBadRequest, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, out)
+}
+
+func (a *API) postObservationIndex(w http.ResponseWriter, r *http.Request) {
+	out, err := a.engine.IndexObservations(r.Context(), r.URL.Query().Get("user"), 1000)
+	if err != nil {
+		writeErr(w, http.StatusBadRequest, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, out)
+}
 
 func decodeBounded(w http.ResponseWriter, r *http.Request, v any) error {
 	d := json.NewDecoder(http.MaxBytesReader(w, r.Body, 64<<10))
@@ -38,6 +58,15 @@ func (a *API) postIndex(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, 200, out)
+}
+
+func (a *API) forgetObservation(w http.ResponseWriter, r *http.Request) {
+	out, err := a.engine.ForgetObservation(r.Context(), r.URL.Query().Get("user"), r.PathValue("id"))
+	if err != nil {
+		writeErr(w, http.StatusBadRequest, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, out)
 }
 func (a *API) postMaintain(w http.ResponseWriter, r *http.Request) {
 	out, err := a.engine.Maintain(r.Context(), r.URL.Query().Get("user"), time.Now().UTC(), 1000)

@@ -10,6 +10,9 @@ application that presents them.
 
 Consolidation sends observations and existing memories to the configured model
 endpoint. Choose that endpoint according to your data-handling requirements.
+`IndexObservations` also sends raw text to the embedding endpoint, but only when
+explicitly called. Original-observation recall retains source text and attribution;
+access to this route must be authorized separately by the host when appropriate.
 Cortex does not provide encryption at rest or automatic source-permission
 revocation. Restrict database access and protect backups separately.
 

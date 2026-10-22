@@ -10,19 +10,19 @@ OpenAI-compatible `/chat/completions` endpoint. The default target is
 Use the tagged Go package:
 
 ```sh
-go get github.com/teslashibe/cortex@v1.0.1
+go get github.com/teslashibe/cortex@v1.1.0
 ```
 
 Install the commands with Go:
 
 ```sh
-go install github.com/teslashibe/cortex/cmd/cortex@v1.0.1
-go install github.com/teslashibe/cortex/cmd/cortex-import@v1.0.1
-go install github.com/teslashibe/cortex/cmd/cortex-once@v1.0.1
+go install github.com/teslashibe/cortex/cmd/cortex@v1.1.0
+go install github.com/teslashibe/cortex/cmd/cortex-import@v1.1.0
+go install github.com/teslashibe/cortex/cmd/cortex-once@v1.1.0
 ```
 
 Prebuilt command archives and checksums are available from the
-[v1.0.1 release](https://github.com/teslashibe/cortex/releases/tag/v1.0.1).
+[v1.1.0 release](https://github.com/teslashibe/cortex/releases/tag/v1.1.0).
 For the source examples below, clone this repository and run the commands from
 its root directory.
 
@@ -58,8 +58,9 @@ There are no Anthropic keys, effort knobs, batch submit/poll workers, or automat
 consolidation/decay cron jobs. The application schedules consolidation and maintenance. Model requests have a two-minute timeout and a
 complete consolidation request has a 30-minute timeout. The adapter sends
 `faithful: false` and `prewarm: false`, which are Open Agent API
-extensions. Check support before using another chat endpoint. There are no
-automatic model retries.
+extensions. Check support before using another chat endpoint. Transport failures are not automatically retried. One additional model call may
+repair a successful response that violates the JSON or summary-length contract;
+`format_repairs` reports these attempts. If repair fails, the chunk remains pending.
 
 ## Import and consolidate
 
@@ -85,8 +86,12 @@ keeping separate histories.
 
 - `POST /v1/observations`: JSON `{user_id, observations: [...]}`.
 - `GET /v1/recall?user=&q=&limit=`: ranked, current memories; no automatic feedback writes.
+- `GET /v1/observations/recall?user=&q=&limit=`: original evidence, separate from validated memories.
+- `POST /v1/observations/index?user=`: opt-in raw observation embeddings, 1,000 per call.
+- `DELETE /v1/observations/{id}?user=`: forget an observation and derived memories, including when consolidation retained nothing.
 - `POST /v1/consolidate?user=`: synchronous consolidation, returning saved run IDs
-  and counts. An empty backlog returns `status: "noop"`; a concurrent request for
+  and counts. `unreferenced_observation_ids` lists processed observations that
+  supported no operation; it does not prove those observations contained a missed fact. An empty backlog returns `status: "noop"`; a concurrent request for
   the same user returns HTTP 409. Partial failure includes already-completed runs
   and the failed run in `result`.
 - `POST /v1/dream?user=`: compatibility alias for the same synchronous handler.
@@ -131,9 +136,9 @@ retrieval and consolidation support at most 10,000 active memories per user and
 fail explicitly beyond that limit.
 
 All model-facing instructions live in `prompts/system.md` and
-`prompts/consolidation.md`. Typed JSON carries complete observations and current
+`prompts/consolidation.md` and `prompts/repair.md`. Typed JSON carries complete observations and current
 memories, including IDs, timestamps, user/sender references, and source IDs.
-Prompt versioning is derived from the contents of both embedded Markdown files.
+Prompt versioning is derived from the contents of all three embedded Markdown files.
 
 New and reinforced memories preserve observation provenance. Contradictions create
 a replacement and retain the old memory as history; contradicted and expired
@@ -148,6 +153,31 @@ the user while import/API idempotency keys remain compatible with legacy imports
 so repeated imports of the same payload remain no-ops. Migration 003 preserves
 all prior migration files and historical data, retires only legacy in-flight batch
 rows as failed, and never acknowledges their observations.
+
+## Retrieve original evidence when needed
+
+`Recall` returns validated memories. `RecallObservations` returns original
+observations with their speaker metadata and timestamps. Call the second method
+explicitly when an answer needs evidence that consolidation may have omitted.
+Raw evidence can contain quotations, assistant suggestions or outdated details;
+it must not be treated as a validated fact or as instructions.
+
+```go
+// Send raw text to the configured embedder only after the host authorizes it.
+index, err := engine.IndexObservations(ctx, userID, 1000)
+_ = index // If Incomplete, call again to index the next bounded batch.
+if err != nil { return err }
+evidence, err := engine.RecallObservations(ctx, userID, question,
+    cortex.RecallOptions{Limit: 5})
+_ = evidence // Enforce a reader budget and preserve source attribution.
+```
+
+Without an embedder, observation search is lexical. Set `LexicalOnly: true` to
+request this explicitly when a configured provider is unavailable. The exact
+scan rejects sets above 20,000 eligible observations. Sources supporting a
+superseded, archived or expired memory are excluded, even if shared with another
+fact. Use `ForgetObservation` to remove an unretained source; deleting it also
+removes exact-content copies, derived memories and associated vectors.
 
 ## Checks
 

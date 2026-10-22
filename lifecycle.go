@@ -150,6 +150,17 @@ type ForgetResult struct {
 // Whole source observations are removed, so a multi-fact source can remove more
 // than one memory. One-way import tombstones prevent exact evidence replay.
 func (e *Engine) Forget(ctx context.Context, user, id string) (ForgetResult, error) {
+	return e.forget(ctx, user, id, false)
+}
+
+// ForgetObservation removes original evidence even when consolidation retained
+// no memory for it. Derived memories and exact-content copies are removed too.
+// A missing observation is already forgotten and returns an empty result.
+func (e *Engine) ForgetObservation(ctx context.Context, user, id string) (ForgetResult, error) {
+	return e.forget(ctx, user, id, true)
+}
+
+func (e *Engine) forget(ctx context.Context, user, id string, observation bool) (ForgetResult, error) {
 	var out ForgetResult
 	if user == "" || id == "" {
 		return out, ErrMemoryNotFound
@@ -206,7 +217,11 @@ func (e *Engine) Forget(ctx context.Context, user, id string) (ForgetResult, err
 			bySource[s] = append(bySource[s], m.ID)
 		}
 	}
-	if _, ok := byID[id]; !ok {
+	if observation {
+		if _, ok := allSources[id]; !ok {
+			return out, nil
+		}
+	} else if _, ok := byID[id]; !ok {
 		var done bool
 		err = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM forgotten_memories WHERE user_id=$1 AND memory_id=$2)`, user, id).Scan(&done)
 		if err != nil {
@@ -238,7 +253,15 @@ func (e *Engine) Forget(ctx context.Context, user, id string) (ForgetResult, err
 	}
 	seen := map[string]bool{}
 	sources := map[string]bool{}
-	queue := []string{id}
+	var queue []string
+	if observation {
+		for _, source := range byContent[contentHash(allSources[id].content)] {
+			sources[source] = true
+			queue = append(queue, bySource[source]...)
+		}
+	} else {
+		queue = append(queue, id)
+	}
 	for len(queue) > 0 {
 		current := queue[0]
 		queue = queue[1:]

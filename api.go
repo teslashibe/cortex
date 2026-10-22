@@ -25,6 +25,9 @@ func (a *API) Routes() *http.ServeMux {
 	mux.HandleFunc("GET /healthz", a.healthz)
 	mux.HandleFunc("POST /v1/observations", a.postObservations)
 	mux.HandleFunc("GET /v1/recall", a.getRecall)
+	mux.HandleFunc("GET /v1/observations/recall", a.getObservationRecall)
+	mux.HandleFunc("POST /v1/observations/index", a.postObservationIndex)
+	mux.HandleFunc("DELETE /v1/observations/{id}", a.forgetObservation)
 	mux.HandleFunc("POST /v1/consolidate", a.postConsolidate)
 	mux.HandleFunc("POST /v1/dream", a.postConsolidate) // legacy route alias
 	mux.HandleFunc("GET /v1/profile/{user}", a.getProfile)
@@ -297,6 +300,7 @@ var kindMeta = map[Kind]struct {
 	KindPreference:   {2, "Preferences"},
 	KindRoutine:      {3, "Routines"},
 	KindRelationship: {4, "Relationships"},
+	KindFact:         {5, "Facts"},
 }
 
 func kindOrder(k Kind) int { return kindMeta[k].order }

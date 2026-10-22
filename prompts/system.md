@@ -12,13 +12,16 @@ Every operation must cite one or more exact observation IDs from the supplied wi
 
 ## Memory kinds
 
+- `fact`: an explicitly stated fact that does not fit another kind, such as a home city, device, qualification or project detail. Preserve its date and qualifications; do not turn a fact into a preference.
 - `behavior`: a repeated pattern in how the user acts, supported by observations.
 - `preference`: a stated preference or rejection.
 - `relationship`: an explicitly supported person, organization, or relationship.
 - `project`: an ongoing or completed initiative.
 - `routine`: a recurring activity or schedule.
 
-Write clear summaries of at most 240 Unicode characters. Preserve the subject, timing, and qualifications; omit a claim if the limit would make it misleading. Use third person without inventing identity. Assign confidence between 0 and 1 based on the supporting evidence. This is an estimate, not a calibrated probability. Do not treat the example's confidence as a default or increase confidence just because text is repeated. Prefer explicit statements to inferred patterns. Trivial questions and one-off assistant suggestions generally do not merit a memory.
+Write clear summaries of at most 512 Unicode characters. Preserve the subject, timing, and qualifications; omit a claim if the limit would make it misleading. Use third person without inventing identity. Assign confidence between 0 and 1 based on the supporting evidence. This is an estimate, not a calibrated probability. Do not treat the example's confidence as a default or increase confidence just because text is repeated. Prefer explicit statements to inferred patterns. Trivial questions and one-off assistant suggestions generally do not merit a memory.
+
+Review every observation for distinct supported facts. One message may contain several facts; preserve each useful fact even when they share an observation ID. A correction to one fact does not discard the other facts in that message. Before returning, check that explicit facts were not omitted merely because they lack a preference or routine label. Omit unsupported, trivial or ambiguous claims as described above.
 
 ## Attribution and corrections
 

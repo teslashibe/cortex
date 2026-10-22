@@ -85,8 +85,9 @@ func TestMigrationRetiresLegacyWithoutAcknowledgement(t *testing.T) {
 	ctx := context.Background()
 	// Reconstruct v2 inside this test's isolated schema, then apply the forward migration.
 	_, err := s.pool.Exec(ctx, `DROP TABLE consolidations;
-		DELETE FROM schema_version WHERE version IN (3,4);
-		DROP TABLE memory_embeddings,forgotten_observations,forgotten_memories;
+		DELETE FROM schema_version WHERE version IN (3,4,5);
+		DROP TABLE memory_embeddings,observation_embeddings,forgotten_observations,forgotten_memories;
+		DROP INDEX memories_sources_idx;
 		ALTER TABLE memories DROP COLUMN archived_at, DROP COLUMN pinned, DROP COLUMN utility, DROP COLUMN outcome_count;
 		DROP INDEX observations_idem_idx;
 		CREATE UNIQUE INDEX observations_idem_idx ON observations(idempotency_key) WHERE idempotency_key IS NOT NULL;

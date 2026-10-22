@@ -10,6 +10,7 @@ import (
 type Kind string
 
 const (
+	KindFact         Kind = "fact"
 	KindBehavior     Kind = "behavior"
 	KindPreference   Kind = "preference"
 	KindRelationship Kind = "relationship"
@@ -19,7 +20,7 @@ const (
 
 func (k Kind) Valid() bool {
 	switch k {
-	case KindBehavior, KindPreference, KindRelationship, KindProject, KindRoutine:
+	case KindFact, KindBehavior, KindPreference, KindRelationship, KindProject, KindRoutine:
 		return true
 	}
 	return false

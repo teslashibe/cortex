@@ -18,6 +18,7 @@ const (
 	DefaultChunkSize                = 200
 	MaxObservationsPerConsolidation = DefaultChunkSize * 100
 	MaxContextBytes                 = 1024 * 1024
+	MaxSummaryCharacters            = 512
 	ConsolidationTimeout            = 30 * time.Minute
 	ModelTimeout                    = 2 * time.Minute
 )
@@ -122,8 +123,17 @@ func validateOp(op Op) error {
 	unit := func(v float64) bool { return !math.IsNaN(v) && !math.IsInf(v, 0) && v >= 0 && v <= 1 }
 	switch op.Kind {
 	case OpInsert, OpContradict:
-		if !op.Memory.Kind.Valid() || strings.TrimSpace(op.Memory.Summary) == "" || utf8.RuneCountInString(op.Memory.Summary) > 240 || !unit(op.Memory.Confidence) {
-			return fmt.Errorf("invalid memory")
+		if !op.Memory.Kind.Valid() {
+			return fmt.Errorf("invalid memory kind")
+		}
+		if strings.TrimSpace(op.Memory.Summary) == "" {
+			return fmt.Errorf("empty memory summary")
+		}
+		if n := utf8.RuneCountInString(op.Memory.Summary); n > MaxSummaryCharacters {
+			return fmt.Errorf("memory summary has %d characters; maximum is %d", n, MaxSummaryCharacters)
+		}
+		if !unit(op.Memory.Confidence) {
+			return fmt.Errorf("invalid memory confidence")
 		}
 		if op.Kind == OpInsert && op.OldID != "" {
 			return fmt.Errorf("unexpected memory operation fields")

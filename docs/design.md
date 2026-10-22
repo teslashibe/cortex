@@ -6,7 +6,10 @@ provider credentials. The package owns validation and memory state transitions.
 
 ## Evidence and state
 
-The five kinds are behavior, preference, relationship, project, and routine.
+The six kinds are fact, behavior, preference, relationship, project, and routine.
+Summaries are bounded to 512 Unicode characters; the complete request remains
+bounded to 1 MiB. A fact holds an explicit statement that does not imply a preference or repeated
+behavior, such as a device, qualification, or dated location.
 Insert, reinforce, and contradict operations require exact observation IDs.
 Replaced memories remain as history. Evidence confidence is a model estimate,
 not a calibrated probability. Processing time and last supporting observation
@@ -26,7 +29,11 @@ A PostgreSQL session advisory lock serializes each user's consolidation. No
 transaction remains open during model inference. Strict JSON validation rejects
 invalid fields, duplicate keys, out-of-window sources and invalid memory IDs.
 All operations, exact acknowledgements, and the completed run share one commit.
-Retries can repeat provider work but cannot apply a completed chunk twice.
+Retries can repeat provider work but cannot apply a completed chunk twice. A
+successful model response that fails parsing or field validation gets at most one
+format-repair call using the same source window. Both responses count toward token
+usage. Transport errors are not retried. If the repair fails or the combined
+request exceeds the wire budget, the chunk remains pending.
 
 A call snapshots up to 20,000 observations and processes chunks of at most 200.
 The model sees at most 500 current memories, selected by lexical overlap with
@@ -34,6 +41,9 @@ the chunk, pinning and evidence recency. `context_limited` exposes selection;
 it does not imply that every possible contradiction was examined. The complete
 wire request must fit within 1 MiB. Chunks shrink without truncating observations.
 An oversized individual observation fails visibly and remains pending.
+`unreferenced_observation_ids` lists completed observations that supported no
+operation. This is an audit aid: irrelevant or ambiguous observations can
+correctly appear there, and a cited observation can still contain an omitted fact.
 
 Requested and returned model identifiers are stored separately. A model call
 has a two-minute timeout; consolidation has a thirty-minute timeout.
@@ -63,7 +73,23 @@ does not silently fall back. `LexicalOnly` requests that mode explicitly.
 Recall rechecks current rows after an embedding request, so a memory forgotten
 while that request was running is removed from the result. Reads never mutate
 confidence or fabricate training labels. `Evidence` resolves exact source IDs
-in the same user scope; it is not an independent raw-document search service.
+in the same user scope.
+
+`RecallObservations` separately searches up to 20,000 original observations per
+user with lexical overlap and optional semantic rank fusion. It returns original
+content, timestamps and attribution without asserting that the contents are
+current facts. The host decides when to use this path and how to combine results
+within its reader budget. `IndexObservations` is an explicit opt-in: ordinary
+memory indexing never sends raw conversations to the embedding provider.
+
+Sources of any superseded, archived or expired memory are excluded, including
+sources shared with an otherwise current fact. This deliberately sacrifices
+some coverage to preserve lifecycle decisions. An unassociated observation can
+still contain outdated or quoted information; the reader must check its date
+and speaker. Source indexing and recall recheck eligibility after provider work.
+`ForgetObservation` removes a source, exact-content copies and derived memories
+through the same import barrier and tombstone mechanism as `Forget`. It works
+when no memory was retained. A missing observation is an idempotent empty result.
 
 ## Decay and feedback
 
@@ -83,9 +109,11 @@ does not alter evidence confidence. Legacy `WriteSignal` remains an event log.
 
 ## Operational boundary
 
-Migration 004 is additive, but every writer must be upgraded before using the
-new lifecycle operations. Older code does not enforce forgetting tombstones or
-archive state. Session pooling or a direct connection is required; transaction
+Migrations 004 and 005 are additive. Migration 005 stores optional observation
+embeddings with cascading deletion and adds a source lookup index. Upgrade all
+writers before creating `fact` memories; old validators do not accept the new
+kind. Lifecycle operations also require every writer to enforce the forgetting
+tombstones and archive state introduced in migration 004. Session pooling or a direct connection is required; transaction
 pooling is incompatible with consolidation's session advisory lock.
 
 The HTTP service trusts local callers. Profile filtering is a display heuristic,

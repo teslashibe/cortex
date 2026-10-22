@@ -47,7 +47,7 @@ func TestParseOps(t *testing.T) {
 		strings.Replace(valid, `"confidence":0.8`, `"confidence":0.8,"Confidence":0.2`, 1),
 		strings.Replace(valid, `"preference"`, `"unknown"`, 1),
 		strings.Replace(valid, `"Likes tea"`, `" "`, 1),
-		strings.Replace(valid, `"Likes tea"`, fmt.Sprintf("%q", strings.Repeat("x", 241)), 1),
+		strings.Replace(valid, `"Likes tea"`, fmt.Sprintf("%q", strings.Repeat("x", MaxSummaryCharacters+1)), 1),
 		strings.Replace(valid, `"sources"`, `"old_id":"","sources"`, 1),
 		strings.Replace(valid, `"sources"`, `"user_id":"other","sources"`, 1),
 		strings.Replace(valid, `"summary"`, `"Summary"`, 1),

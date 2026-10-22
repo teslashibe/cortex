@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/teslashibe/cortex/llm"
 	"github.com/teslashibe/cortex/prompts"
 )
 
@@ -62,6 +63,10 @@ type ConsolidationResult struct {
 	Counts         ConsolidationCounts `json:"counts"`
 	ContextLimited bool                `json:"context_limited"`
 	Index          *IndexResult        `json:"index,omitempty"`
+	// UnreferencedObservationIDs lists completed observations that supported no
+	// operation. These may be irrelevant or ambiguous, not necessarily missed facts.
+	UnreferencedObservationIDs []string `json:"unreferenced_observation_ids,omitempty"`
+	FormatRepairs              int      `json:"format_repairs,omitempty"`
 }
 
 // Consolidate processes the pending snapshot sequentially. Successful chunks
@@ -130,6 +135,24 @@ func (e *Engine) Consolidate(ctx context.Context, userID string, opts Consolidat
 			var ops []Op
 			if callErr == nil {
 				ops, callErr = parseOps(response.Text)
+				if callErr != nil {
+					// Retry only a successful response that violates the output
+					// contract. Transport failures are never automatically repeated.
+					repair := append(append([]llm.Message{}, messages...),
+						llm.Message{Role: "assistant", Content: response.Text},
+						llm.Message{Role: "user", Content: prompts.Repair})
+					if err := llm.ValidateRequest(e.model.Model(), repair); err == nil {
+						result.FormatRepairs++
+						modelCtx, modelCancel := context.WithTimeout(ctx, ModelTimeout)
+						fixed, repairErr := e.model.Complete(modelCtx, repair)
+						modelCancel()
+						fixed.Usage.TotalTokens += response.Usage.TotalTokens
+						response, callErr = fixed, repairErr
+						if callErr == nil {
+							ops, callErr = parseOps(response.Text)
+						}
+					}
+				}
 			}
 			if callErr == nil {
 				var completed Consolidation
@@ -146,6 +169,17 @@ func (e *Engine) Consolidate(ctx context.Context, userID string, opts Consolidat
 				return result, fmt.Errorf("consolidation %s: %w", run.ID, callErr)
 			}
 			result.Runs = append(result.Runs, run)
+			referenced := make(map[string]bool)
+			for _, op := range ops {
+				for _, id := range op.Sources {
+					referenced[id] = true
+				}
+			}
+			for _, id := range ids {
+				if !referenced[id] {
+					result.UnreferencedObservationIDs = append(result.UnreferencedObservationIDs, id)
+				}
+			}
 			result.Counts.ObservationsProcessed += run.Counts.ObservationsProcessed
 			result.Counts.MemoriesCreated += run.Counts.MemoriesCreated
 			result.Counts.MemoriesReinforced += run.Counts.MemoriesReinforced

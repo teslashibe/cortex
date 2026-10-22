@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.1.0
+
+- An explicit `fact` kind preserves statements that do not fit a preference, routine, relationship, behavior or project.
+- Summaries may contain up to 512 characters to preserve qualifications in project details.
+- Consolidation reviews multiple facts in one observation and reports unreferenced observation IDs for audit.
+- Opt-in `RecallObservations` and `IndexObservations` preserve source content, speaker metadata and timestamps. Existing memory recall and indexing remain unchanged.
+- Source retrieval excludes evidence of superseded, archived or expired memories and rechecks eligibility after provider work.
+- `ForgetObservation` removes unretained evidence, derived memories and exact-content reimports through the existing forgetting barrier.
+- One bounded format repair handles invalid successful model responses; transport errors are not automatically retried. Validation errors identify the failing field without echoing private memory content.
+- Migration 005 adds cascading observation embeddings and a source lookup index. Upgrade all writers before using the new memory kind.
+
 ## v1.0.1
 
 - Optional semantic embeddings and hybrid rank fusion, with bounded exact vector search in PostgreSQL-backed memory sets.

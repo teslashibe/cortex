@@ -14,5 +14,8 @@ var System string
 //go:embed consolidation.md
 var Consolidation string
 
-// Version changes automatically when either embedded prompt changes.
-var Version = fmt.Sprintf("%x", sha256.Sum256([]byte(System+"\x00"+Consolidation)))
+//go:embed repair.md
+var Repair string
+
+// Version changes automatically when any embedded prompt changes.
+var Version = fmt.Sprintf("%x", sha256.Sum256([]byte(System+"\x00"+Consolidation+"\x00"+Repair)))
