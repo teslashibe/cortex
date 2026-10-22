@@ -24,15 +24,18 @@ func TestConsolidateSelectedExactInputAndProvenance(t *testing.T) {
 		t.Fatal(err)
 	}
 	calls := 0
+	var hash string
 	model := &testModel{complete: func(_ context.Context, messages []llm.Message) (llm.Response, error) {
 		calls++
+		if value, err := ConsolidationPromptHash("test-model", messages); err != nil || value != hash {
+			t.Fatal("dispatch does not match approved prompt", err)
+		}
 		text := messages[1].Content
 		if strings.Contains(text, "not-selected") || strings.Contains(text, "other-memory") || strings.Contains(text, "foreign-observation") || !strings.Contains(text, "chosen-memory") {
 			t.Fatal("selection was expanded", text)
 		}
 		return llm.Response{Model: "resolved", Text: `{"ops":[{"kind":"insert","memory":{"kind":"fact","summary":"Selected fact","confidence":0.8},"sources":["s1"]}]}`}, nil
 	}}
-	var hash string
 	phases := []string{}
 	guard := func(_ context.Context, _ pgx.Tx, r ConsolidationReview) error {
 		if r.UserID != "owner" || len(r.ObservationIDs) != 1 || r.ObservationIDs[0] != "chosen" || len(r.MemoryIDs) != 1 || r.MemoryIDs[0] != "chosen-memory" || len(r.PromptHash) != 64 || r.RunID == "" {

@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/teslashibe/cortex/llm"
 	"github.com/teslashibe/cortex/prompts"
 )
 
@@ -38,6 +39,20 @@ type ConsolidationReview struct {
 // The commit check and memory changes share one PostgreSQL transaction; host
 // policy tables must be reachable from this database connection.
 type ConsolidationGuard func(context.Context, pgx.Tx, ConsolidationReview) error
+
+// ConsolidationPromptHash lets a host verify a queued inference payload against
+// the exact model/messages approved by its guard.
+func ConsolidationPromptHash(model string, messages []llm.Message) (string, error) {
+	encoded, err := json.Marshal(struct {
+		Model    string        `json:"model"`
+		Messages []llm.Message `json:"messages"`
+	}{model, messages})
+	if err != nil {
+		return "", err
+	}
+	digest := sha256.Sum256(encoded)
+	return hex.EncodeToString(digest[:]), nil
+}
 
 // ConsolidateSelected makes one model call for at most 200 observations and 500
 // explicitly selected memories. It never splits, truncates, repairs, or retries
@@ -70,14 +85,10 @@ func (e *Engine) ConsolidateSelected(ctx context.Context, userID string, selecti
 	if err != nil {
 		return result, err
 	}
-	encoded, err := json.Marshal(struct {
-		Model    string
-		Messages any
-	}{model, messages})
+	promptHash, err := ConsolidationPromptHash(model, messages)
 	if err != nil {
 		return result, err
 	}
-	digest := sha256.Sum256(encoded)
 	ids := make([]string, len(observations))
 	for i, observation := range observations {
 		ids[i] = observation.ID
@@ -86,7 +97,7 @@ func (e *Engine) ConsolidateSelected(ctx context.Context, userID string, selecti
 	if err != nil {
 		return result, err
 	}
-	review := ConsolidationReview{RunID: run.ID, UserID: userID, ObservationIDs: ids, MemoryIDs: selection.MemoryIDs, PromptHash: hex.EncodeToString(digest[:])}
+	review := ConsolidationReview{RunID: run.ID, UserID: userID, ObservationIDs: ids, MemoryIDs: selection.MemoryIDs, PromptHash: promptHash}
 	check := func(ctx context.Context, tx pgx.Tx, phase string) error {
 		currentObservations, currentMemories, err := readSelection(ctx, tx, userID, selection, true)
 		if err != nil {

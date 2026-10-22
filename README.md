@@ -171,6 +171,13 @@ callback. Those tables must be reachable through the same PostgreSQL database;
 they may live in a separate schema. Do not commit, roll back or retain the
 supplied transaction. The commit-phase locks remain held through the atomic
 memory changes and observation acknowledgement.
+`ConsolidationPromptHash(model, messages)` reproduces the reviewed hash so a
+host can verify the exact payload before dispatching a queued CLI call.
+
+Avoid calling another Cortex mutation while holding the host's policy locks.
+Consolidation already holds a namespace lock and may be waiting for those
+policy rows. Commit revocation first and perform any cleanup afterward; the
+host's read checks must hide revoked content while cleanup is pending.
 
 This operation calls the selected `Model` once. It uses Cortex's existing
 prompts, alias validation and memory operations, with no automatic format repair,
