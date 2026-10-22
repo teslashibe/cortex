@@ -1,0 +1,26 @@
+{
+  "paper_revision": "2.2",
+  "date": "2026-10-21",
+  "software_version": "v1.1.0",
+  "software_commit": "73c41b2f40516345bbec2bde2429aaf69d68699a",
+  "previous_paper": "../v2.1-october-2026/",
+  "editorial_review": "Humanizer 3.0 embedded pass",
+  "source_sha256": "c85ab0acac41032bc9b967ef97f0f38654299fdbf1d5c32a3d13dce7d6269806",
+  "pdf_sha256": "4b6ea9e38a905d0463257c6653c1e5a0ffa4946743bba275cfbd66024852b383",
+  "public_diagnostic": {
+    "dataset": "xiaowu0162/longmemeval-cleaned/longmemeval_s_cleaned.json",
+    "dataset_sha256": "d6f21ea9d60a0d56f34a05b609c79c88a451d2ae03597821ea3d5a9678c3a442",
+    "cases": 7,
+    "full_benchmark": false
+  },
+  "private_diagnostic": {
+    "source_apps": [
+      "Codex",
+      "Claude"
+    ],
+    "user_messages": 51,
+    "sessions": 5,
+    "questions": 19,
+    "raw_data_published": false
+  }
+}
