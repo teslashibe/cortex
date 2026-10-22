@@ -9,6 +9,21 @@ serving run locally; only downloading the pinned public encoder needs network
 access. Labeling explicitly sends the selected observations to your chosen model
 endpoint. Do not supply sources you have not approved for that provider.
 
+## Measured status
+
+The [revision 6 paper](../../docs/papers/v6-october-2026/paper.pdf) reports a
+363-candidate natural test partition with provisional teacher labels. The
+adapted model reached 64.2% retention agreement and 91.9% type agreement, below
+constant-label accuracy checks of 69.7% and 92.3%. The type partition contains
+286 projects among 310 typed candidates. Joint acceptance covered 12.4% of
+candidates and disagreed on 28.9% of accepted predictions. Retention macro-F1
+was 0.341 and type macro-F1 was 0.160 across all declared classes.
+
+These results do not justify autonomous memory decisions. Include constant-label
+baselines, per-class support, and independent human review in new experiments;
+headline accuracy alone hides minority-class failures. The paper's benchmark
+protocol is proposed work, not a completed comparison with other platforms.
+
 ## Data contract
 
 Each JSONL row needs `id`, `group`, `split`, `text`, `context`, `retention`, `kind`,
