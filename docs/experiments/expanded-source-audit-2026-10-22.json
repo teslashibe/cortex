@@ -23,5 +23,54 @@
   "expanded_source_audit_sha256": "6368be79da6079b3119fd2b7017736dcdfdab32041ad1f8c195ba294bfca88ac",
   "human_reviewed": 0,
   "production_model_promoted": false,
-  "frozen_results_changed": false
+  "frozen_results_changed": false,
+  "authorship_qualification": {
+    "method": "Conservative whole-source quarantine of structural machine or mixed-provenance envelopes. A user role does not establish independent human authorship. The check does not use model scores or rewrite historical labels.",
+    "partitions": {
+      "older_training": {
+        "rows": 317,
+        "source_not_resolved": 0,
+        "machine_or_mixed_source_candidates": 138,
+        "scheduled_automation_subset": 130
+      },
+      "newer_training": {
+        "rows": 168,
+        "source_not_resolved": 0,
+        "machine_or_mixed_source_candidates": 58,
+        "scheduled_automation_subset": 49
+      },
+      "older_primary": {
+        "rows": 24,
+        "source_not_resolved": 0,
+        "machine_or_mixed_source_candidates": 20,
+        "scheduled_automation_subset": 18
+      },
+      "newer_primary": {
+        "rows": 18,
+        "source_not_resolved": 0,
+        "machine_or_mixed_source_candidates": 14,
+        "scheduled_automation_subset": 14
+      }
+    },
+    "primary_candidates_flagged": 34,
+    "primary_candidates_from_scheduled_automations": 32,
+    "training_candidates_flagged": 196,
+    "training_candidates": 485,
+    "private_prior_audit_sha256": "7a476c3b06fc181a2fec490c8ec44583107744e3527aa424e741774b99728c36",
+    "private_expanded_audit_sha256": "0759649a632fbd707aceedbec658d9750ad2a1cb83cc2a1410650ca3914bcbf0",
+    "source_filter_sha256": "48ce8713a64703402a3645f0d41f26db44e5b0dc66796a36b4731b3aea56ab61",
+    "expanded_correction": {
+      "source_records": 6425,
+      "quarantined_sources": 1362,
+      "candidate_rows": 24497,
+      "quarantined_candidates": 15385,
+      "unvalidated_previous_attempt_exclusions": 35,
+      "remaining_candidates": 9077,
+      "training_started_before_correction": false,
+      "corrected_annotation_protocol_sha256": "64a9df1f0128c0241f3175e657284e03660828f09b2a11ebc70ac014421e42b6",
+      "correction_made_after_partial_label_inspection": true,
+      "existing_component_assignments_relaxed": false
+    },
+    "human_reviewed": 0
+  }
 }

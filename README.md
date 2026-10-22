@@ -18,8 +18,9 @@ Software and paper version numbers are independent. The v1.4.0 release includes
 paper revision 6 and preserves revision 5. Revision 7 reports the subsequent
 source audits and controlled replay experiments; it does not promote a trained
 classifier into production. A [subsequent source-audit qualification](docs/experiments/expanded-source-audit-2026-10-22.md)
-links 35 of its 42 primary development candidates to training components; these
-cohorts do not establish independent-conversation transfer.
+links 35 of its 42 primary development candidates to training components and
+finds automated or mixed-provenance source envelopes behind 34 of the 42.
+These cohorts do not establish transfer to independent human conversations.
 
 - Implemented: source attribution, transactional consolidation, contradiction
   history, lexical and optional semantic retrieval, relevance decay, expiry,
@@ -576,10 +577,12 @@ remains unweighted and shadow-only. This experiment reuses previously examined
 data and supplements the frozen paper; it is not a new independent benchmark.
 These tooling changes are not included in the v1.4.0 release tag.
 
-The replay study excluded detected machine context and used the connected
-session/repository components known when its protocol was frozen. The
+The replay study used the source filters and connected session/repository
+components available when its protocol was frozen. The
 [expanded audit](docs/experiments/expanded-source-audit-2026-10-22.md) finds further
-training overlap, so its primary cohorts are regression diagnostics. It compares ordinary
+training overlap and overlooked automated or mixed-provenance records in both
+training and evaluation. Its primary cohorts are historical regression
+diagnostics. It compares ordinary
 mixed training, repeated examples, paraphrases, and recombinations across three
 seeds, with three pooled ordinary references. The primary development cohorts
 contain only 24 older and 18 newer candidates. The generated conditions share

@@ -31,10 +31,13 @@ has a [case-level grading erratum](v2.2-october-2026/ERRATUM.md).
 Revision 7 identifies machine or mixed authorship in some earlier source records
 and related-project overlap across original classifier partitions. Historical
 scores remain available, with their limitations explained in revision 7. The
-corrected replay study is developmental and does not establish improved factual
+replay study is developmental and does not establish improved factual
 retention or authorize learned memory writes.
 
 The expanded audit after revision 7 links 35 of its 42 primary development
-candidates to source components represented in training. The frozen PDF is
-preserved; the [audit qualification](../experiments/expanded-source-audit-2026-10-22.md)
-supersedes any independent-transfer interpretation of those cohorts.
+candidates to source components represented in training. A further attribution
+check finds automated or mixed-provenance source envelopes behind 34 of the 42,
+including 32 from scheduled automation messages. The same issue affects training.
+The frozen PDF is preserved; the
+[audit qualification](../experiments/expanded-source-audit-2026-10-22.md)
+supersedes any interpretation of those cohorts as independent human conversations.
