@@ -1,0 +1,28 @@
+\subsection{Project-separated follow-up classification}
+The follow-up sampled 63 additional explicit user-role messages from ten local project groups (25 messages from Codex and 38 from Claude). The teacher proposed 90 spans. Three retained candidates lacked a type and failed the annotation contract; they were excluded without inventing a label. The remaining 87 spans contained 67 temporary, eight ignored, eight uncertain and four durable labels. All remained provisional, with no human-reviewed examples.
+
+A fixed hash order assigned six whole projects to training, two to development and two to testing before model fitting. This produced 43, 28 and 16 natural candidates respectively. The training and development sets combined these candidates with the corresponding synthetic partitions. The test below contains only the 16 natural candidates from held-out projects. A synthetic-only frozen encoder supplies a matched baseline using the same input format. The adapted comparison uses 80 contrastive steps. The development partition selects temperature, while the joint acceptance rule remains fixed at 0.8.
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+Training & Retention & Type & Accepted & Errors\\
+\midrule
+Synthetic only, frozen & 2/16 & 7/14 & 3/16 & 2/3\\
+Mixed, frozen & 11/16 & 13/14 & 6/16 & 1/6\\
+Mixed, adapted & 10/16 & 13/14 & 7/16 & 0/7\\
+\bottomrule
+\end{tabular}
+\caption{Agreement with provisional annotations on two held-out projects. The first two measures include abstained predictions. Errors among accepted predictions count a wrong retention label or, for retained candidates, a wrong type. These labels are not human-validated truth.}
+\label{tab:natural-followup}
+\end{table}
+
+Natural examples improved agreement in this small comparison, while the adapted model accepted fewer than half the test candidates. Zero disagreements among seven accepted predictions cannot certify operational risk. The corpus is dominated by project requests and does not establish performance on other conversational distributions. All models remain advisory. A live service check classified the 16 candidates through the Go API and created no memories. A separate oversized-input check was rejected before inference.
+
+\subsection{Frozen retrieval follow-up}
+The later public probe selects two cases per question type using a fixed SHA256 ordering, excluding the original seven development cases. The twelve supplied histories contain 5,832 turns, of which 5,820 have nonempty text and are indexed. Questions and reference answers were excluded from ingestion; the reader receives only the question and retrieved evidence. Unlike the initial diagnostic, this experiment indexes source evidence directly without a consolidation pass.
+
+Both retrieval conditions use the exact-tokenizer adapter and a 4,000-token serialized-evidence budget measured with \texttt{cl100k\_base}. The single-query condition retrieves up to 40 windows. The multi-query condition merges up to four query variants, generated from the question alone by Luna 6 at medium effort, into the same 40-window limit. The reader, also Luna 6 at medium effort, is asked to preserve attribution, apply explicit corrections and enumerate distinct events before counting. These design changes and the larger budget prevent a direct score comparison with the earlier 1,200-token experiment.
+
+\input{followup_results}

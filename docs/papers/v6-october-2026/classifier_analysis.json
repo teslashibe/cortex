@@ -1,0 +1,184 @@
+{
+  "source": "results.json: natural_classification_results",
+  "method": "Arithmetic reanalysis of frozen aggregate confusion matrices; no new inference or annotations",
+  "constant_label_accuracy": {
+    "temporary": 0.696969696969697,
+    "project": 0.9225806451612903
+  },
+  "models": {
+    "synthetic-linear": {
+      "retention": {
+        "support": {
+          "durable": 37,
+          "temporary": 253,
+          "ignore": 32,
+          "uncertain": 41
+        },
+        "predicted": {
+          "durable": 266,
+          "temporary": 80,
+          "ignore": 1,
+          "uncertain": 16
+        },
+        "correct": {
+          "durable": 17,
+          "temporary": 54,
+          "ignore": 1,
+          "uncertain": 1
+        },
+        "accuracy": 0.20110192837465565,
+        "macro_f1": 0.1330573313376857,
+        "brier": 1.336279531935105,
+        "ece_10_bins": 0.6477722092740008
+      },
+      "kind": {
+        "support": {
+          "fact": 9,
+          "behavior": 0,
+          "preference": 14,
+          "relationship": 0,
+          "project": 286,
+          "routine": 1
+        },
+        "predicted": {
+          "fact": 7,
+          "behavior": 17,
+          "preference": 80,
+          "relationship": 3,
+          "project": 201,
+          "routine": 2
+        },
+        "correct": {
+          "fact": 1,
+          "behavior": 0,
+          "preference": 2,
+          "relationship": 0,
+          "project": 183,
+          "routine": 0
+        },
+        "accuracy": 0.6,
+        "macro_f1": 0.15318220542618724,
+        "brier": 0.5763918732940193,
+        "ece_10_bins": 0.17839629234389648
+      },
+      "joint_coverage": 0.2975206611570248,
+      "joint_error": 0.7222222222222222
+    },
+    "mixed-linear": {
+      "retention": {
+        "support": {
+          "durable": 37,
+          "temporary": 253,
+          "ignore": 32,
+          "uncertain": 41
+        },
+        "predicted": {
+          "durable": 27,
+          "temporary": 268,
+          "ignore": 47,
+          "uncertain": 21
+        },
+        "correct": {
+          "durable": 5,
+          "temporary": 193,
+          "ignore": 13,
+          "uncertain": 4
+        },
+        "accuracy": 0.5922865013774105,
+        "macro_f1": 0.33881977489538995,
+        "brier": 0.5467161035843772,
+        "ece_10_bins": 0.07174814619501985
+      },
+      "kind": {
+        "support": {
+          "fact": 9,
+          "behavior": 0,
+          "preference": 14,
+          "relationship": 0,
+          "project": 286,
+          "routine": 1
+        },
+        "predicted": {
+          "fact": 1,
+          "behavior": 0,
+          "preference": 6,
+          "relationship": 0,
+          "project": 303,
+          "routine": 0
+        },
+        "correct": {
+          "fact": 0,
+          "behavior": 0,
+          "preference": 0,
+          "relationship": 0,
+          "project": 279,
+          "routine": 0
+        },
+        "accuracy": 0.9,
+        "macro_f1": 0.15789473684210525,
+        "brier": 0.16924309081800334,
+        "ece_10_bins": 0.05161604228204459
+      },
+      "joint_coverage": 0.16804407713498623,
+      "joint_error": 0.29508196721311475
+    },
+    "mixed-setfit": {
+      "retention": {
+        "support": {
+          "durable": 37,
+          "temporary": 253,
+          "ignore": 32,
+          "uncertain": 41
+        },
+        "predicted": {
+          "durable": 15,
+          "temporary": 295,
+          "ignore": 42,
+          "uncertain": 11
+        },
+        "correct": {
+          "durable": 1,
+          "temporary": 213,
+          "ignore": 16,
+          "uncertain": 3
+        },
+        "accuracy": 0.6418732782369146,
+        "macro_f1": 0.34091271226307723,
+        "brier": 0.5095871765168014,
+        "ece_10_bins": 0.07423643493498393
+      },
+      "kind": {
+        "support": {
+          "fact": 9,
+          "behavior": 0,
+          "preference": 14,
+          "relationship": 0,
+          "project": 286,
+          "routine": 1
+        },
+        "predicted": {
+          "fact": 0,
+          "behavior": 0,
+          "preference": 1,
+          "relationship": 0,
+          "project": 309,
+          "routine": 0
+        },
+        "correct": {
+          "fact": 0,
+          "behavior": 0,
+          "preference": 0,
+          "relationship": 0,
+          "project": 285,
+          "routine": 0
+        },
+        "accuracy": 0.9193548387096774,
+        "macro_f1": 0.1596638655462185,
+        "brier": 0.14674318266278502,
+        "ece_10_bins": 0.031160629661980924
+      },
+      "joint_coverage": 0.12396694214876033,
+      "joint_error": 0.28888888888888886
+    }
+  }
+}

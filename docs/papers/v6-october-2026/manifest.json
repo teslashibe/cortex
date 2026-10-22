@@ -1,0 +1,82 @@
+{
+  "paper_revision": "6.0",
+  "title": "Cortex: Sleep-Inspired Memory Consolidation for Language Agents",
+  "software_release": "v1.4.0",
+  "implementation_commit": "7cfc68478f1e7bab91e5bc9df4b3411d471bd4d6",
+  "reader_experiment_commit": "095a6c343171bd9cc6bc04617e08b5bac5a44919",
+  "created_at": "2026-10-22T04:20:01.456206+00:00",
+  "prior_paper": "../v5-october-2026/manifest.json",
+  "revision_scope": "Editorial expansion and arithmetic reanalysis of frozen aggregate results; no new model experiment",
+  "pages": 22,
+  "compiler": "XeLaTeX (TeX Live 2025), BibTeX; desktop compiler verified",
+  "proofs": {
+    "propositions": 7,
+    "theorems": 2,
+    "scope": "Conditional abstract-machine properties, not semantic correctness or formal implementation verification"
+  },
+  "evaluation": {
+    "heldout_cases": 60,
+    "heldout_reference_alignment": {
+      "reader": 47,
+      "baseline": 45
+    },
+    "development_runs": [
+      11,
+      12
+    ],
+    "development_cases": 12,
+    "release_development_run": 11,
+    "private_messages": 2814,
+    "private_sessions": 119,
+    "project_groups": 35,
+    "provisional_spans": 3235,
+    "natural_test_spans": 363,
+    "human_reviewed_labels": 0,
+    "classifier_promotion": "none; shadow only",
+    "evidence_utf8_bytes": 32000,
+    "max_excerpts": 80,
+    "normal_model_calls": 3,
+    "maximum_model_calls": 4,
+    "requested_model": "gpt-6-luna-medium",
+    "returned_model": "gpt-6-luna",
+    "encoder_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "post_measurement_changes": "Timezone normalization, bounded literal-quotation repair and explicit conditional relative-date candidates. Targeted regression evidence is distinct from the frozen score.",
+    "valid_natural_spans": 3032
+  },
+  "external_comparisons": {
+    "reproduced": false,
+    "sources": "comparison_sources.json",
+    "ranking_supported": false
+  },
+  "derived_analysis": "classifier_analysis.json",
+  "benchmark_protocol": "Proposed, not executed",
+  "data_policy": "Only aggregate results are published. Local messages, candidate annotations, per-example results, trained weights and database exports remain private.",
+  "validation": {
+    "xelatex": "passed; no overfull boxes or undefined references",
+    "desktop_compiler": "passed",
+    "visual_review": "All 22 final pages inspected; no clipping or table overlap",
+    "aggregate_recalculation": "passed",
+    "prior_paper_hashes": "unchanged",
+    "formal_proofs": "unchanged",
+    "new_model_runs": 0,
+    "humanizer": "embedded prose review completed"
+  },
+  "sha256": {
+    "README.md": "34740274bd6baf4f294afc8bf5e90ff5534ff23cd43e126a6f77e78905dfe5b6",
+    "answer_results.tex": "d81b893b739a5680f257bc5989d29aa17344a6739798522050d15ed0c19caaad",
+    "benchmark_protocol.tex": "6b8a0642fc99618eb083d03971980178b7efb14b26b0c7d63a3d4d5faeed2371",
+    "classifier_analysis.json": "d6ea06b1060a79858f065f4448b6267a0ad40992cfbd2c4075cfab068a437f42",
+    "classifier_analysis.tex": "b0de3b85c3f47f08410f789c1990b6bf79e901aae1be0ff0fdef0ebc6fdc457c",
+    "comparison_sources.json": "3b298c400fcd0cc27e887c559b1025f751f8470f8361e63e2332797f93e7171b",
+    "current_results.tex": "a340ea7a3416f59eebe4e277b390347ae827bff0a61e852f790ba3cb2faedc1a",
+    "followup.tex": "a37ec4be22ad000b1525676dd006da970a05fe6cffcd2b028411d2c52a349317",
+    "followup_results.tex": "f622546b5cb5b187c340d4d293d9fb0f6344e287cdbe51da5b907318119db929",
+    "main.tex": "33b1862daa0a40525822187df61fe5f5b00cb06ab83f4e584ccb944cd76d5b62",
+    "paper.pdf": "e5fa33c678e5e0840e3da6d973c715a258ca320f90c8ddb032900f9ba5bb0433",
+    "platform_comparison.tex": "e45d79a8d5d5e874838bb9445dda6f6456fce85ebd45812455a06b32704a3d00",
+    "references.bib": "787390c2672c5b9bdaf7677327a9a73797b5a9353b772747ef5447a860d88c46",
+    "results.json": "8e7e3c1e372f6f3eae5a0364911a38d477b096544f0be62d03443f7b9f52405d",
+    "results.tex": "3ff55b38277e09676732838b71333ebdc75f3f4b979af6a11953d212bc422465",
+    "retrieval_results.tex": "9df174862364e378b5a781345514d0fc30058baf55cc7008c1d35ac2164b5b2a"
+  }
+}

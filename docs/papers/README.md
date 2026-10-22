@@ -1,5 +1,7 @@
 # Papers
 
+- [Sleep-inspired consolidation and comparative evaluation protocol: October 2026](v6-october-2026/paper.pdf), with classifier imbalance analysis and sourced platform context; [LaTeX source](v6-october-2026/main.tex)
+
 - [Academic manuscript with the expanded reliability study: October 2026](v5-october-2026/paper.pdf), with biological motivation, source-checked answers, and broader evaluation; [LaTeX source](v5-october-2026/main.tex)
 
 - [Revised academic manuscript: October 2026](v4-october-2026/paper.pdf), with exact token budgets, source-linked dates, and a frozen follow-up evaluation; [LaTeX source](v4-october-2026/main.tex)

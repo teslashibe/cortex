@@ -1,0 +1,516 @@
+{
+  "reader_selection_sha256": "4ee3f4b5955a84672a8f0611d85abdb8296047c19f2951ece2ad111de0d15c33",
+  "reader_implementation_commit": "095a6c343171bd9cc6bc04617e08b5bac5a44919",
+  "heldout_cases": 60,
+  "heldout_turns": 30048,
+  "heldout_grade_counts": {
+    "reader": {
+      "complete": 36,
+      "conditional": 11,
+      "partial": 4,
+      "error": 3,
+      "incorrect": 6
+    },
+    "baseline": {
+      "complete": 44,
+      "partial": 4,
+      "incorrect": 11,
+      "conditional": 1
+    }
+  },
+  "heldout_reference_alignment": {
+    "reader": 47,
+    "baseline": 45
+  },
+  "by_type": {
+    "knowledge-update": {
+      "reader": 9,
+      "baseline": 8
+    },
+    "multi-session": {
+      "reader": 7,
+      "baseline": 6
+    },
+    "single-session-assistant": {
+      "reader": 8,
+      "baseline": 10
+    },
+    "single-session-preference": {
+      "reader": 6,
+      "baseline": 3
+    },
+    "single-session-user": {
+      "reader": 10,
+      "baseline": 10
+    },
+    "temporal-reasoning": {
+      "reader": 7,
+      "baseline": 8
+    }
+  },
+  "grader": "Luna 6 medium, then Codex source/reference review; no independent human adjudication",
+  "private_corpus": {
+    "eligible_unique_messages": 2814,
+    "sessions": 119,
+    "project_groups": 35,
+    "apps": {
+      "claude": 1478,
+      "codex": 1336
+    },
+    "characters": 2111697
+  },
+  "classification_labels": {
+    "provisional_spans": 3235,
+    "accepted_by_budget_and_split": 3032,
+    "rejected_by_budget": 0,
+    "invalid_annotations": 192,
+    "cross_split_excluded": 10,
+    "duplicate_ids": 1,
+    "natural_splits": {
+      "train": 1629,
+      "dev": 1040,
+      "test": 363
+    },
+    "retention": {
+      "temporary": 1763,
+      "ignore": 443,
+      "durable": 535,
+      "uncertain": 291
+    },
+    "kind": {
+      "project": 2115,
+      "null": 568,
+      "behavior": 8,
+      "fact": 90,
+      "preference": 90,
+      "routine": 151,
+      "relationship": 10
+    },
+    "human_reviewed": 0
+  },
+  "natural_classification_results": {
+    "synthetic-linear": {
+      "retention": {
+        "n": 363,
+        "accuracy": 0.20110192837465565,
+        "macro_f1": 0.1330573313376857,
+        "brier": 1.336279531935105,
+        "ece_10_bins": 0.6477722092740008,
+        "coverage_at_0.8": 0.6611570247933884,
+        "error_at_0.8": 0.825,
+        "labels": [
+          "durable",
+          "temporary",
+          "ignore",
+          "uncertain"
+        ],
+        "confusion": [
+          [
+            17,
+            19,
+            0,
+            1
+          ],
+          [
+            186,
+            54,
+            0,
+            13
+          ],
+          [
+            27,
+            3,
+            1,
+            1
+          ],
+          [
+            36,
+            4,
+            0,
+            1
+          ]
+        ]
+      },
+      "kind": {
+        "n": 310,
+        "accuracy": 0.6,
+        "macro_f1": 0.15318220542618724,
+        "brier": 0.5763918732940193,
+        "ece_10_bins": 0.17839629234389648,
+        "coverage_at_0.8": 0.5290322580645161,
+        "error_at_0.8": 0.2621951219512195,
+        "labels": [
+          "fact",
+          "behavior",
+          "preference",
+          "relationship",
+          "project",
+          "routine"
+        ],
+        "confusion": [
+          [
+            1,
+            0,
+            0,
+            0,
+            8,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            2,
+            2,
+            0,
+            10,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            6,
+            15,
+            77,
+            3,
+            183,
+            2
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "joint_accepted": 108,
+      "joint_n": 363,
+      "joint_wrong": 78
+    },
+    "mixed-linear": {
+      "retention": {
+        "n": 363,
+        "accuracy": 0.5922865013774105,
+        "macro_f1": 0.33881977489538995,
+        "brier": 0.5467161035843772,
+        "ece_10_bins": 0.07174814619501985,
+        "coverage_at_0.8": 0.17079889807162535,
+        "error_at_0.8": 0.2903225806451613,
+        "labels": [
+          "durable",
+          "temporary",
+          "ignore",
+          "uncertain"
+        ],
+        "confusion": [
+          [
+            5,
+            30,
+            1,
+            1
+          ],
+          [
+            16,
+            193,
+            28,
+            16
+          ],
+          [
+            3,
+            16,
+            13,
+            0
+          ],
+          [
+            3,
+            29,
+            5,
+            4
+          ]
+        ]
+      },
+      "kind": {
+        "n": 310,
+        "accuracy": 0.9,
+        "macro_f1": 0.15789473684210525,
+        "brier": 0.16924309081800334,
+        "ece_10_bins": 0.05161604228204459,
+        "coverage_at_0.8": 0.8870967741935484,
+        "error_at_0.8": 0.06909090909090909,
+        "labels": [
+          "fact",
+          "behavior",
+          "preference",
+          "relationship",
+          "project",
+          "routine"
+        ],
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            9,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            14,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            6,
+            0,
+            279,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "joint_accepted": 61,
+      "joint_n": 363,
+      "joint_wrong": 18
+    },
+    "mixed-setfit": {
+      "retention": {
+        "n": 363,
+        "accuracy": 0.6418732782369146,
+        "macro_f1": 0.34091271226307723,
+        "brier": 0.5095871765168014,
+        "ece_10_bins": 0.07423643493498393,
+        "coverage_at_0.8": 0.12396694214876033,
+        "error_at_0.8": 0.28888888888888886,
+        "labels": [
+          "durable",
+          "temporary",
+          "ignore",
+          "uncertain"
+        ],
+        "confusion": [
+          [
+            1,
+            35,
+            1,
+            0
+          ],
+          [
+            10,
+            213,
+            23,
+            7
+          ],
+          [
+            4,
+            11,
+            16,
+            1
+          ],
+          [
+            0,
+            36,
+            2,
+            3
+          ]
+        ]
+      },
+      "kind": {
+        "n": 310,
+        "accuracy": 0.9193548387096774,
+        "macro_f1": 0.1596638655462185,
+        "brier": 0.14674318266278502,
+        "ece_10_bins": 0.031160629661980924,
+        "coverage_at_0.8": 0.9,
+        "error_at_0.8": 0.06810035842293907,
+        "labels": [
+          "fact",
+          "behavior",
+          "preference",
+          "relationship",
+          "project",
+          "routine"
+        ],
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            9,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            14,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            285,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "joint_accepted": 45,
+      "joint_n": 363,
+      "joint_wrong": 13
+    }
+  },
+  "consolidation": {
+    "recovered": {
+      "observations": 2814,
+      "acknowledged": 2814,
+      "runs": [
+        {
+          "status": "failed",
+          "runs": 5,
+          "processed": 0
+        },
+        {
+          "status": "completed",
+          "runs": 26,
+          "processed": 2814
+        }
+      ],
+      "acknowledgements": {
+        "total": 2814,
+        "unique": 2814
+      },
+      "missing_or_foreign_sources": 0
+    },
+    "fresh_aliases": {
+      "observations": 2814,
+      "acknowledged": 2814,
+      "runs": [
+        {
+          "status": "completed",
+          "runs": 15,
+          "processed": 2814
+        },
+        {
+          "status": "failed",
+          "runs": 1,
+          "processed": 0
+        }
+      ],
+      "acknowledgements": {
+        "total": 2814,
+        "unique": 2814
+      },
+      "missing_or_foreign_sources": 0
+    }
+  },
+  "classifier_live": {
+    "candidates": 361,
+    "boundary_context_exclusions": 2,
+    "maximum_probability_difference": 9.578070296889507e-07,
+    "memory_rows_before": 0,
+    "memory_rows_after": 0,
+    "mode": "shadow"
+  },
+  "data_policy": "Only aggregate results. No private conversations, per-example outputs, annotations or weights.",
+  "reader_successful_requests": {
+    "n": 57,
+    "mean_model_calls": 3.0350877192982457,
+    "median_reported_tokens": 9713,
+    "max_evidence_bytes": 31998
+  },
+  "baseline_successful_requests": {
+    "n": 60,
+    "mean_model_calls": 1,
+    "median_reported_tokens": 33844.5,
+    "max_evidence_bytes": 31998
+  },
+  "development_validation": {
+    "frozen_reader_runs": [
+      11,
+      12
+    ],
+    "cases_per_run": 12,
+    "release_reader_run": 11,
+    "conditional_answers_in_frozen_runs": [
+      3,
+      4
+    ],
+    "repeatability": "12/12 attained in one run, not consistently reproduced",
+    "adjudication": "Codex source/reference review; not independent human assessment"
+  },
+  "post_measurement_checks": {
+    "timezone_case": "corrected source date and matching three-month answer",
+    "literal_quote_repair": "forced-copy-error regression passes without relaxing validation",
+    "release_regression_caveat": "location evidence omission remains in one development case"
+  }
+}
