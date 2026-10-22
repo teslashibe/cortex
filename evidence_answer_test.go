@@ -27,7 +27,7 @@ func (m *answerModel) Complete(_ context.Context, messages []llm.Message) (llm.R
 }
 
 func TestAnswerEvidenceSourceAndDeletionFence(t *testing.T) {
-	for _, mode := range []string{"ok", "invalid_plan", "fabricated_quote", "foreign_source", "deleted_during_answer", "transport_failure", "missing_citation"} {
+	for _, mode := range []string{"ok", "tokyo", "invalid_plan", "fabricated_quote", "foreign_source", "deleted_during_answer", "transport_failure", "missing_citation"} {
 		t.Run(mode, func(t *testing.T) {
 			s := testStore(t)
 			ctx := context.Background()
@@ -71,8 +71,12 @@ func TestAnswerEvidenceSourceAndDeletionFence(t *testing.T) {
 				return "", nil
 			}
 			e := NewEngine(s, m)
-			out, err := e.AnswerEvidence(ctx, "u", "When did I arrive in Brookfield?", AnswerOptions{anchor, "UTC", true})
-			if mode != "ok" && mode != "invalid_plan" {
+			opts := AnswerOptions{anchor, "UTC", true}
+			if mode == "tokyo" {
+				opts.Timezone = "Asia/Tokyo"
+			}
+			out, err := e.AnswerEvidence(ctx, "u", "When did I arrive in Brookfield?", opts)
+			if mode != "ok" && mode != "tokyo" && mode != "invalid_plan" {
 				if err == nil || out.Answer != "" || len(out.Facts) > 0 || len(out.Citations) > 0 {
 					t.Fatalf("private partial result escaped: %+v %v", out, err)
 				}
@@ -84,7 +88,11 @@ func TestAnswerEvidenceSourceAndDeletionFence(t *testing.T) {
 			if err != nil || out.Calculation.Value != 0 || out.ModelCalls != 3 || len(out.Facts) != 1 || out.Facts[0].Quote != text || out.Facts[0].StartRune != 0 || out.Facts[0].EndRune != len(text) {
 				t.Fatalf("answer %+v: %v", out, err)
 			}
-			if out.Facts[0].ObservedAt.Format("2006-01-02T15:04:05Z07:00") != "2026-10-21T00:00:00Z" {
+			expectedAnchor := "2026-10-21T00:00:00Z"
+			if mode == "tokyo" {
+				expectedAnchor = "2026-10-21T09:00:00+09:00"
+			}
+			if out.Facts[0].ObservedAt.Format("2006-01-02T15:04:05Z07:00") != expectedAnchor {
 				t.Fatalf("model anchor was not normalized to the requested timezone: %v", out.Facts[0].ObservedAt)
 			}
 		})
