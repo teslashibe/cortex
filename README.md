@@ -14,8 +14,9 @@ OpenAI-compatible `/chat/completions` endpoint. The default target is
 The current software release is [v1.4.0](https://github.com/teslashibe/cortex/releases/tag/v1.4.0).
 The latest paper is revision 6,
 [Cortex: Sleep-Inspired Memory Consolidation for Language Agents](docs/papers/v6-october-2026/paper.pdf).
-Software and paper version numbers are independent. The v1.4.0 release attachments
-contain paper revision 5; revision 6 and its source are available in this repository.
+Software and paper version numbers are independent. The v1.4.0 release includes
+paper revision 6 and preserves revision 5. Both papers and their sources are
+available in this repository.
 
 - Implemented: source attribution, transactional consolidation, contradiction
   history, lexical and optional semantic retrieval, relevance decay, expiry,
