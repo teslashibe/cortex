@@ -135,3 +135,29 @@ func TestAnswerEndpointRejectsInvalidInput(t *testing.T) {
 		}
 	}
 }
+
+func TestAnswerFormatRepairBoundAndIsolation(t *testing.T) {
+	for _, valid := range []bool{true, false} {
+		m := &answerModel{respond: func(call int, _ []llm.Message) (string, error) {
+			if call == 1 {
+				return `{"value":"unvalidated"} trailing`, nil
+			}
+			if valid {
+				return `{}`, nil
+			}
+			return `still invalid`, nil
+		}}
+		e := NewEngine(nil, m)
+		out := EvidenceAnswer{}
+		var target struct {
+			Value string `json:"value"`
+		}
+		err := e.answerCall(context.Background(), "Return JSON", map[string]string{"x": "test"}, &target, &out)
+		if (err == nil) != valid || m.call != 2 || out.FormatRepairs != 1 || target.Value != "" {
+			t.Fatalf("repair leaked partial fields or wrong bound: %+v %+v %v", target, out, err)
+		}
+		if err = e.answerCall(context.Background(), "Return JSON", map[string]string{"x": "test"}, &target, &out); !valid && (err == nil || m.call != 3) {
+			t.Fatalf("repeated format repair: %v calls=%d", err, m.call)
+		}
+	}
+}

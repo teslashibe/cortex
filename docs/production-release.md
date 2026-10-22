@@ -1,6 +1,6 @@
 # Production release contract
 
-Cortex v1.3.0 is an additive release for a host-owned memory service. It keeps
+Cortex v1.4.0 is an additive release for a host-owned memory service. It keeps
 the existing database schema and consolidation behavior. The host supplies
 authentication, owner authorization, scheduling, backup policy, and permission
 to send source text to each configured model provider.
@@ -40,10 +40,15 @@ that calculation. Review coverage and performance by retention class as well.
 ## Evidence and dates
 
 Multi-query retrieval returns evidence, not a complete event inventory. The host
-must identify distinct events and reconcile repeated or corrected reports before
-counting. Date resolution preserves exact source spans and an explicit timezone;
+can identify distinct events itself or use the optional evidence reader. The reader selects event identities with a model, so its counts still require that interpretation to be correct. Date resolution preserves exact source spans and an explicit timezone;
 it does not prove that a described event occurred. Unsupported expressions remain
 unresolved. Calendar-day subtraction is separate from elapsed-hour calculations.
+
+The [optional evidence reader](evidence-reader.md) adds exact quotation validation,
+source eligibility checks after composition, and explicit arithmetic inputs. It
+makes three model calls, plus at most one format-repair call and never changes memory state. Conditional date
+interpretations are returned as assumptions. Classification and retrieval quality
+remain empirical properties, separate from persistence guarantees.
 
 ## Release checks
 

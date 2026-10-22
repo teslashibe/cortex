@@ -339,4 +339,4 @@ See the [academic manuscript, source, and historical papers](docs/papers/README.
 
 ### Evidence answers
 
-The optional [evidence reader](docs/evidence-reader.md) answers a question with exact source quotations, date-calculation inputs, and explicit coverage limits. It uses at most three model calls and does not mutate memory. The host must authorize sending raw excerpts to the configured model.
+The optional [evidence reader](docs/evidence-reader.md) answers a question with exact source quotations, date-calculation inputs, and explicit coverage limits. It uses three model calls, plus at most one format-repair call and does not mutate memory. The host must authorize sending raw excerpts to the configured model.

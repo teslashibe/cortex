@@ -2,7 +2,7 @@
 
 ## v1.4.0
 
-- Add an optional evidence reader with bounded query planning, source-checked quotation extraction, and cited answer composition.
+- Add an optional evidence reader with bounded query planning, source-checked quotation extraction, cited answer composition, and one validated format repair.
 - Improve evidence diversity with an additional lexical channel, simple plural and month aliases, speaker preference, and per-source limits.
 - Calculate civil-day and completed-calendar-month differences from source-bound date expressions; expose event-count inputs separately from model judgments.
 - Recheck source eligibility after answer generation and discard partial results when evidence changes.
