@@ -5,12 +5,12 @@
   "implementation_commit": "e0485e6921a9cadf9d273a8288f9dc2f0f6badf1",
   "created_at": "2026-10-22T00:58:34.504502+00:00",
   "sha256": {
-    "main.tex": "c768a449c34fa030c9f2dc014ffce3b60d857d1602aa7c28e03ef7525fff9391",
+    "main.tex": "5670c9dbaf95309fb0631a3f3122938d874ccb293544cd8888a68f9f27b3798a",
     "references.bib": "61eb6778ba3a9e2285a9376de935b49a1fe4a58747c5772234d7594a54696810",
     "results.tex": "178963eb1e0550c661a642d50a63209cf635fff9aedf3a077a16a9e0e4b4a78d",
     "retrieval_results.tex": "9df174862364e378b5a781345514d0fc30058baf55cc7008c1d35ac2164b5b2a",
     "results.json": "9f7c60cf0f33773db81707dd733644c10eb335fc261680515218cc9c1e281d44",
-    "paper.pdf": "81050cc7c87b55f9c513ebc3c8b1a2901e6a8d90aec339295fd9e2bdc549625d"
+    "paper.pdf": "0efcfa41cdbf87b0f0093843230ae1659b8e91076831e1140f279fa8ccc4c6f0"
   },
   "compiler": "XeLaTeX (TeX Live 2025), BibTeX; desktop compiler also succeeded",
   "pages": 10,
