@@ -52,16 +52,22 @@ func (e *Engine) splitObservations(ctx context.Context, obs []Observation) ([]Ob
 	out := []ObservationWindow{}
 	minimum := 0
 	ids := map[string]bool{}
+	nonempty := make([]Observation, 0, len(obs))
 	for _, o := range obs {
 		if !utf8.ValidString(o.Content) || o.ID == "" || ids[o.ID] {
 			return nil, errors.New("invalid segmentation input")
 		}
 		ids[o.ID] = true
+		if o.Content == "" {
+			continue
+		}
+		nonempty = append(nonempty, o)
 		minimum += (utf8.RuneCountInString(o.Content) + ObservationWindowSize - 1) / ObservationWindowSize
 		if minimum > MaxObservationWindows {
 			return nil, ErrWindowCapacity
 		}
 	}
+	obs = nonempty
 	for start := 0; start < len(obs); start += 32 {
 		batch := obs[start:min(start+32, len(obs))]
 		inputs := make([]SegmentInput, len(batch))

@@ -22,6 +22,10 @@ func (s segmentFixture) Split(_ context.Context, inputs []SegmentInput) ([]Segme
 }
 
 func TestSegmenterValidatesFullSource(t *testing.T) {
+	blank := NewEngine(nil, nil, WithWindowSegmenter(segmentFixture{}))
+	if got, err := blank.splitObservations(context.Background(), []Observation{{ID: "empty"}}); err != nil || len(got) != 0 {
+		t.Fatalf("empty source changed behavior: %+v %v", got, err)
+	}
 	valid := []SegmentSpan{{0, 4, 10}, {2, 6, 10}}
 	for _, spans := range [][]SegmentSpan{valid, {{1, 6, 10}}, {{0, 4, 21}, {2, 6, 10}}, {{0, 2, 4}, {3, 6, 5}}, {{0, 3, 5}}, {{0, 5, 5}, {2, 4, 5}}, {{0, 6, 0}}} {
 		e := NewEngine(nil, nil, WithWindowSegmenter(segmentFixture{spans}))
