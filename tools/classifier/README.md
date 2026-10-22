@@ -59,6 +59,15 @@ Brier score, calibration error, and coverage/error at 0.8. Synthetic scores do n
 certify deployment performance. Both model variants remain marked `shadow_only`.
 The manifest hashes the encoder files, heads, input data, and label provenance.
 
+Training and serving count the complete formatted input with the encoder's own
+tokenizer, including special tokens, and reject inputs beyond its declared limit.
+They never silently truncate. Split an oversized candidate upstream or review a
+smaller source span. The new `candidate-context-v2` format replaces one exact
+candidate occurrence in the surrounding context with `[candidate]`, keeping its
+surrounding text and avoiding duplication. The manifest records this format and
+token limit. Older artifacts retain their original format and receive the same
+strict limit check when served by this tool.
+
 ## Review journal
 
 ```sh

@@ -29,6 +29,8 @@ func (a *API) Routes() *http.ServeMux {
 	mux.HandleFunc("GET /v1/observations/windows", a.getObservationWindows)
 	mux.HandleFunc("POST /v1/observations/windows/index", a.postObservationWindowIndex)
 	mux.HandleFunc("POST /v1/classify", a.postClassify)
+	mux.HandleFunc("POST /v1/evidence/recall", a.postEvidenceRecall)
+	mux.HandleFunc("POST /v1/evidence/dates", a.postEventDates)
 	mux.HandleFunc("POST /v1/observations/index", a.postObservationIndex)
 	mux.HandleFunc("DELETE /v1/observations/{id}", a.forgetObservation)
 	mux.HandleFunc("POST /v1/consolidate", a.postConsolidate)

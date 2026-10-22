@@ -57,11 +57,14 @@ type WindowHit struct {
 }
 
 type WindowRecallResult struct {
-	Hits       []WindowHit `json:"hits"`
-	Mode       string      `json:"mode"`
-	Indexed    int         `json:"indexed"`
-	Candidates int         `json:"candidates"`
-	Incomplete bool        `json:"incomplete"`
+	Hits         []WindowHit `json:"hits"`
+	Mode         string      `json:"mode"`
+	Indexed      int         `json:"indexed"`
+	Candidates   int         `json:"candidates"`
+	Incomplete   bool        `json:"incomplete"`
+	Segmentation string      `json:"segmentation,omitempty"`
+	Matched      int         `json:"matched"`
+	Truncated    bool        `json:"truncated"`
 }
 
 type storedWindow struct {
@@ -131,16 +134,21 @@ func (e *Engine) IndexObservationWindows(ctx context.Context, user string, limit
 	if err != nil {
 		return out, err
 	}
-	if _, err = observationWindows(obs); err != nil {
+	allWindows, err := e.splitObservations(ctx, obs)
+	if err != nil {
 		return out, err
 	}
-	stored, err := e.store.windowEmbeddings(ctx, user, e.embedder.Model())
+	byID := map[string][]ObservationWindow{}
+	for _, w := range allWindows {
+		byID[w.ObservationID] = append(byID[w.ObservationID], w)
+	}
+	stored, err := e.store.windowEmbeddings(ctx, user, e.windowModelKey())
 	if err != nil {
 		return out, err
 	}
 	processed := 0
 	for _, o := range obs {
-		windows, _ := SplitObservation(o)
+		windows := byID[o.ID]
 		hash := contentHash(o.Content)
 		complete := true
 		for _, w := range windows {
@@ -187,7 +195,7 @@ func (e *Engine) IndexObservationWindows(ctx context.Context, user string, limit
 			}
 			vectors = append(vectors, v...)
 		}
-		published, err := e.store.publishWindows(ctx, user, o, windows, vectors, e.embedder.Model())
+		published, err := e.store.publishWindows(ctx, user, o, windows, vectors, e.windowModelKey())
 		if err != nil {
 			return out, err
 		}
@@ -243,11 +251,14 @@ func (e *Engine) RecallObservationWindows(ctx context.Context, user, query strin
 	if err != nil {
 		return out, err
 	}
-	windows, err := observationWindows(obs)
+	windows, err := e.splitObservations(ctx, obs)
 	if err != nil {
 		return out, err
 	}
 	out.Candidates = len(windows)
+	if e.segmenter != nil {
+		out.Segmentation = e.segmenter.ID()
+	}
 	stored := map[string]storedWindow{}
 	var vector []float64
 	if e.embedder != nil && !opts.LexicalOnly && len(windows) > 0 {
@@ -260,7 +271,7 @@ func (e *Engine) RecallObservationWindows(ctx context.Context, user, query strin
 			return out, errors.New("invalid query embedding")
 		}
 		vector = v[0]
-		stored, err = e.store.windowEmbeddings(ctx, user, e.embedder.Model())
+		stored, err = e.store.windowEmbeddings(ctx, user, e.windowModelKey())
 		if err != nil {
 			return out, err
 		}
@@ -329,7 +340,9 @@ func (e *Engine) RecallObservationWindows(ctx context.Context, user, query strin
 		}
 		return a.Window.StartRune < b.Window.StartRune
 	})
-	if len(out.Hits) > limit {
+	out.Matched = len(out.Hits)
+	out.Truncated = out.Matched > limit
+	if out.Truncated {
 		out.Hits = out.Hits[:limit]
 	}
 	return out, nil

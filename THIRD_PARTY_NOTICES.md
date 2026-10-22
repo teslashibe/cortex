@@ -1,6 +1,8 @@
 # Third party notices
 
-The following notices cover modules used by the Cortex runtime.
+The following notices cover modules used by the Cortex runtime. Optional Python
+experiments install their dependencies separately under each package's license.
+No model weights, training data, or Python dependencies are bundled in releases.
 
 ## github.com/jackc/pgpassfile v1.0.0
 

@@ -19,6 +19,7 @@ type Engine struct {
 	embedder   Embedder
 	policy     RetentionPolicy
 	classifier Classifier
+	segmenter  WindowSegmenter
 }
 
 type Option func(*Engine)
@@ -26,6 +27,9 @@ type Option func(*Engine)
 func WithEmbedder(embedder Embedder) Option { return func(e *Engine) { e.embedder = embedder } }
 func WithClassifier(classifier Classifier) Option {
 	return func(e *Engine) { e.classifier = classifier }
+}
+func WithWindowSegmenter(segmenter WindowSegmenter) Option {
+	return func(e *Engine) { e.segmenter = segmenter }
 }
 func WithRetentionPolicy(policy RetentionPolicy) Option { return func(e *Engine) { e.policy = policy } }
 func NewEngine(store *Store, model Model, options ...Option) *Engine {

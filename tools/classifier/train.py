@@ -13,6 +13,7 @@ os.environ.setdefault('TOKENIZERS_PARALLELISM', 'false')
 os.environ.setdefault('WANDB_DISABLED', 'true')
 os.umask(0o077)
 POLICY = 'cortex-candidate-v1'
+INPUT_FORMAT = 'candidate-context-v2'
 LABELS = {'retention': ['durable', 'temporary', 'ignore', 'uncertain'],
           'kind': ['fact', 'behavior', 'preference', 'relationship', 'project', 'routine']}
 
@@ -57,10 +58,22 @@ def load_rows(path, allow_provisional=False):
     return rows
 
 
-def input_text(row):
-    # Candidate first; preserve quote/negation context. This is the model contract.
+def input_text(row, version=INPUT_FORMAT):
     context = row.get('context') or row['text']
+    if version == INPUT_FORMAT and context.count(row['text']) == 1:
+        # Keep the complete surrounding context without repeating the candidate.
+        context = context.replace(row['text'], '[candidate]', 1)
+    elif version not in (INPUT_FORMAT, 'candidate-context-v1'):
+        raise ValueError('unknown input format')
     return 'Candidate: ' + row['text'] + '\nContext: ' + context
+
+
+def checked_inputs(rows, tokenizer, limit, version=INPUT_FORMAT):
+    texts = [input_text(row, version) for row in rows]
+    lengths = [len(x) for x in tokenizer(texts, truncation=False, padding=False)['input_ids']]
+    if any(n > limit for n in lengths):
+        raise ValueError('formatted input exceeds encoder token budget; split candidates upstream')
+    return texts
 
 
 def probabilities(vectors, head):
@@ -98,6 +111,9 @@ def train(args):
     from sklearn.linear_model import LogisticRegression
     torch.set_num_threads(2)
     rows = load_rows(args.data, args.allow_provisional)
+    encoder = SentenceTransformer(args.encoder, revision=args.revision, device='cpu')
+    limit = encoder.max_seq_length
+    texts = checked_inputs(rows, encoder.tokenizer, limit)
     out = private_path(args.output)
     out.mkdir(parents=True, exist_ok=False)
     started = time.monotonic()
@@ -106,20 +122,18 @@ def train(args):
         from setfit import SetFitModel, Trainer, TrainingArguments
         selected = [r for r in rows if r['split'] == 'train' and r.get('kind') is not None]
         model = SetFitModel.from_pretrained(args.encoder, revision=args.revision, device='cpu')
-        dataset = Dataset.from_dict({'text': [input_text(r) for r in selected],
+        dataset = Dataset.from_dict({'text': checked_inputs(selected, encoder.tokenizer, limit),
                                      'label': [LABELS['kind'].index(r['kind']) for r in selected]})
         config = TrainingArguments(batch_size=16, num_epochs=1, max_steps=args.steps,
                                    num_iterations=5, seed=17, report_to='none', use_amp=False,
                                    output_dir=str(out/'trainer'), logging_dir=str(out/'logs'), save_strategy='no')
         Trainer(model=model, args=config, train_dataset=dataset).train()
         encoder = model.model_body
-    else:
-        encoder = SentenceTransformer(args.encoder, revision=args.revision, device='cpu')
     training_device = str(encoder.device)
     encoder.to('cpu')
-    encoder.max_seq_length = 256
+    encoder.max_seq_length = limit
     encoder.save(str(out / 'encoder'))
-    vectors = encoder.encode([input_text(r) for r in rows], batch_size=32,
+    vectors = encoder.encode(texts, batch_size=32,
                              normalize_embeddings=True, show_progress_bar=False)
     heads, report = {}, {}
     for name, labels in LABELS.items():
@@ -143,8 +157,10 @@ def train(args):
     (out / 'heads.json').write_text(json.dumps(heads, indent=2))
     file_hashes = {str(p.relative_to(out)): hashlib.sha256(p.read_bytes()).hexdigest()
                    for p in sorted(out.rglob('*')) if p.is_file()}
-    identity = hashlib.sha256(json.dumps(file_hashes, sort_keys=True).encode()).hexdigest()
+    identity = hashlib.sha256(json.dumps({'files': file_hashes, 'input_format': INPUT_FORMAT,
+        'max_tokens': limit, 'policy_version': POLICY}, sort_keys=True).encode()).hexdigest()
     manifest = {'model': 'cortex-' + args.backend + '-' + identity[:16], 'policy_version': POLICY,
+                'input_format': INPUT_FORMAT, 'max_tokens': limit,
                 'backend': args.backend, 'training_device': training_device, 'base_encoder': args.encoder, 'base_revision': args.revision,
                 'labels': LABELS, 'files': file_hashes, 'seed': 17, 'steps': args.steps if args.backend == 'setfit' else 0,
                 'training_seconds': time.monotonic()-started,
@@ -166,12 +182,18 @@ def serve(args):
     torch.set_num_threads(2)
     root = private_path(args.model)
     manifest = json.loads((root/'manifest.json').read_text())
+    if manifest['policy_version'] != POLICY:
+        raise ValueError('unsupported annotation policy')
     for name, digest in manifest['files'].items():
         file = (root/name).resolve()
         if not file.is_relative_to(root) or hashlib.sha256(file.read_bytes()).hexdigest() != digest:
             raise ValueError('model integrity mismatch')
     heads = json.loads((root/'heads.json').read_text())
     encoder = SentenceTransformer(str(root/'encoder'), device='cpu', local_files_only=True)
+    version = manifest.get('input_format', 'candidate-context-v1')
+    limit = manifest.get('max_tokens', encoder.max_seq_length)
+    if limit != encoder.max_seq_length:
+        raise ValueError('encoder budget mismatch')
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *_):
             pass
@@ -188,7 +210,8 @@ def serve(args):
                     raise ValueError('model, policy or batch mismatch')
                 if any(not isinstance(r.get('text'), str) or not 0 < len(r['text']) <= 512 or len(r.get('context','')) > 1024 for r in rows):
                     raise ValueError('invalid candidate')
-                vectors = encoder.encode([input_text(r) for r in rows], batch_size=32, normalize_embeddings=True)
+                texts = checked_inputs(rows, encoder.tokenizer, limit, version)
+                vectors = encoder.encode(texts, batch_size=32, normalize_embeddings=True)
                 distributions = {name: probabilities(vectors, head) for name, head in heads.items()}
                 results = [{'id': row['id'], **{name: dict(zip(LABELS[name], p[i].tolist()))
                            for name, p in distributions.items()}} for i, row in enumerate(rows)]

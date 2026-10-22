@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
@@ -41,6 +42,17 @@ func run() error {
 		return err
 	}
 	var options []cortex.Option
+	if endpoint := os.Getenv("CORTEX_SEGMENTER_URL"); endpoint != "" {
+		limit, err := strconv.Atoi(os.Getenv("CORTEX_SEGMENTER_MAX_TOKENS"))
+		if err != nil {
+			return errors.New("CORTEX_SEGMENTER_MAX_TOKENS required")
+		}
+		segmenter, err := cortex.NewHTTPSegmenter(endpoint, os.Getenv("CORTEX_SEGMENTER_ID"), os.Getenv("CORTEX_SEGMENTER_KEY"), limit)
+		if err != nil {
+			return err
+		}
+		options = append(options, cortex.WithWindowSegmenter(segmenter))
+	}
 	if endpoint := os.Getenv("CORTEX_CLASSIFIER_URL"); endpoint != "" {
 		classifier, err := cortex.NewHTTPClassifier(endpoint, os.Getenv("CORTEX_CLASSIFIER_MODEL"), os.Getenv("CORTEX_CLASSIFIER_KEY"))
 		if err != nil {

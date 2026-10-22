@@ -18,6 +18,13 @@ access to this route must be authorized separately by the host when appropriate.
 Cortex does not provide encryption at rest or automatic source-permission
 revocation. Restrict database access and protect backups separately.
 
+When an optional `WindowSegmenter` is configured, window indexing and window
+recall send eligible raw sources to that endpoint, including lexical-only window
+recall. Use a trusted local segmenter or authorize the provider for those sources.
+Token-aware segmentation and embedding must use the same tokenizer and special
+token policy. The embedding endpoint must reject oversized inputs independently.
+The optional Python adapters bind to loopback and have no authentication.
+
 Keep credentials, exports, database dumps, and personal profiles out of source
 control. Keep classification journals and weights outside Git as well. Deleting
 a Cortex source cannot remove it from an external dataset or from model weights.

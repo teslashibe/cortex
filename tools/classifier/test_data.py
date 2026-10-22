@@ -2,10 +2,19 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
-from train import load_rows, private_path
+from train import load_rows, private_path, input_text, checked_inputs
 
 
 class SplitSafety(unittest.TestCase):
+    def test_exact_budget_and_context_preservation(self):
+        row = {'text': 'tea', 'context': 'I do not like tea at work'}
+        self.assertEqual(input_text(row), 'Candidate: tea\nContext: I do not like [candidate] at work')
+        tokenizer = lambda texts, **kwargs: {'input_ids': [list(x) for x in texts]}
+        self.assertEqual(len(checked_inputs([row], tokenizer, 100)), 1)
+        with self.assertRaises(ValueError):
+            checked_inputs([row], tokenizer, 10)
+        self.assertIn('tea at work', input_text(row, 'candidate-context-v1'))
+
     def fixture(self, directory):
         rows=[{'id':str(i),'group':str(i),'split':split,'text':'Fact '+str(i),
                'retention':'durable','kind':'fact','label_source':'synthetic'}

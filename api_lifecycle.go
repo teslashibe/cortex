@@ -18,6 +18,42 @@ func (a *API) getObservationWindows(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, 200, out)
 }
+
+func (a *API) postEvidenceRecall(w http.ResponseWriter, r *http.Request) {
+	var body struct {
+		User        string   `json:"user_id"`
+		Queries     []string `json:"queries"`
+		Limit       int      `json:"limit"`
+		LexicalOnly bool     `json:"lexical_only"`
+	}
+	if err := decodeBounded(w, r, &body); err != nil {
+		writeErr(w, 400, err)
+		return
+	}
+	out, err := a.engine.RecallEvidence(r.Context(), body.User, body.Queries, RecallOptions{Limit: body.Limit, LexicalOnly: body.LexicalOnly})
+	if err != nil {
+		writeErr(w, 400, err)
+		return
+	}
+	writeJSON(w, 200, out)
+}
+func (a *API) postEventDates(w http.ResponseWriter, r *http.Request) {
+	var body struct {
+		User       string      `json:"user_id"`
+		Timezone   string      `json:"timezone"`
+		Candidates []Candidate `json:"candidates"`
+	}
+	if err := decodeBounded(w, r, &body); err != nil {
+		writeErr(w, 400, err)
+		return
+	}
+	out, err := a.engine.ResolveEventDates(r.Context(), body.User, body.Timezone, body.Candidates)
+	if err != nil {
+		writeErr(w, 400, err)
+		return
+	}
+	writeJSON(w, 200, map[string]any{"dates": out})
+}
 func (a *API) postObservationWindowIndex(w http.ResponseWriter, r *http.Request) {
 	out, err := a.engine.IndexObservationWindows(r.Context(), r.URL.Query().Get("user"), 1000)
 	if err != nil {

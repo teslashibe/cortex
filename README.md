@@ -10,19 +10,19 @@ OpenAI-compatible `/chat/completions` endpoint. The default target is
 Use the tagged Go package:
 
 ```sh
-go get github.com/teslashibe/cortex@v1.2.0
+go get github.com/teslashibe/cortex@v1.3.0
 ```
 
 Install the commands with Go:
 
 ```sh
-go install github.com/teslashibe/cortex/cmd/cortex@v1.2.0
-go install github.com/teslashibe/cortex/cmd/cortex-import@v1.2.0
-go install github.com/teslashibe/cortex/cmd/cortex-once@v1.2.0
+go install github.com/teslashibe/cortex/cmd/cortex@v1.3.0
+go install github.com/teslashibe/cortex/cmd/cortex-import@v1.3.0
+go install github.com/teslashibe/cortex/cmd/cortex-once@v1.3.0
 ```
 
 Prebuilt command archives and checksums are available from the
-[v1.2.0 release](https://github.com/teslashibe/cortex/releases/tag/v1.2.0).
+[v1.3.0 release](https://github.com/teslashibe/cortex/releases/tag/v1.3.0).
 For the source examples below, clone this repository and run the commands from
 its root directory.
 
@@ -194,9 +194,11 @@ _ = windows
 Each hit has exact text, parent observation ID, half-open Unicode code-point
 positions, speaker references, and `observed_at`. This timestamp is the message
 time; event dates need evidence from its text. Windows contain at most 512 code
-points with 128 overlap. These are character bounds, not token bounds: choose an
-encoder that accepts them without truncation. A user's full eligible window set
-is capped at 100,000 and errors before provider work if it is larger.
+points with 128 overlap by default. These are character bounds, not token bounds: choose an
+encoder that accepts them without truncation, or configure `WithWindowSegmenter`.
+A user's full eligible window set
+is capped at 100,000. Token-aware coverage is checked as segmentation results
+arrive; an invalid or over-capacity result prevents vector publication.
 
 `POST /v1/observations/windows/index?user=` explicitly indexes this representation.
 `GET /v1/observations/windows?user=&q=&limit=` returns excerpts; `mode=lexical`
@@ -204,6 +206,35 @@ selects lexical-only retrieval. Existing whole-observation routes are unchanged.
 Window indexing reports complete observations indexed, while recall reports
 indexed windows. Index publication is atomic per observation and deletion cascades
 to every window. The same lifecycle and owner checks apply to both source paths.
+
+The optional `HTTPSegmenter` uses an exact tokenizer service. Set
+`CORTEX_SEGMENTER_URL`, `CORTEX_SEGMENTER_ID`, and `CORTEX_SEGMENTER_MAX_TOKENS`
+(plus `CORTEX_SEGMENTER_KEY` if needed). Cortex validates full source coverage,
+original offsets, progress, and declared token counts. The embedding service must
+independently reject oversized inputs; Cortex cannot verify a remote tokenizer's
+claim. Vector namespaces include segmentation identity, so changing the tokenizer
+or policy requires reindexing. An optional [local ONNX adapter](tools/embeddings/README.md)
+performs both segmentation and strict embedding checks with one tokenizer.
+Configured segmentation sends sources to that endpoint during window recall too.
+
+## Retrieve events and resolve dates
+
+`RecallEvidence` merges one to four explicit query variants, deduplicates windows,
+and rechecks source eligibility. `POST /v1/evidence/recall` accepts
+`{"user_id":"example","queries":["museum visit","gallery trip"],"limit":40}`.
+Results include `truncated`, `index_incomplete`, and `changed_during_read`. The
+`sources` count is a count of retrieved observations, not distinct real events.
+The host owns query generation, event identity, corrections, and evidence budgets.
+Even an untruncated result reports `coverage: "retrieved_evidence_only"`.
+
+`ResolveEventDates` and `POST /v1/evidence/dates` accept an explicit IANA timezone
+and exact source-span candidates, using the same candidate shape as classification.
+Supported expressions are ISO or English dates with a year, `today`, `yesterday`,
+`N days ago`, and `last <weekday>` (strictly before the observation's local date).
+Other expressions return `resolved: false`. Results preserve the text, source
+hash, rule and observation timestamp. Resolving a quoted or hypothetical date
+does not establish that an event occurred. `CalendarDaysBetween` subtracts civil
+dates, avoiding daylight-saving errors. No event records are written automatically.
 
 ## Train and inspect a classifier
 
