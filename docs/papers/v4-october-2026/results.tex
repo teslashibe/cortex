@@ -1,0 +1,45 @@
+\subsection{Synthetic classification}
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+Encoder & Retention F1 & Type F1 & Coverage & Error\\
+\midrule
+Frozen & 0.731 & 1.000 & 0.926 & 0.050\\
+Contrastively adapted & 0.943 & 1.000 & 0.944 & 0.000\\
+\bottomrule
+\end{tabular}
+\caption{Synthetic test results. Retention uses 108 examples; type uses the 84 with type annotations. Coverage and error concern the retention head at a probability threshold of 0.8, not the joint API abstention rule.}
+\label{tab:classification}
+\end{table}
+
+The frozen model misclassified all 12 ignored examples in the held-out wrapper family as durable. Contrastive adaptation reduced this count to four. The adapted model abstained on those errors at the reported retention threshold. Zero observed accepted errors in this synthetic sample is not a deployment guarantee: the sampling assumptions of the selective-risk theorem are not established.
+
+Retention Brier score was 0.148 for the frozen model and 0.032 for the adapted model. Type F1 was 1.000 for both models, but the vocabulary and facts were shared across wrapper families. These measurements demonstrate successful fitting of a designed task, not reliable classification of arbitrary conversations.
+
+\subsection{Transfer to provisional session annotations}
+The private review queue contains 84 teacher-proposed spans from the 51 authorized messages. No label in this queue has been independently reviewed by a human. The teacher labeled 66 spans temporary, nine uncertain, five ignored, and four durable. Thus the provisional distribution differs sharply from the synthetic test partition, which contains 72 durable and 12 examples of each other retention label.
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrrr}
+\toprule
+Encoder & Retention agreement & Type agreement & Joint abstentions\\
+\midrule
+Frozen & 9/84 & 47/74 & 51/84\\
+Contrastively adapted & 10/84 & 39/74 & 61/84\\
+\bottomrule
+\end{tabular}
+\caption{Agreement with provisional teacher annotations, including predictions on abstained candidates. Type agreement uses the 74 annotated types. These are agreement measurements, not human-validated accuracy.}
+\label{tab:transfer}
+\end{table}
+
+Both classifiers ran through the Go shadow API. The improvement on synthetic retention did not transfer to this diagnostic. The low agreement, distribution shift, and uncertain reference labels provide no basis for promoting either classifier to memory control. A reviewed natural-conversation corpus is required before training or evaluating an operational replacement. One of the 84 formatted classification inputs also exceeded the encoder context limit. This finding motivated exact budget validation in the follow-up study.
+
+\subsection{Retrieval under a fixed evidence budget}
+\input{retrieval_results}
+
+\subsection{Grading audit and implementation checks}
+Case inspection changed two of 21 prior public judge decisions. A memory-only answer containing the correct degree subject was accepted, while an unsupported abstention on a personalized recommendation was rejected. These changes left the aggregate memory score at 3/7 and the source and combined scores at 5/7. The audit was performed by Codex against stored questions, reference answers, and reader outputs; it is not independent human adjudication.
+
+Regression checks cover source scope, invalid distributions, exact offsets, deletion during inference, all-or-nothing window publication, and explicit indexing. The database race suite, static checks, build, and source vulnerability scan passed. These checks support specific implementation contracts; they do not measure semantic completeness or general answer quality.

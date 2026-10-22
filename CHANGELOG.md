@@ -4,7 +4,7 @@
 
 - Add optional exact-tokenizer source segmentation with full-coverage validation and separate vector namespaces.
 - Add a local ONNX adapter that rejects oversized inputs instead of silently truncating them.
-- Enforce the classifier's complete input budget in training and serving, with versioned context formatting.
+- Enforce the classifier's complete input budget in training and serving, with versioned context formatting. Flag incomplete teacher annotations for review.
 - Add bounded multi-query evidence retrieval with deduplicated windows and explicit coverage limits.
 - Resolve supported date expressions from exact source spans and explicit timezones; provide civil-day subtraction.
 - Expand private, project-separated classification and frozen public retrieval diagnostics. Classifiers remain advisory.

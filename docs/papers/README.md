@@ -1,5 +1,7 @@
 # Papers
 
+- [Revised academic manuscript: October 2026](v4-october-2026/paper.pdf), with exact token budgets, source-linked dates, and a frozen follow-up evaluation; [LaTeX source](v4-october-2026/main.tex)
+
 - [Academic manuscript: October 2026](v3-october-2026/paper.pdf), with conditional proofs, retrieval experiments, classification results, and a conclusion; [LaTeX source](v3-october-2026/main.tex)
 
 - [Revision 2.2: October 2026](v2.2-october-2026/paper.pdf), Cortex v1.1.0 and local-session evaluation; [LaTeX source](v2.2-october-2026/main.tex)

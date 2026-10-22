@@ -1,0 +1,50 @@
+{
+  "paper_revision": "4.0",
+  "title": "Cortex: Provenance-Preserving Memory with Selective Classification for Language Agents",
+  "software_release": "v1.3.0",
+  "implementation_commit": "14cd49eccfadf59ccc3553958875eefa77bfbc1b",
+  "created_at": "2026-10-22T01:29:42.122305+00:00",
+  "compiler": "XeLaTeX (TeX Live 2025), BibTeX; desktop compiler also checked",
+  "proofs": {
+    "propositions": 6,
+    "theorems": 2,
+    "scope": "Conditional properties of an abstract state machine; not formal verification or semantic correctness"
+  },
+  "data_policy": "Only aggregate results published. Session inputs, annotations, per-example outputs, database exports and weights remain private.",
+  "evaluation": {
+    "reader_requested": "gpt-6-luna-medium",
+    "teacher_returned": "gpt-6-luna",
+    "encoder_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "public_followup_cases": 12,
+    "public_followup_turns": 5832,
+    "reader_evidence_budget": 4000,
+    "budget_tokenizer": "cl100k_base",
+    "public_selection_sha256": "69004dfe2cb74a78fc7434034d0c30376535ea893dcaeb208d7d8dbe1d73943c",
+    "additional_private_messages": 63,
+    "private_project_groups": 10,
+    "provisional_annotations": 90,
+    "valid_annotations": 87,
+    "human_reviewed_labels": 0,
+    "classifier_promotion": "none; shadow only",
+    "adjudication": "Codex; no independent human adjudication"
+  },
+  "prior_paper": "../v3-october-2026/manifest.json",
+  "pages": 13,
+  "sha256": {
+    "main.tex": "3bf1bf6f3c675b17c0cb008a7d4f52c9679280d8a5002ed773433ed67ea88aa6",
+    "references.bib": "dc951d7edba9de365e74c6fbda06082cc01f0daf1c8ddb4d5ca8c068a9a84463",
+    "results.tex": "3ff55b38277e09676732838b71333ebdc75f3f4b979af6a11953d212bc422465",
+    "retrieval_results.tex": "9df174862364e378b5a781345514d0fc30058baf55cc7008c1d35ac2164b5b2a",
+    "followup.tex": "a37ec4be22ad000b1525676dd006da970a05fe6cffcd2b028411d2c52a349317",
+    "followup_results.tex": "f622546b5cb5b187c340d4d293d9fb0f6344e287cdbe51da5b907318119db929",
+    "results.json": "ab8d29ecc83e6c72bde26ba02c9667ec08956b25da103864f1836d1f0beb7f06",
+    "README.md": "4b90b5edfb3f50127b467f997ce004550f44fb9e967ef56c67bcb7d233666752",
+    "paper.pdf": "970ec933d848dc0f48929ea14f1230891f7d9be4d161afb7a64d75c8a6f43441"
+  },
+  "validation": {
+    "desktop_compiler": "success",
+    "xelatex": "success",
+    "visual_review": "all 13 pages inspected; no overflow or unresolved citations",
+    "final_binary_evidence_replay": "24/24 equal"
+  }
+}
