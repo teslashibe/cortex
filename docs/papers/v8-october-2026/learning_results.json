@@ -1,0 +1,2439 @@
+{
+  "status": "development; no production promotion",
+  "source_authorship_audit": {
+    "excluded_source_messages": 168,
+    "affected_accepted_candidates": 116,
+    "by_split": {
+      "dev": 76,
+      "test": 5,
+      "train": 35
+    },
+    "by_reason_messages": {
+      "machine_metadata_isCompactSummary": 16,
+      "machine_compaction_text": 9,
+      "machine_metadata_isVisibleInTranscriptOnly": 16,
+      "mixed_authorship_async_wrapper": 78,
+      "machine_goal_context": 74
+    },
+    "cycle_old_train": 9,
+    "cycle_new_train": 3,
+    "cycle_cohorts": {
+      "old_reserved_group": 14,
+      "new_reserved_group": 9,
+      "old_natural_dev": 1,
+      "new_natural_dev": 75,
+      "synthetic_dev": 0
+    },
+    "round2_source_pairs_affected": 23,
+    "source_read_failures": 0
+  },
+  "related_project_audit": {
+    "known_repository_names": 289,
+    "source_sessions": 123,
+    "multi_repository_sessions": 40,
+    "clean_natural_candidates": 1877,
+    "connected_components": 16,
+    "cross_partition_components": 1,
+    "candidates_in_cross_partition_components": 1700,
+    "additional_message_ids": 79,
+    "new_source_sessions": 4,
+    "unseen_component_messages": 0,
+    "source_read_failures": 0
+  },
+  "historical_paper_audit": {
+    "historical_natural_candidates": 3032,
+    "affected_authorship_candidates": 176,
+    "authorship_by_split": {
+      "train": 46,
+      "test": 9,
+      "dev": 121
+    },
+    "cross_partition_components": 1,
+    "candidates_in_cross_partition_components": 2760,
+    "unmapped_candidates": 0
+  },
+  "replay_library": {
+    "final_matched_pairs": 75,
+    "unique_primary_sources": 75,
+    "primary_groups": 4,
+    "generation_failed_pairs": 32,
+    "null_recombinations": 67,
+    "invalid_generation_outputs": 105,
+    "retention": {
+      "temporary": 57,
+      "durable": 6,
+      "ignore": 11,
+      "uncertain": 1
+    },
+    "kind": {
+      "fact": 5,
+      "preference": 3,
+      "None": 12,
+      "project": 53,
+      "routine": 1,
+      "behavior": 1
+    },
+    "old_train_n": 317,
+    "new_train_n": 168,
+    "cohort_sizes": {
+      "old_reserved_group": 24,
+      "new_natural_dev": 18,
+      "new_reserved_group": 14,
+      "old_natural_dev": 3,
+      "old_related_project_diagnostic": 269,
+      "new_related_project_diagnostic": 851,
+      "synthetic_dev": 262
+    },
+    "training_components": 8,
+    "independent_evaluation_components": 6
+  },
+  "adapted_runs": [
+    {
+      "seed": 17,
+      "condition": "ordinary_mixed",
+      "old_retention_f1": 0.317287784679089,
+      "old_retention_f1_change": 0.0488095238095238,
+      "old_type_supported_f1": 0.8888888888888888,
+      "new_retention_f1": 0.07142857142857142,
+      "new_type_supported_f1": 0.9220779220779219,
+      "new_durable_recall": 0.0,
+      "new_joint_coverage": 0.2222222222222222,
+      "new_joint_error": 0.25,
+      "synthetic_retention_f1": 0.7321056617911599,
+      "input_tokens": 150137,
+      "padded_tokens": 524288,
+      "training_seconds": 98.06963670894038,
+      "cpu_seconds": 141.43051200000002
+    },
+    {
+      "seed": 17,
+      "condition": "matched_repeat",
+      "old_retention_f1": 0.40990990990990994,
+      "old_retention_f1_change": 0.14143164904034472,
+      "old_type_supported_f1": 0.8222222222222223,
+      "new_retention_f1": 0.32065217391304346,
+      "new_type_supported_f1": 0.5,
+      "new_durable_recall": 0.6428571428571429,
+      "new_joint_coverage": 0.2222222222222222,
+      "new_joint_error": 0.25,
+      "synthetic_retention_f1": 0.7506942795466811,
+      "input_tokens": 116060,
+      "padded_tokens": 524288,
+      "training_seconds": 103.2675711249467,
+      "cpu_seconds": 145.29517800000002
+    },
+    {
+      "seed": 17,
+      "condition": "paraphrase",
+      "old_retention_f1": 0.05555555555555555,
+      "old_retention_f1_change": -0.21292270531400967,
+      "old_type_supported_f1": 0.8222222222222223,
+      "new_retention_f1": 0.07142857142857142,
+      "new_type_supported_f1": 0.5,
+      "new_durable_recall": 0.0,
+      "new_joint_coverage": 0.2222222222222222,
+      "new_joint_error": 0.25,
+      "synthetic_retention_f1": 0.5719405624773004,
+      "input_tokens": 104136,
+      "padded_tokens": 524288,
+      "training_seconds": 100.3297357079573,
+      "cpu_seconds": 142.82578
+    },
+    {
+      "seed": 17,
+      "condition": "recombination",
+      "old_retention_f1": 0.40990990990990994,
+      "old_retention_f1_change": 0.14143164904034472,
+      "old_type_supported_f1": 0.8888888888888888,
+      "new_retention_f1": 0.32065217391304346,
+      "new_type_supported_f1": 0.5,
+      "new_durable_recall": 0.6428571428571429,
+      "new_joint_coverage": 0.5,
+      "new_joint_error": 0.6666666666666666,
+      "synthetic_retention_f1": 0.7031916333852298,
+      "input_tokens": 112317,
+      "padded_tokens": 524288,
+      "training_seconds": 102.74776091694366,
+      "cpu_seconds": 144.72904300000005
+    },
+    {
+      "seed": 41,
+      "condition": "ordinary_mixed",
+      "old_retention_f1": 0.3375,
+      "old_retention_f1_change": -0.12275641025641026,
+      "old_type_supported_f1": 0.8222222222222223,
+      "new_retention_f1": 0.07142857142857142,
+      "new_type_supported_f1": 0.5151515151515151,
+      "new_durable_recall": 0.0,
+      "new_joint_coverage": 0.5,
+      "new_joint_error": 0.6666666666666666,
+      "synthetic_retention_f1": 0.4735546459177968,
+      "input_tokens": 149945,
+      "padded_tokens": 524288,
+      "training_seconds": 115.66600574995391,
+      "cpu_seconds": 159.43271399999992
+    },
+    {
+      "seed": 41,
+      "condition": "matched_repeat",
+      "old_retention_f1": 0.19142857142857142,
+      "old_retention_f1_change": -0.2688278388278389,
+      "old_type_supported_f1": 0.8222222222222223,
+      "new_retention_f1": 0.1715686274509804,
+      "new_type_supported_f1": 0.5,
+      "new_durable_recall": 0.21428571428571427,
+      "new_joint_coverage": 0.5,
+      "new_joint_error": 0.6666666666666666,
+      "synthetic_retention_f1": 0.8165366238059544,
+      "input_tokens": 115812,
+      "padded_tokens": 524288,
+      "training_seconds": 97.20668637508061,
+      "cpu_seconds": 140.66245000000004
+    },
+    {
+      "seed": 41,
+      "condition": "paraphrase",
+      "old_retention_f1": 0.3375,
+      "old_retention_f1_change": -0.12275641025641026,
+      "old_type_supported_f1": 0.8888888888888888,
+      "new_retention_f1": 0.07142857142857142,
+      "new_type_supported_f1": 0.5,
+      "new_durable_recall": 0.0,
+      "new_joint_coverage": 0.7222222222222222,
+      "new_joint_error": 0.7692307692307693,
+      "synthetic_retention_f1": 0.7064709439496674,
+      "input_tokens": 103811,
+      "padded_tokens": 524288,
+      "training_seconds": 95.70642220799346,
+      "cpu_seconds": 138.727887
+    },
+    {
+      "seed": 41,
+      "condition": "recombination",
+      "old_retention_f1": 0.5224137931034483,
+      "old_retention_f1_change": 0.06215738284703798,
+      "old_type_supported_f1": 0.8222222222222223,
+      "new_retention_f1": 0.19934640522875818,
+      "new_type_supported_f1": 0.5151515151515151,
+      "new_durable_recall": 0.2857142857142857,
+      "new_joint_coverage": 0.5,
+      "new_joint_error": 0.6666666666666666,
+      "synthetic_retention_f1": 0.8218598904660264,
+      "input_tokens": 112104,
+      "padded_tokens": 524288,
+      "training_seconds": 96.74268966598902,
+      "cpu_seconds": 139.870584
+    },
+    {
+      "seed": 73,
+      "condition": "ordinary_mixed",
+      "old_retention_f1": 0.5769230769230769,
+      "old_retention_f1_change": 0.30844481605351165,
+      "old_type_supported_f1": 0.8888888888888888,
+      "new_retention_f1": 0.4642857142857143,
+      "new_type_supported_f1": 0.9220779220779219,
+      "new_durable_recall": 1.0,
+      "new_joint_coverage": 0.7222222222222222,
+      "new_joint_error": 0.07692307692307693,
+      "synthetic_retention_f1": 0.9253102689612911,
+      "input_tokens": 156401,
+      "padded_tokens": 524288,
+      "training_seconds": 108.20035637496039,
+      "cpu_seconds": 153.4766709999999
+    },
+    {
+      "seed": 73,
+      "condition": "matched_repeat",
+      "old_retention_f1": 0.4375,
+      "old_retention_f1_change": 0.16902173913043478,
+      "old_type_supported_f1": 0.8888888888888888,
+      "new_retention_f1": 0.32065217391304346,
+      "new_type_supported_f1": 0.5,
+      "new_durable_recall": 0.6428571428571429,
+      "new_joint_coverage": 0.6666666666666666,
+      "new_joint_error": 0.08333333333333333,
+      "synthetic_retention_f1": 0.8669382273826575,
+      "input_tokens": 116813,
+      "padded_tokens": 524288,
+      "training_seconds": 97.34290091705043,
+      "cpu_seconds": 140.10061999999994
+    },
+    {
+      "seed": 73,
+      "condition": "paraphrase",
+      "old_retention_f1": 0.27708333333333335,
+      "old_retention_f1_change": 0.008605072463768126,
+      "old_type_supported_f1": 0.8888888888888888,
+      "new_retention_f1": 0.19934640522875818,
+      "new_type_supported_f1": 0.5,
+      "new_durable_recall": 0.2857142857142857,
+      "new_joint_coverage": 0.5,
+      "new_joint_error": 0.6666666666666666,
+      "synthetic_retention_f1": 0.8131701307371422,
+      "input_tokens": 105376,
+      "padded_tokens": 524288,
+      "training_seconds": 93.92693658301141,
+      "cpu_seconds": 136.70142599999986
+    },
+    {
+      "seed": 73,
+      "condition": "recombination",
+      "old_retention_f1": 0.0826923076923077,
+      "old_retention_f1_change": -0.18578595317725752,
+      "old_type_supported_f1": 0.8888888888888888,
+      "new_retention_f1": 0.07142857142857142,
+      "new_type_supported_f1": 0.5151515151515151,
+      "new_durable_recall": 0.0,
+      "new_joint_coverage": 0.5,
+      "new_joint_error": 0.6666666666666666,
+      "synthetic_retention_f1": 0.8267500216319115,
+      "input_tokens": 113585,
+      "padded_tokens": 524288,
+      "training_seconds": 94.88568112498615,
+      "cpu_seconds": 137.58458700000028
+    }
+  ],
+  "seed_summaries": {
+    "ordinary_mixed": {
+      "seeds": 3,
+      "old_retention_f1": {
+        "mean": 0.410570287200722,
+        "min": 0.317287784679089,
+        "max": 0.5769230769230769,
+        "sd": 0.14441977495603653
+      },
+      "old_retention_f1_change": {
+        "mean": 0.07816597653554173,
+        "min": -0.12275641025641026,
+        "max": 0.30844481605351165,
+        "sd": 0.21709439278868148
+      },
+      "old_type_supported_f1": {
+        "mean": 0.8666666666666667,
+        "min": 0.8222222222222223,
+        "max": 0.8888888888888888,
+        "sd": 0.03849001794597498
+      },
+      "new_retention_f1": {
+        "mean": 0.20238095238095238,
+        "min": 0.07142857142857142,
+        "max": 0.4642857142857143,
+        "sd": 0.2268161771816387
+      },
+      "new_type_supported_f1": {
+        "mean": 0.7864357864357864,
+        "min": 0.5151515151515151,
+        "max": 0.9220779220779219,
+        "sd": 0.23493907057932817
+      },
+      "new_durable_recall": {
+        "mean": 0.3333333333333333,
+        "min": 0.0,
+        "max": 1.0,
+        "sd": 0.5773502691896257
+      },
+      "new_joint_coverage": {
+        "mean": 0.48148148148148145,
+        "min": 0.2222222222222222,
+        "max": 0.7222222222222222,
+        "sd": 0.25051387515682744
+      },
+      "new_joint_error": {
+        "mean": 0.3311965811965812,
+        "min": 0.07692307692307693,
+        "max": 0.6666666666666666,
+        "sd": 0.30314029591828207
+      },
+      "synthetic_retention_f1": {
+        "mean": 0.7103235255567493,
+        "min": 0.4735546459177968,
+        "max": 0.9253102689612911,
+        "sd": 0.22666413883112332
+      },
+      "input_tokens": {
+        "mean": 152161,
+        "min": 149945,
+        "max": 156401,
+        "sd": 3673.2024175098218
+      },
+      "padded_tokens": {
+        "mean": 524288,
+        "min": 524288,
+        "max": 524288,
+        "sd": 0.0
+      },
+      "training_seconds": {
+        "mean": 107.31199961128489,
+        "min": 98.06963670894038,
+        "max": 115.66600574995391,
+        "sd": 8.83175713895943
+      },
+      "cpu_seconds": {
+        "mean": 151.44663233333327,
+        "min": 141.43051200000002,
+        "max": 159.43271399999992,
+        "sd": 9.171183781460345
+      }
+    },
+    "matched_repeat": {
+      "seeds": 3,
+      "old_retention_f1": {
+        "mean": 0.3462794937794938,
+        "min": 0.19142857142857142,
+        "max": 0.4375,
+        "sd": 0.13481249713024887
+      },
+      "old_retention_f1_change": {
+        "mean": 0.013875183114313535,
+        "min": -0.2688278388278389,
+        "max": 0.16902173913043478,
+        "sd": 0.24521633760664002
+      },
+      "old_type_supported_f1": {
+        "mean": 0.8444444444444444,
+        "min": 0.8222222222222223,
+        "max": 0.8888888888888888,
+        "sd": 0.03849001794597498
+      },
+      "new_retention_f1": {
+        "mean": 0.2709576584256891,
+        "min": 0.1715686274509804,
+        "max": 0.32065217391304346,
+        "sd": 0.08607342568161619
+      },
+      "new_type_supported_f1": {
+        "mean": 0.5,
+        "min": 0.5,
+        "max": 0.5,
+        "sd": 0.0
+      },
+      "new_durable_recall": {
+        "mean": 0.5,
+        "min": 0.21428571428571427,
+        "max": 0.6428571428571429,
+        "sd": 0.24743582965269678
+      },
+      "new_joint_coverage": {
+        "mean": 0.46296296296296297,
+        "min": 0.2222222222222222,
+        "max": 0.6666666666666666,
+        "sd": 0.22452510468485445
+      },
+      "new_joint_error": {
+        "mean": 0.3333333333333333,
+        "min": 0.08333333333333333,
+        "max": 0.6666666666666666,
+        "sd": 0.3004626062886658
+      },
+      "synthetic_retention_f1": {
+        "mean": 0.8113897102450977,
+        "min": 0.7506942795466811,
+        "max": 0.8669382273826575,
+        "sd": 0.05829264011455903
+      },
+      "input_tokens": {
+        "mean": 116228.33333333333,
+        "min": 115812,
+        "max": 116813,
+        "sd": 521.2986987642818
+      },
+      "padded_tokens": {
+        "mean": 524288,
+        "min": 524288,
+        "max": 524288,
+        "sd": 0.0
+      },
+      "training_seconds": {
+        "mean": 99.27238613902591,
+        "min": 97.20668637508061,
+        "max": 103.2675711249467,
+        "sd": 3.4606019569081
+      },
+      "cpu_seconds": {
+        "mean": 142.019416,
+        "min": 140.10061999999994,
+        "max": 145.29517800000002,
+        "sd": 2.8507675716740124
+      }
+    },
+    "paraphrase": {
+      "seeds": 3,
+      "old_retention_f1": {
+        "mean": 0.22337962962962965,
+        "min": 0.05555555555555555,
+        "max": 0.3375,
+        "sd": 0.14844606186050543
+      },
+      "old_retention_f1_change": {
+        "mean": -0.1090246810355506,
+        "min": -0.21292270531400967,
+        "max": 0.008605072463768126,
+        "sd": 0.1114004460149796
+      },
+      "old_type_supported_f1": {
+        "mean": 0.8666666666666667,
+        "min": 0.8222222222222223,
+        "max": 0.8888888888888888,
+        "sd": 0.03849001794597498
+      },
+      "new_retention_f1": {
+        "mean": 0.11406784936196701,
+        "min": 0.07142857142857142,
+        "max": 0.19934640522875818,
+        "sd": 0.07385339577869164
+      },
+      "new_type_supported_f1": {
+        "mean": 0.5,
+        "min": 0.5,
+        "max": 0.5,
+        "sd": 0.0
+      },
+      "new_durable_recall": {
+        "mean": 0.09523809523809523,
+        "min": 0.0,
+        "max": 0.2857142857142857,
+        "sd": 0.1649572197684645
+      },
+      "new_joint_coverage": {
+        "mean": 0.48148148148148145,
+        "min": 0.2222222222222222,
+        "max": 0.7222222222222222,
+        "sd": 0.25051387515682744
+      },
+      "new_joint_error": {
+        "mean": 0.561965811965812,
+        "min": 0.25,
+        "max": 0.7692307692307693,
+        "sd": 0.27499427205000326
+      },
+      "synthetic_retention_f1": {
+        "mean": 0.6971938790547033,
+        "min": 0.5719405624773004,
+        "max": 0.8131701307371422,
+        "sd": 0.12088206691030082
+      },
+      "input_tokens": {
+        "mean": 104441,
+        "min": 103811,
+        "max": 105376,
+        "sd": 825.8783203353869
+      },
+      "padded_tokens": {
+        "mean": 524288,
+        "min": 524288,
+        "max": 524288,
+        "sd": 0.0
+      },
+      "training_seconds": {
+        "mean": 96.65436483298738,
+        "min": 93.92693658301141,
+        "max": 100.3297357079573,
+        "sd": 3.3049819324486847
+      },
+      "cpu_seconds": {
+        "mean": 139.4183643333333,
+        "min": 136.70142599999986,
+        "max": 142.82578,
+        "sd": 3.120015575316051
+      }
+    },
+    "recombination": {
+      "seeds": 3,
+      "old_retention_f1": {
+        "mean": 0.33833867023522196,
+        "min": 0.0826923076923077,
+        "max": 0.5224137931034483,
+        "sd": 0.22843068520773144
+      },
+      "old_retention_f1_change": {
+        "mean": 0.005934359570041727,
+        "min": -0.18578595317725752,
+        "max": 0.14143164904034472,
+        "sd": 0.17070035459852884
+      },
+      "old_type_supported_f1": {
+        "mean": 0.8666666666666667,
+        "min": 0.8222222222222223,
+        "max": 0.8888888888888888,
+        "sd": 0.03849001794597498
+      },
+      "new_retention_f1": {
+        "mean": 0.1971423835234577,
+        "min": 0.07142857142857142,
+        "max": 0.32065217391304346,
+        "sd": 0.12462641891907433
+      },
+      "new_type_supported_f1": {
+        "mean": 0.51010101010101,
+        "min": 0.5,
+        "max": 0.5151515151515151,
+        "sd": 0.008747731351357958
+      },
+      "new_durable_recall": {
+        "mean": 0.30952380952380953,
+        "min": 0.0,
+        "max": 0.6428571428571429,
+        "sd": 0.3220892680587782
+      },
+      "new_joint_coverage": {
+        "mean": 0.5,
+        "min": 0.5,
+        "max": 0.5,
+        "sd": 0.0
+      },
+      "new_joint_error": {
+        "mean": 0.6666666666666666,
+        "min": 0.6666666666666666,
+        "max": 0.6666666666666666,
+        "sd": 0.0
+      },
+      "synthetic_retention_f1": {
+        "mean": 0.7839338484943892,
+        "min": 0.7031916333852298,
+        "max": 0.8267500216319115,
+        "sd": 0.06996754477080938
+      },
+      "input_tokens": {
+        "mean": 112668.66666666667,
+        "min": 112104,
+        "max": 113585,
+        "sd": 800.6824172749975
+      },
+      "padded_tokens": {
+        "mean": 524288,
+        "min": 524288,
+        "max": 524288,
+        "sd": 0.0
+      },
+      "training_seconds": {
+        "mean": 98.12537723597295,
+        "min": 94.88568112498615,
+        "max": 102.74776091694366,
+        "sd": 4.1093726225444325
+      },
+      "cpu_seconds": {
+        "mean": 140.72807133333345,
+        "min": 137.58458700000028,
+        "max": 144.72904300000005,
+        "sd": 3.6485992214963296
+      }
+    }
+  },
+  "paired_development_differences": {
+    "paraphrase_minus_ordinary_mixed": {
+      "seeds": [
+        {
+          "seed": 17,
+          "old_retention_f1": -0.26173222912353344,
+          "new_retention_f1": 0.0,
+          "new_type_supported_f1": -0.42207792207792194,
+          "new_joint_coverage": 0.0,
+          "new_joint_error": 0.0
+        },
+        {
+          "seed": 41,
+          "old_retention_f1": 0.0,
+          "new_retention_f1": 0.0,
+          "new_type_supported_f1": -0.015151515151515138,
+          "new_joint_coverage": 0.2222222222222222,
+          "new_joint_error": 0.10256410256410264
+        },
+        {
+          "seed": 73,
+          "old_retention_f1": -0.2998397435897435,
+          "new_retention_f1": -0.2649393090569561,
+          "new_type_supported_f1": -0.42207792207792194,
+          "new_joint_coverage": -0.2222222222222222,
+          "new_joint_error": 0.5897435897435896
+        }
+      ],
+      "summary": {
+        "old_retention_f1": {
+          "mean": -0.18719065757109232,
+          "descriptive_seed_t95": [
+            -0.5926708974482273,
+            0.21828958230604273
+          ],
+          "caution": "Three paired seeds on the same development examples; this interval does not estimate transfer to new projects and is not a confirmatory significance test."
+        },
+        "new_retention_f1": {
+          "mean": -0.08831310301898537,
+          "descriptive_seed_t95": [
+            -0.4682937168095627,
+            0.291667510771592
+          ],
+          "caution": "Three paired seeds on the same development examples; this interval does not estimate transfer to new projects and is not a confirmatory significance test."
+        },
+        "new_type_supported_f1": {
+          "mean": -0.2864357864357863,
+          "descriptive_seed_t95": [
+            -0.8700567916458872,
+            0.29718521877431453
+          ],
+          "caution": "Three paired seeds on the same development examples; this interval does not estimate transfer to new projects and is not a confirmatory significance test."
+        },
+        "new_joint_coverage": {
+          "mean": 0.0,
+          "descriptive_seed_t95": [
+            -0.5520306026304985,
+            0.5520306026304985
+          ],
+          "caution": "Three paired seeds on the same development examples; this interval does not estimate transfer to new projects and is not a confirmatory significance test."
+        },
+        "new_joint_error": {
+          "mean": 0.23076923076923075,
+          "descriptive_seed_t95": [
+            -0.5519383399579308,
+            1.0134768014963924
+          ],
+          "caution": "Three paired seeds on the same development examples; this interval does not estimate transfer to new projects and is not a confirmatory significance test."
+        }
+      }
+    },
+    "paraphrase_minus_matched_repeat": {
+      "seeds": [
+        {
+          "seed": 17,
+          "old_retention_f1": -0.35435435435435436,
+          "new_retention_f1": -0.24922360248447203,
+          "new_type_supported_f1": 0.0,
+          "new_joint_coverage": 0.0,
+          "new_joint_error": 0.0
+        },
+        {
+          "seed": 41,
+          "old_retention_f1": 0.1460714285714286,
+          "new_retention_f1": -0.10014005602240897,
+          "new_type_supported_f1": 0.0,
+          "new_joint_coverage": 0.2222222222222222,
+          "new_joint_error": 0.10256410256410264
+        },
+        {
+          "seed": 73,
+          "old_retention_f1": -0.16041666666666665,
+          "new_retention_f1": -0.12130576868428528,
+          "new_type_supported_f1": 0.0,
+          "new_joint_coverage": -0.16666666666666663,
+          "new_joint_error": 0.5833333333333333
+        }
+      ],
+      "summary": {
+        "old_retention_f1": {
+          "mean": -0.12289986414986413,
+          "descriptive_seed_t95": [
+            -0.749681451160733,
+            0.5038817228610049
+          ],
+          "caution": "Three paired seeds on the same development examples; this interval does not estimate transfer to new projects and is not a confirmatory significance test."
+        },
+        "new_retention_f1": {
+          "mean": -0.1568898090637221,
+          "descriptive_seed_t95": [
+            -0.3572620246431186,
+            0.04348240651567442
+          ],
+          "caution": "Three paired seeds on the same development examples; this interval does not estimate transfer to new projects and is not a confirmatory significance test."
+        },
+        "new_type_supported_f1": {
+          "mean": 0.0,
+          "descriptive_seed_t95": [
+            0.0,
+            0.0
+          ],
+          "caution": "Three paired seeds on the same development examples; this interval does not estimate transfer to new projects and is not a confirmatory significance test."
+        },
+        "new_joint_coverage": {
+          "mean": 0.018518518518518528,
+          "descriptive_seed_t95": [
+            -0.46614842233927894,
+            0.503185459376316
+          ],
+          "caution": "Three paired seeds on the same development examples; this interval does not estimate transfer to new projects and is not a confirmatory significance test."
+        },
+        "new_joint_error": {
+          "mean": 0.22863247863247863,
+          "descriptive_seed_t95": [
+            -0.5450054249579239,
+            1.0022703822228811
+          ],
+          "caution": "Three paired seeds on the same development examples; this interval does not estimate transfer to new projects and is not a confirmatory significance test."
+        }
+      }
+    },
+    "recombination_minus_ordinary_mixed": {
+      "seeds": [
+        {
+          "seed": 17,
+          "old_retention_f1": 0.09262212523082092,
+          "new_retention_f1": 0.24922360248447203,
+          "new_type_supported_f1": -0.42207792207792194,
+          "new_joint_coverage": 0.2777777777777778,
+          "new_joint_error": 0.41666666666666663
+        },
+        {
+          "seed": 41,
+          "old_retention_f1": 0.18491379310344824,
+          "new_retention_f1": 0.12791783380018676,
+          "new_type_supported_f1": 0.0,
+          "new_joint_coverage": 0.0,
+          "new_joint_error": 0.0
+        },
+        {
+          "seed": 73,
+          "old_retention_f1": -0.49423076923076914,
+          "new_retention_f1": -0.3928571428571429,
+          "new_type_supported_f1": -0.4069264069264068,
+          "new_joint_coverage": -0.2222222222222222,
+          "new_joint_error": 0.5897435897435896
+        }
+      ],
+      "summary": {
+        "old_retention_f1": {
+          "mean": -0.0722316169655,
+          "descriptive_seed_t95": [
+            -0.9872980654376732,
+            0.8428348315066733
+          ],
+          "caution": "Three paired seeds on the same development examples; this interval does not estimate transfer to new projects and is not a confirmatory significance test."
+        },
+        "new_retention_f1": {
+          "mean": -0.005238568857494704,
+          "descriptive_seed_t95": [
+            -0.8526350426949291,
+            0.8421579049799396
+          ],
+          "caution": "Three paired seeds on the same development examples; this interval does not estimate transfer to new projects and is not a confirmatory significance test."
+        },
+        "new_type_supported_f1": {
+          "mean": -0.27633477633477627,
+          "descriptive_seed_t95": [
+            -0.8711188649670503,
+            0.3184493122974977
+          ],
+          "caution": "Three paired seeds on the same development examples; this interval does not estimate transfer to new projects and is not a confirmatory significance test."
+        },
+        "new_joint_coverage": {
+          "mean": 0.018518518518518528,
+          "descriptive_seed_t95": [
+            -0.6037924460970436,
+            0.6408294831340806
+          ],
+          "caution": "Three paired seeds on the same development examples; this interval does not estimate transfer to new projects and is not a confirmatory significance test."
+        },
+        "new_joint_error": {
+          "mean": 0.33547008547008544,
+          "descriptive_seed_t95": [
+            -0.41757215559802047,
+            1.0885123265381913
+          ],
+          "caution": "Three paired seeds on the same development examples; this interval does not estimate transfer to new projects and is not a confirmatory significance test."
+        }
+      }
+    },
+    "recombination_minus_matched_repeat": {
+      "seeds": [
+        {
+          "seed": 17,
+          "old_retention_f1": 0.0,
+          "new_retention_f1": 0.0,
+          "new_type_supported_f1": 0.0,
+          "new_joint_coverage": 0.2777777777777778,
+          "new_joint_error": 0.41666666666666663
+        },
+        {
+          "seed": 41,
+          "old_retention_f1": 0.3309852216748769,
+          "new_retention_f1": 0.02777777777777779,
+          "new_type_supported_f1": 0.015151515151515138,
+          "new_joint_coverage": 0.0,
+          "new_joint_error": 0.0
+        },
+        {
+          "seed": 73,
+          "old_retention_f1": -0.35480769230769227,
+          "new_retention_f1": -0.24922360248447203,
+          "new_type_supported_f1": 0.015151515151515138,
+          "new_joint_coverage": -0.16666666666666663,
+          "new_joint_error": 0.5833333333333333
+        }
+      ],
+      "summary": {
+        "old_retention_f1": {
+          "mean": -0.0079408235442718,
+          "descriptive_seed_t95": [
+            -0.8599141333574698,
+            0.8440324862689261
+          ],
+          "caution": "Three paired seeds on the same development examples; this interval does not estimate transfer to new projects and is not a confirmatory significance test."
+        },
+        "new_retention_f1": {
+          "mean": -0.07381527490223141,
+          "descriptive_seed_t95": [
+            -0.4527497996416324,
+            0.30511924983716954
+          ],
+          "caution": "Three paired seeds on the same development examples; this interval does not estimate transfer to new projects and is not a confirmatory significance test."
+        },
+        "new_type_supported_f1": {
+          "mean": 0.010101010101010091,
+          "descriptive_seed_t95": [
+            -0.011629559241919182,
+            0.03183157944393936
+          ],
+          "caution": "Three paired seeds on the same development examples; this interval does not estimate transfer to new projects and is not a confirmatory significance test."
+        },
+        "new_joint_coverage": {
+          "mean": 0.037037037037037056,
+          "descriptive_seed_t95": [
+            -0.5207142427648147,
+            0.5947883168388889
+          ],
+          "caution": "Three paired seeds on the same development examples; this interval does not estimate transfer to new projects and is not a confirmatory significance test."
+        },
+        "new_joint_error": {
+          "mean": 0.3333333333333333,
+          "descriptive_seed_t95": [
+            -0.4130571579452473,
+            1.0797238246119139
+          ],
+          "caution": "Three paired seeds on the same development examples; this interval does not estimate transfer to new projects and is not a confirmatory significance test."
+        }
+      }
+    }
+  },
+  "pooled_ordinary_runs": [
+    {
+      "seed": 17,
+      "old_retention_f1": 0.6935897435897436,
+      "new_retention_f1": 0.32065217391304346,
+      "new_type_supported_f1": 0.6190476190476191,
+      "new_joint": {
+        "n": 18,
+        "accepted": 13,
+        "errors": 1,
+        "coverage": 0.7222222222222222,
+        "error": 0.07692307692307693
+      }
+    },
+    {
+      "seed": 41,
+      "old_retention_f1": 0.75,
+      "new_retention_f1": 0.32065217391304346,
+      "new_type_supported_f1": 0.5,
+      "new_joint": {
+        "n": 18,
+        "accepted": 4,
+        "errors": 1,
+        "coverage": 0.2222222222222222,
+        "error": 0.25
+      }
+    },
+    {
+      "seed": 73,
+      "old_retention_f1": 0.5769230769230769,
+      "new_retention_f1": 0.4642857142857143,
+      "new_type_supported_f1": 0.5151515151515151,
+      "new_joint": {
+        "n": 18,
+        "accepted": 8,
+        "errors": 1,
+        "coverage": 0.4444444444444444,
+        "error": 0.125
+      }
+    }
+  ],
+  "budget_checks": [
+    {
+      "seed": 17,
+      "initial_checkpoint_shared": true,
+      "new_example_schedule_equal": true,
+      "replay_source_schedule_equal": true,
+      "replay_class_schedule_equal": true,
+      "training_tensor_shape_equal": true
+    },
+    {
+      "seed": 41,
+      "initial_checkpoint_shared": true,
+      "new_example_schedule_equal": true,
+      "replay_source_schedule_equal": true,
+      "replay_class_schedule_equal": true,
+      "training_tensor_shape_equal": true
+    },
+    {
+      "seed": 73,
+      "initial_checkpoint_shared": true,
+      "new_example_schedule_equal": true,
+      "replay_source_schedule_equal": true,
+      "replay_class_schedule_equal": true,
+      "training_tensor_shape_equal": true
+    }
+  ],
+  "training_majority_baselines": {
+    "retention": {
+      "selected_from": "unique clean earlier, later, and original synthetic training rows",
+      "label": "temporary",
+      "cohorts": {
+        "old_reserved_group": {
+          "n": 24,
+          "accuracy": 0.125,
+          "macro_f1": 0.05555555555555555,
+          "supported_macro_f1": 0.07407407407407407,
+          "balanced_accuracy": 0.3333333333333333,
+          "brier": 1.75,
+          "ece_10_bins": 0.875,
+          "coverage_at_0.8": 1.0,
+          "error_at_0.8": 0.875,
+          "labels": [
+            "durable",
+            "temporary",
+            "ignore",
+            "uncertain"
+          ],
+          "confusion": [
+            [
+              0,
+              19,
+              0,
+              0
+            ],
+            [
+              0,
+              3,
+              0,
+              0
+            ],
+            [
+              0,
+              2,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "per_class": {
+            "durable": {
+              "support": 19,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "temporary": {
+              "support": 3,
+              "predicted": 24,
+              "correct": 3,
+              "precision": 0.125,
+              "recall": 1.0,
+              "f1": 0.2222222222222222
+            },
+            "ignore": {
+              "support": 2,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "uncertain": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            }
+          },
+          "unevaluated_classes": [
+            "uncertain"
+          ]
+        },
+        "new_natural_dev": {
+          "n": 18,
+          "accuracy": 0.2222222222222222,
+          "macro_f1": 0.09090909090909091,
+          "supported_macro_f1": 0.18181818181818182,
+          "balanced_accuracy": 0.5,
+          "brier": 1.5555555555555556,
+          "ece_10_bins": 0.7777777777777778,
+          "coverage_at_0.8": 1.0,
+          "error_at_0.8": 0.7777777777777778,
+          "labels": [
+            "durable",
+            "temporary",
+            "ignore",
+            "uncertain"
+          ],
+          "confusion": [
+            [
+              0,
+              14,
+              0,
+              0
+            ],
+            [
+              0,
+              4,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "per_class": {
+            "durable": {
+              "support": 14,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "temporary": {
+              "support": 4,
+              "predicted": 18,
+              "correct": 4,
+              "precision": 0.2222222222222222,
+              "recall": 1.0,
+              "f1": 0.36363636363636365
+            },
+            "ignore": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            },
+            "uncertain": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            }
+          },
+          "unevaluated_classes": [
+            "ignore",
+            "uncertain"
+          ]
+        },
+        "new_reserved_group": {
+          "n": 14,
+          "accuracy": 0.0,
+          "macro_f1": 0.0,
+          "supported_macro_f1": 0.0,
+          "balanced_accuracy": 0.0,
+          "brier": 2.0,
+          "ece_10_bins": 1.0,
+          "coverage_at_0.8": 1.0,
+          "error_at_0.8": 1.0,
+          "labels": [
+            "durable",
+            "temporary",
+            "ignore",
+            "uncertain"
+          ],
+          "confusion": [
+            [
+              0,
+              14,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "per_class": {
+            "durable": {
+              "support": 14,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "temporary": {
+              "support": 0,
+              "predicted": 14,
+              "correct": 0,
+              "precision": 0.0,
+              "recall": null,
+              "f1": 0.0
+            },
+            "ignore": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            },
+            "uncertain": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            }
+          },
+          "unevaluated_classes": [
+            "temporary",
+            "ignore",
+            "uncertain"
+          ]
+        },
+        "old_natural_dev": {
+          "n": 3,
+          "accuracy": 0.3333333333333333,
+          "macro_f1": 0.125,
+          "supported_macro_f1": 0.25,
+          "balanced_accuracy": 0.5,
+          "brier": 1.3333333333333333,
+          "ece_10_bins": 0.6666666666666666,
+          "coverage_at_0.8": 1.0,
+          "error_at_0.8": 0.6666666666666666,
+          "labels": [
+            "durable",
+            "temporary",
+            "ignore",
+            "uncertain"
+          ],
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              2,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "per_class": {
+            "durable": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            },
+            "temporary": {
+              "support": 1,
+              "predicted": 3,
+              "correct": 1,
+              "precision": 0.3333333333333333,
+              "recall": 1.0,
+              "f1": 0.5
+            },
+            "ignore": {
+              "support": 2,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "uncertain": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            }
+          },
+          "unevaluated_classes": [
+            "durable",
+            "uncertain"
+          ]
+        },
+        "old_related_project_diagnostic": {
+          "n": 269,
+          "accuracy": 0.7472118959107806,
+          "macro_f1": 0.21382978723404256,
+          "supported_macro_f1": 0.21382978723404256,
+          "balanced_accuracy": 0.25,
+          "brier": 0.5055762081784386,
+          "ece_10_bins": 0.2527881040892193,
+          "coverage_at_0.8": 1.0,
+          "error_at_0.8": 0.2527881040892193,
+          "labels": [
+            "durable",
+            "temporary",
+            "ignore",
+            "uncertain"
+          ],
+          "confusion": [
+            [
+              0,
+              15,
+              0,
+              0
+            ],
+            [
+              0,
+              201,
+              0,
+              0
+            ],
+            [
+              0,
+              46,
+              0,
+              0
+            ],
+            [
+              0,
+              7,
+              0,
+              0
+            ]
+          ],
+          "per_class": {
+            "durable": {
+              "support": 15,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "temporary": {
+              "support": 201,
+              "predicted": 269,
+              "correct": 201,
+              "precision": 0.7472118959107806,
+              "recall": 1.0,
+              "f1": 0.8553191489361702
+            },
+            "ignore": {
+              "support": 46,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "uncertain": {
+              "support": 7,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            }
+          },
+          "unevaluated_classes": []
+        },
+        "new_related_project_diagnostic": {
+          "n": 851,
+          "accuracy": 0.8025851938895417,
+          "macro_f1": 0.2226205997392438,
+          "supported_macro_f1": 0.2226205997392438,
+          "balanced_accuracy": 0.25,
+          "brier": 0.39482961222091656,
+          "ece_10_bins": 0.19741480611045828,
+          "coverage_at_0.8": 1.0,
+          "error_at_0.8": 0.19741480611045828,
+          "labels": [
+            "durable",
+            "temporary",
+            "ignore",
+            "uncertain"
+          ],
+          "confusion": [
+            [
+              0,
+              53,
+              0,
+              0
+            ],
+            [
+              0,
+              683,
+              0,
+              0
+            ],
+            [
+              0,
+              99,
+              0,
+              0
+            ],
+            [
+              0,
+              16,
+              0,
+              0
+            ]
+          ],
+          "per_class": {
+            "durable": {
+              "support": 53,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "temporary": {
+              "support": 683,
+              "predicted": 851,
+              "correct": 683,
+              "precision": 0.8025851938895417,
+              "recall": 1.0,
+              "f1": 0.8904823989569752
+            },
+            "ignore": {
+              "support": 99,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "uncertain": {
+              "support": 16,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            }
+          },
+          "unevaluated_classes": []
+        },
+        "synthetic_dev": {
+          "n": 262,
+          "accuracy": 0.20610687022900764,
+          "macro_f1": 0.08544303797468354,
+          "supported_macro_f1": 0.08544303797468354,
+          "balanced_accuracy": 0.25,
+          "brier": 1.5877862595419847,
+          "ece_10_bins": 0.7938931297709924,
+          "coverage_at_0.8": 1.0,
+          "error_at_0.8": 0.7938931297709924,
+          "labels": [
+            "durable",
+            "temporary",
+            "ignore",
+            "uncertain"
+          ],
+          "confusion": [
+            [
+              0,
+              67,
+              0,
+              0
+            ],
+            [
+              0,
+              54,
+              0,
+              0
+            ],
+            [
+              0,
+              69,
+              0,
+              0
+            ],
+            [
+              0,
+              72,
+              0,
+              0
+            ]
+          ],
+          "per_class": {
+            "durable": {
+              "support": 67,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "temporary": {
+              "support": 54,
+              "predicted": 262,
+              "correct": 54,
+              "precision": 0.20610687022900764,
+              "recall": 1.0,
+              "f1": 0.34177215189873417
+            },
+            "ignore": {
+              "support": 69,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "uncertain": {
+              "support": 72,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            }
+          },
+          "unevaluated_classes": []
+        }
+      },
+      "calibrated": false
+    },
+    "kind": {
+      "selected_from": "unique clean earlier, later, and original synthetic training rows",
+      "label": "project",
+      "cohorts": {
+        "old_reserved_group": {
+          "n": 22,
+          "accuracy": 0.09090909090909091,
+          "macro_f1": 0.027777777777777776,
+          "supported_macro_f1": 0.05555555555555555,
+          "balanced_accuracy": 0.3333333333333333,
+          "brier": 1.8181818181818181,
+          "ece_10_bins": 0.9090909090909091,
+          "coverage_at_0.8": 1.0,
+          "error_at_0.8": 0.9090909090909091,
+          "labels": [
+            "fact",
+            "behavior",
+            "preference",
+            "relationship",
+            "project",
+            "routine"
+          ],
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              2,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              2,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              18,
+              0
+            ]
+          ],
+          "per_class": {
+            "fact": {
+              "support": 2,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "behavior": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            },
+            "preference": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            },
+            "relationship": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            },
+            "project": {
+              "support": 2,
+              "predicted": 22,
+              "correct": 2,
+              "precision": 0.09090909090909091,
+              "recall": 1.0,
+              "f1": 0.16666666666666666
+            },
+            "routine": {
+              "support": 18,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            }
+          },
+          "unevaluated_classes": [
+            "behavior",
+            "preference",
+            "relationship"
+          ]
+        },
+        "new_natural_dev": {
+          "n": 18,
+          "accuracy": 0.16666666666666666,
+          "macro_f1": 0.047619047619047616,
+          "supported_macro_f1": 0.09523809523809523,
+          "balanced_accuracy": 0.3333333333333333,
+          "brier": 1.6666666666666667,
+          "ece_10_bins": 0.8333333333333334,
+          "coverage_at_0.8": 1.0,
+          "error_at_0.8": 0.8333333333333334,
+          "labels": [
+            "fact",
+            "behavior",
+            "preference",
+            "relationship",
+            "project",
+            "routine"
+          ],
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              6,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              3,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              9,
+              0
+            ]
+          ],
+          "per_class": {
+            "fact": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            },
+            "behavior": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            },
+            "preference": {
+              "support": 6,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "relationship": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            },
+            "project": {
+              "support": 3,
+              "predicted": 18,
+              "correct": 3,
+              "precision": 0.16666666666666666,
+              "recall": 1.0,
+              "f1": 0.2857142857142857
+            },
+            "routine": {
+              "support": 9,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            }
+          },
+          "unevaluated_classes": [
+            "fact",
+            "behavior",
+            "relationship"
+          ]
+        },
+        "new_reserved_group": {
+          "n": 14,
+          "accuracy": 0.0,
+          "macro_f1": 0.0,
+          "supported_macro_f1": 0.0,
+          "balanced_accuracy": 0.0,
+          "brier": 2.0,
+          "ece_10_bins": 1.0,
+          "coverage_at_0.8": 1.0,
+          "error_at_0.8": 1.0,
+          "labels": [
+            "fact",
+            "behavior",
+            "preference",
+            "relationship",
+            "project",
+            "routine"
+          ],
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              5,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              9,
+              0
+            ]
+          ],
+          "per_class": {
+            "fact": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            },
+            "behavior": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            },
+            "preference": {
+              "support": 5,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "relationship": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            },
+            "project": {
+              "support": 0,
+              "predicted": 14,
+              "correct": 0,
+              "precision": 0.0,
+              "recall": null,
+              "f1": 0.0
+            },
+            "routine": {
+              "support": 9,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            }
+          },
+          "unevaluated_classes": [
+            "fact",
+            "behavior",
+            "relationship",
+            "project"
+          ]
+        },
+        "old_natural_dev": {
+          "n": 1,
+          "accuracy": 1.0,
+          "macro_f1": 0.16666666666666666,
+          "supported_macro_f1": 1.0,
+          "balanced_accuracy": 1.0,
+          "brier": 0.0,
+          "ece_10_bins": 0.0,
+          "coverage_at_0.8": 1.0,
+          "error_at_0.8": 0.0,
+          "labels": [
+            "fact",
+            "behavior",
+            "preference",
+            "relationship",
+            "project",
+            "routine"
+          ],
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "per_class": {
+            "fact": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            },
+            "behavior": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            },
+            "preference": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            },
+            "relationship": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            },
+            "project": {
+              "support": 1,
+              "predicted": 1,
+              "correct": 1,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0
+            },
+            "routine": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            }
+          },
+          "unevaluated_classes": [
+            "fact",
+            "behavior",
+            "preference",
+            "relationship",
+            "routine"
+          ]
+        },
+        "old_related_project_diagnostic": {
+          "n": 216,
+          "accuracy": 0.8009259259259259,
+          "macro_f1": 0.14824335904027422,
+          "supported_macro_f1": 0.22236503856041132,
+          "balanced_accuracy": 0.25,
+          "brier": 0.39814814814814814,
+          "ece_10_bins": 0.19907407407407407,
+          "coverage_at_0.8": 1.0,
+          "error_at_0.8": 0.19907407407407407,
+          "labels": [
+            "fact",
+            "behavior",
+            "preference",
+            "relationship",
+            "project",
+            "routine"
+          ],
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              26,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              16,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              173,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "per_class": {
+            "fact": {
+              "support": 26,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "behavior": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            },
+            "preference": {
+              "support": 16,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "relationship": {
+              "support": 1,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "project": {
+              "support": 173,
+              "predicted": 216,
+              "correct": 173,
+              "precision": 0.8009259259259259,
+              "recall": 1.0,
+              "f1": 0.8894601542416453
+            },
+            "routine": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            }
+          },
+          "unevaluated_classes": [
+            "behavior",
+            "routine"
+          ]
+        },
+        "new_related_project_diagnostic": {
+          "n": 736,
+          "accuracy": 0.8165760869565217,
+          "macro_f1": 0.14983794564946398,
+          "supported_macro_f1": 0.22475691847419596,
+          "balanced_accuracy": 0.25,
+          "brier": 0.36684782608695654,
+          "ece_10_bins": 0.18342391304347827,
+          "coverage_at_0.8": 1.0,
+          "error_at_0.8": 0.18342391304347827,
+          "labels": [
+            "fact",
+            "behavior",
+            "preference",
+            "relationship",
+            "project",
+            "routine"
+          ],
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              55,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              79,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              601,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "per_class": {
+            "fact": {
+              "support": 55,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "behavior": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            },
+            "preference": {
+              "support": 79,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "relationship": {
+              "support": 1,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "project": {
+              "support": 601,
+              "predicted": 736,
+              "correct": 601,
+              "precision": 0.8165760869565217,
+              "recall": 1.0,
+              "f1": 0.8990276738967838
+            },
+            "routine": {
+              "support": 0,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": null,
+              "f1": 0.0
+            }
+          },
+          "unevaluated_classes": [
+            "behavior",
+            "routine"
+          ]
+        },
+        "synthetic_dev": {
+          "n": 121,
+          "accuracy": 0.19008264462809918,
+          "macro_f1": 0.053240740740740734,
+          "supported_macro_f1": 0.053240740740740734,
+          "balanced_accuracy": 0.16666666666666666,
+          "brier": 1.6198347107438016,
+          "ece_10_bins": 0.8099173553719008,
+          "coverage_at_0.8": 1.0,
+          "error_at_0.8": 0.8099173553719008,
+          "labels": [
+            "fact",
+            "behavior",
+            "preference",
+            "relationship",
+            "project",
+            "routine"
+          ],
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              17,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              21,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              18,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              19,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              23,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              23,
+              0
+            ]
+          ],
+          "per_class": {
+            "fact": {
+              "support": 17,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "behavior": {
+              "support": 21,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "preference": {
+              "support": 18,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "relationship": {
+              "support": 19,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "project": {
+              "support": 23,
+              "predicted": 121,
+              "correct": 23,
+              "precision": 0.19008264462809918,
+              "recall": 1.0,
+              "f1": 0.3194444444444444
+            },
+            "routine": {
+              "support": 23,
+              "predicted": 0,
+              "correct": 0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0
+            }
+          },
+          "unevaluated_classes": []
+        }
+      },
+      "calibrated": false
+    }
+  },
+  "provider_resources": {
+    "successful_responses_by_model": {
+      "gpt-6.1-sol": 211,
+      "gpt-6-luna": 769
+    },
+    "returned_usage": {
+      "prompt_tokens": 945050,
+      "completion_tokens": 454399,
+      "total_tokens": 1399449
+    },
+    "call_latency_seconds": {
+      "median": 4.838242541474756,
+      "min": 1.3718131670029834,
+      "max": 31.902304749935865,
+      "sum": 7662.942846496939
+    },
+    "billed_currency_cost": null,
+    "cost_note": "No verified bill returned; monetary cost is unknown",
+    "unmatched": [
+      "Generation and model review resources",
+      "Real non-padding tokens",
+      "System load and wall-clock latency"
+    ]
+  },
+  "human_reviewed": 0,
+  "unsupported_memory_change_measured": false,
+  "production_gate_passed": false,
+  "interpretation": "Classifier agreement and retention of decision performance are developmental proxies. These results do not measure factual knowledge retention, generated-answer support, or biological REM.",
+  "private_artifacts_included": false
+}

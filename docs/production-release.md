@@ -1,9 +1,16 @@
 # Production release contract
 
-Cortex v1.4.0 is an additive release for a host-owned memory service. It keeps
+Cortex v1.5.0 is an interim additive release for a host-owned memory service. It keeps
 the existing database schema and consolidation behavior. The host supplies
 authentication, owner authorization, scheduling, backup policy, and permission
 to send source text to each configured model provider.
+
+This release adds `ConsolidateSelected` for explicit host-selected observations
+and memories. A required host guard checks permissions before inference and
+inside the transaction that commits memory changes. The selected path makes
+one model call and performs no automatic repair, splitting, or provider retry.
+The host remains responsible for choosing sources and implementing its guard.
+See the [release record](releases/v1.5.0.md) for the engineering and research status.
 
 ## Upgrade
 

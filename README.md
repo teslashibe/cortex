@@ -11,16 +11,16 @@ OpenAI-compatible `/chat/completions` endpoint. The default target is
 
 ## Current status
 
-The current software release is [v1.4.0](https://github.com/teslashibe/cortex/releases/tag/v1.4.0).
-The latest paper is revision 7,
-[Cortex: Sleep-Inspired Memory Consolidation for Language Agents](docs/papers/v7-october-2026/paper.pdf).
-Software and paper version numbers are independent. The v1.4.0 release includes
-paper revision 6 and preserves revision 5. Revision 7 reports the subsequent
-source audits and controlled replay experiments; it does not promote a trained
-classifier into production. A [subsequent source-audit qualification](docs/experiments/expanded-source-audit-2026-10-22.md)
-links 35 of its 42 primary development candidates to training components and
-finds automated or mixed-provenance source envelopes behind 34 of the 42.
-These cohorts do not establish transfer to independent human conversations.
+The current software release is [v1.5.0](https://github.com/teslashibe/cortex/releases/tag/v1.5.0),
+an interim milestone with host-checked source selection and improved classifier diagnostics.
+The [release notes](docs/releases/v1.5.0.md) record the completed engineering and
+research work, known limits, and remaining evaluation.
+
+The latest paper is revision 8,
+[Cortex: Sleep-Inspired Memory Consolidation for Language Agents](docs/papers/v8-october-2026/paper.pdf).
+It reports corrected-source learning curves and fictional memory diagnostics.
+Classifiers remain advisory: the comparative learning target has not been met,
+and independent human review is outstanding. Software and paper versions are independent.
 
 - Implemented: source attribution, transactional consolidation, contradiction
   history, lexical and optional semantic retrieval, relevance decay, expiry,
@@ -53,19 +53,19 @@ evidence confidence.
 Use the tagged Go package:
 
 ```sh
-go get github.com/teslashibe/cortex@v1.4.0
+go get github.com/teslashibe/cortex@v1.5.0
 ```
 
 Install the commands with Go:
 
 ```sh
-go install github.com/teslashibe/cortex/cmd/cortex@v1.4.0
-go install github.com/teslashibe/cortex/cmd/cortex-import@v1.4.0
-go install github.com/teslashibe/cortex/cmd/cortex-once@v1.4.0
+go install github.com/teslashibe/cortex/cmd/cortex@v1.5.0
+go install github.com/teslashibe/cortex/cmd/cortex-import@v1.5.0
+go install github.com/teslashibe/cortex/cmd/cortex-once@v1.5.0
 ```
 
 Prebuilt command archives and checksums are available from the
-[v1.4.0 release](https://github.com/teslashibe/cortex/releases/tag/v1.4.0).
+[v1.5.0 release](https://github.com/teslashibe/cortex/releases/tag/v1.5.0).
 For the source examples below, clone this repository and run the commands from
 its root directory.
 
@@ -522,8 +522,8 @@ detector, Python contract tests, builds, static analysis, vulnerability checks,
 and secret scanning. These checks cover the tested persistence and input
 contracts; they do not establish semantic completeness or general memory quality.
 
-The [revision 7 paper](docs/papers/v7-october-2026/paper.pdf) reports source audits,
-controlled replay experiments, and the qualifications on earlier measurements.
+The [revision 8 paper](docs/papers/v8-october-2026/paper.pdf) reports source audits,
+corrected-source learning curves, replay experiments, and fictional memory diagnostics.
 The original private inventory contained 2,814 selected user-role records from
 119 sessions and 35 directory groups. Some records contain automatic context,
 and sessions can span related repositories. User role does not certify human
@@ -569,13 +569,13 @@ including two without test support. The constant-label rows are retrospective
 accuracy checks, not validated policies. These results do not support autonomous
 retention or a claim of general six-type classification.
 
-The development training tools on `main` support optional class balancing, per-class diagnostics,
+The training tools support optional class balancing, per-class diagnostics,
 training-majority baselines, and separate reports for human, teacher and synthetic
 labels. An [October 22 development comparison](docs/experiments/classifier-balance-2026-10-22.md)
 recovered some minority types but left durable-memory recall poor. The default
 remains unweighted and shadow-only. This experiment reuses previously examined
 data and supplements the frozen paper; it is not a new independent benchmark.
-These tooling changes are not included in the v1.4.0 release tag.
+These tools are included in v1.5.0; trained weights remain private.
 
 The replay study used the source filters and connected session/repository
 components available when its protocol was frozen. The
@@ -594,6 +594,37 @@ training data, provider responses, and trained weights remain outside Git.
 Neither generated condition met the joint development improvement criteria.
 A separate 32-candidate API check reproduced saved probabilities and passed
 twelve invalid-request and source-lifecycle checks without writing memories.
+
+### Corrected-source development results
+
+After excluding detected automation and mixed-provenance records, the expanded
+study uses 5,548 training candidates and 424 development candidates with
+provisional model labels. Twenty-two pairs of frozen-encoder heads compare
+source counts and class balancing. The training data form one connected source
+component; development contains thirty. No independent human labels are available.
+
+| Full-source classifier | Unweighted | Class-balanced |
+| --- | --- | --- |
+| Retention macro-F1 | 0.393 | 0.372 |
+| Type macro-F1 across six classes | 0.256 | 0.255 |
+| Durable examples recovered | 0/14 | 5/14 |
+| Joint acceptance coverage | 151/424 (35.6%) | 28/424 (6.6%) |
+| Disagreements among accepted predictions | 14/151 (9.3%) | 7/28 (25.0%) |
+
+Balanced fitting predicts durable for seventy examples, with sixty-five
+provisional-label disagreements. Type development data have no behavior or
+relationship examples and only one routine. These scores do not support an
+automatic retention policy. Calibration uses the same development set and is
+optimistic. The [aggregate results](docs/papers/v8-october-2026/expanded_classifier_results.json)
+include class supports, confusion matrices, and source-subset ranges.
+
+Thirty fictional memory episodes show that retrieving original observations can
+conceal losses from learned source selection. A separate assertion study retains
+19/20 required phase-level claims with 0/28 forbidden claims detected. Eight
+fictional historical-ingestion episodes retain 16/16 required claims with 0/12
+forbidden claims detected. These use model judgments, repeated fixtures, and no
+independent human review; they do not establish safety on natural conversations.
+The [paper](docs/papers/v8-october-2026/paper.pdf) records the failures and qualifications.
 
 ### Comparative benchmark plan
 
@@ -618,15 +649,15 @@ comparative claims.
 ## Papers
 
 The current manuscript is
-[Cortex: Sleep-Inspired Memory Consolidation for Language Agents](docs/papers/v7-october-2026/paper.pdf),
-paper revision 7. It includes the biological motivation, conditional mathematical
-proofs, source and partition audits, controlled replay results, historical
-classifier analysis, platform context, and the comparative benchmark protocol.
+[Cortex: Sleep-Inspired Memory Consolidation for Language Agents](docs/papers/v8-october-2026/paper.pdf),
+paper revision 8. It includes the biological motivation, conditional mathematical
+proofs, corrected-source learning curves, replay and fictional-memory diagnostics,
+platform context, and the comparative benchmark protocol.
 
-- [Versioned LaTeX source](docs/papers/v7-october-2026/main.tex)
-- [Artifact manifest and hashes](docs/papers/v7-october-2026/manifest.json)
-- [Aggregate replay measurements](docs/papers/v7-october-2026/learning_results.json)
-- [Historical answer and classifier measurements](docs/papers/v7-october-2026/results.json)
+- [Versioned LaTeX source](docs/papers/v8-october-2026/main.tex)
+- [Artifact manifest and hashes](docs/papers/v8-october-2026/manifest.json)
+- [Corrected classifier measurements](docs/papers/v8-october-2026/expanded_classifier_results.json)
+- [Replay and memory diagnostics](docs/papers/v8-october-2026/development_results.json)
 - [Paper history, including the original March paper](docs/papers/README.md)
 
 The proofs concern the stated abstract state machine, not formal verification

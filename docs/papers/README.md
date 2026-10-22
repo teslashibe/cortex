@@ -1,5 +1,7 @@
 # Papers
 
+- [Corrected-source learning curves and memory diagnostics: October 2026](v8-october-2026/paper.pdf), the interim research manuscript distributed with v1.5.0; [LaTeX source](v8-october-2026/main.tex), [manifest](v8-october-2026/manifest.json)
+
 - [Source audits and controlled sleep-inspired replay: October 2026](v7-october-2026/paper.pdf), with matched training schedules and qualified development comparisons; see the [subsequent source-audit qualification](../experiments/expanded-source-audit-2026-10-22.md); [LaTeX source](v7-october-2026/main.tex)
 
 - [Sleep-inspired consolidation and comparative evaluation protocol: October 2026](v6-october-2026/paper.pdf), with classifier imbalance analysis and sourced platform context; [LaTeX source](v6-october-2026/main.tex)

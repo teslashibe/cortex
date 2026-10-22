@@ -1,0 +1,69 @@
+\subsection{Historical natural-conversation study}
+A broader inventory inspected 640 local session files. After removing machine
+context, generated subagent messages, detected secret patterns and exact
+normalized duplicates, the original filter retained 2,814 user-role records from 119 sessions
+and 35 directory-derived groups: 1,336 records from Codex and 1,478 from Claude. The audit in Section~\ref{sec:source-audit} subsequently found machine-authored records and related projects across partitions. These
+messages contained 2,111,697 characters. All eligible messages were submitted
+for provisional annotation; long messages were split explicitly rather than
+truncated. Annotation failures were retried in smaller batches. One retry batch
+still failed and supplied no accepted labels.
+
+The teacher produced 3,235 candidate spans. Validation excluded 192 invalid
+annotations, ten exact candidate duplicates across partitions, and one duplicate
+identifier. The remaining 3,032 candidates all fit the complete encoder input
+budget. They contained 1,763 temporary, 535 durable, 443 ignored and 291 uncertain
+labels. These are policy annotations by a model, with no human-reviewed labels.
+
+A fixed hash ordering assigned 21 directory-derived groups to training, seven to
+development and seven to testing, before classifier fitting. This produced
+1,629, 1,040 and 363 natural candidates respectively. Synthetic training and
+development partitions were added as in the earlier study. The following table
+uses only the natural test partition; 310 candidates have a type label.
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+Training & Retention & Type & Accepted & Errors\\
+\midrule
+Synthetic only, frozen & 73/363 & 186/310 & 108/363 & 78/108\\
+Mixed, frozen & 215/363 & 279/310 & 61/363 & 18/61\\
+Mixed, adapted & 233/363 & 285/310 & 45/363 & 13/45\\
+\bottomrule
+\end{tabular}
+\caption{Historical agreement with provisional labels on seven directory-derived groups. The later audit found related-project overlap and affected source authorship.
+The joint decision rule uses the fixed 0.8 thresholds. An accepted error is an
+incorrect retention label or an incorrect type for a retained candidate.}
+\label{tab:expanded-classification}
+\end{table}
+
+\noindent\begin{minipage}{\linewidth}
+Natural examples improved agreement relative to synthetic-only training, but
+this comparison does not establish useful performance against simple
+constant-label policies. The adapted model reached 64.2\% retention agreement
+and 91.9\% type agreement. It accepted only 12.4\% of candidates, with 28.9\%
+disagreement among accepted predictions. This is insufficient evidence for
+autonomous retention decisions. The apparent zero-error result among seven
+accepted predictions in the smaller study did not persist at this scale. A live Go API check reproduced offline predictions for
+361 candidates with matching context, with a maximum probability difference
+below $10^{-6}$ and no memory writes. Two candidates at an explicitly split
+source boundary had different complete context and were excluded from this
+numerical-equivalence check.
+\end{minipage}
+
+\input{classifier_analysis}
+
+\subsection{Operational and answer evaluation}
+The full natural corpus indexed into 7,184 source windows. An observed
+whitespace-only window exposed a client-side rejection that had interrupted
+indexing; accepting nonempty whitespace preserved complete coverage. The final
+local indexing run completed without silently truncating an input.
+
+Large-context consolidation also exposed invalid model-generated source
+references. Validation rejected those proposals and retained completed batches.
+The final context uses request-local aliases and omits historical source lists.
+Aliases resolve to exact IDs before the existing transaction checks. The
+operational results below distinguish successful acknowledgement from semantic
+correctness of the retained memories.
+
+\input{answer_results}

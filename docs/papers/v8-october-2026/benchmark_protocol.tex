@@ -1,0 +1,52 @@
+\section{Protocol for comparative evaluation}
+\label{sec:protocol}
+This section specifies the remaining confirmatory work. The developmental replay comparison above does not complete this protocol or a platform benchmark. Benchmark readiness means that the runs are controlled and reproducible; competitive capability requires favorable results from those runs.
+
+\subsection{Freeze the test contract and separate prior exposure}
+The first public suite should be the full 500-question LongMemEval-S release, with dataset checksum, case identifiers, source-role policy, and question timestamps fixed before running \citep{longmem,longmemrepo}. The twelve-case development set stays a regression suite. The nineteen earlier cases and sixty-case study have already influenced development or review; their union of 79 cases must be flagged. Report full-suite results for comparability and the remaining 421 cases separately as the previously unexamined subset. This separation does not establish that a foundation model never saw the public benchmark in pretraining.
+
+Pin each implementation commit, package version, model identifier, embedding model, prompt, tokenizer, inference setting, and evaluator configuration. Archive a public protocol before inspecting new answers. Any change made after a failure creates a new experimental condition. Confirm that source ingestion excludes benchmark questions, answers, and evaluator-only evidence flags. A subsequent LoCoMo evaluation should use its official data and category definitions as a distinct transfer test \citep{locomorepo}; do not merge its score with LongMemEval.
+
+\subsection{Compare memory representations and complete products}
+Run two tracks. In the controlled-retrieval track, each system supplies evidence to the same frozen reader. In the complete-product track, each platform uses its documented answering path, with every call and cost recorded. If a managed service cannot expose or fix an internal model, report that limitation and keep it out of claims about equal-model performance. A self-hosted Graphiti run is not a reproduction of the managed Zep headline; the same distinction applies to Mem0's open-source SDK and managed platform.
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}L{.29\linewidth}Y@{}}
+\toprule
+Condition & Question it isolates\\
+\midrule
+Raw-history retrieval & What does a fixed lexical/dense baseline recover without consolidation?\\
+Cortex memories only & What survives the consolidation bottleneck?\\
+Cortex source windows only & What does attributable raw evidence recover?\\
+Cortex combined retrieval & Does combining summaries and sources improve over either alone?\\
+Classifier off versus on & Does a learned retention decision improve utility or discard required evidence?\\
+Pinned competitor versions & How does the same reader perform on each retriever's evidence?\\
+Oracle evidence sessions & How much error remains when the reader receives the benchmark's relevant sessions?\\
+\bottomrule
+\end{tabularx}
+\caption{Proposed controlled conditions. Use identical questions, source access, and reader settings where the condition permits them. Oracle evidence is a labeled diagnostic and is never available to ordinary ingestion or retrieval.}
+\label{tab:ablation-plan}
+\end{table}
+
+Use a common tokenizer and an 8,000-token evidence ceiling for the first controlled comparison. State truncation and packing rules in advance. Compare one-reader-call conditions separately from a bounded, four-call condition; do not grant extra planning calls to only one system. Run three answer repetitions per question at fixed settings, recording seeds where supported. Repeated answers measure inference variability and are not independent new questions. Charge ingestion, consolidation, embedding, reranking, and answer calls separately; report cold and warm p50/p95 latency, failures, and cost amortized over an explicit number of queries. Report bytes and tokens separately.
+
+\subsection{Measure correctness, evidence, and operational behavior}
+Preserve the official benchmark score using a pinned evaluator, and additionally report complete, conditional, partial, unsupported, erroneous, and correctly abstained answers under a documented human-review rubric. Do not silently count a conditional answer as established fact. Two reviewers should independently assess a predeclared stratified sample and all disputed cases, with disagreement and adjudication recorded. Reviewers should be blinded to the system identity.
+
+Measure evidence recall against available source annotations, citation precision, answer correctness by question type, and consolidated-memory compression at a fixed downstream accuracy. Attribute failures to ingestion, consolidation, retrieval, source interpretation, or answer generation when the evidence permits. Include corrected facts, repeated event mentions, event counting, changing preferences, missing dates, and timezones. Use paired confidence intervals for answer differences; resample at the shared history or source-group level where questions are correlated. Fix the primary comparison and any multiple-comparison correction before scoring. Report inconclusive differences as inconclusive.
+
+Keep lifecycle tests separate from semantic accuracy: retry and crash recovery, cross-owner isolation, exact-source deletion and reimport, source invalidation during an answer, context overflow, and incomplete indexing. A model-quality gain cannot compensate for losing source ownership or acknowledging an uncommitted write. Publish protocol, versions, aggregate metrics, and permitted public outputs. Private transcripts, labels, and trained weights remain outside the public repository.
+
+\subsection{Establish labels before promoting a classifier}
+Write an annotation guide that distinguishes persistence policy from content type, direct user claims from quotations or requests, and observation time from event time. Collect independently human-reviewed examples across consenting owners and source groups, with all four retention labels and all six types represented. Keep a naturally distributed test set and a separate balanced diagnostic set; report both and mark unsupported classes unevaluated. Include constant-label and frozen-encoder baselines. Test groups and owners must be excluded from fitting, replay generation, threshold selection, and calibration.
+
+Choose confidence thresholds on development data. Before giving a classifier write authority, require a predeclared upper bound on accepted-prediction error, useful coverage, and acceptable class-specific false retention and false deletion. For illustration, a 5\% error ceiling at 95\% confidence under the stated Hoeffding bound requires at least 600 error-free accepted independent test examples. Correlated examples from one conversation do not satisfy that independence assumption. This is a proposed risk target, not a certification of the current classifier. Cases outside the validated policy remain advisory or return to human review.
+
+\subsection{Test the sleep analogy as an ablation}
+Confirm the developmental comparison of direct training, source-grounded replay, matched duplicate-example training, and recombined synthetic replay on untouched groups. Hold presentations, update steps, model capacity, and selection budget fixed, and match paired label schedules. Report real and padded tokens and additional generation resources. Audit authorship and connected-project ancestry before partitioning. Generate every replay example exclusively from training components. Preserve links to contributing sources and identify generated examples as synthetic; never insert a recombination as an observed user event.
+
+Measure retention and type macro-F1, selective risk and coverage, performance on old and newly introduced domains, and downstream answer quality on untouched groups. A replay gain must exceed the matched-compute control and survive correction and source-attribution tests. This experiment can support or reject the computational analogy; it cannot establish that the implementation reproduces NREM or REM physiology.
+
+\subsection{Criteria for a comparative claim}
+A reproducible report must identify every tested condition, retain failure denominators, and publish uncertainty alongside accuracy, cost, and latency. A claim of superiority needs a predeclared paired comparison whose interval supports improvement without violating lifecycle constraints. A claim of comparable quality needs a non-inferiority margin chosen before the run and a useful cost or operational benefit. Neither criterion is met by matching a vendor's headline percentage on a different dataset slice. Until these conditions are satisfied, Cortex should be described as an experimental memory engine with tested persistence behavior and an explicit route to comparative evaluation.

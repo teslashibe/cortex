@@ -5,7 +5,7 @@ Go API runs in **shadow mode**: predictions never change stored memories. The
 classifier is separate from summary extraction and conflict resolution.
 
 Class balancing and the expanded reports described here are development tooling
-on `main`; they are not included in the v1.4.0 release tag.
+in v1.5.0. No trained model is promoted or bundled with the release.
 
 Use a dedicated Python environment. Install `requirements.txt` there. Training and
 serving run locally; only downloading the pinned public encoder needs network
@@ -170,3 +170,8 @@ All output is advisory. It never creates a memory or a training event.
 Actual source records, review journals, checkpoints, and per-example evaluations
 must stay private. Deleting an observation in Cortex does not erase a separately
 exported dataset or a model that was trained from it.
+
+The [revision 8 paper](../../docs/papers/v8-october-2026/paper.pdf) reports the
+corrected-source learning curves. Full-source retention macro-F1 reaches 0.393,
+but durable recall and selective disagreement remain insufficient for autonomous
+use. All labels are provisional; training data and weights remain private.

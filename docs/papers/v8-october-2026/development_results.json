@@ -1,0 +1,1025 @@
+{
+  "paper_revision": "8.0",
+  "created_at": "2026-10-22T22:08:55.030367+00:00",
+  "study_status": "Exploratory development; no production classifier promotion",
+  "human_reviewed": 0,
+  "natural_conversation_safety_established": false,
+  "design": {
+    "anchor_adaptation_runs": 12,
+    "training_seeds": [
+      17,
+      41,
+      73
+    ],
+    "fictional_history_templates": 2,
+    "fictional_history_episodes": 30,
+    "all_source_observation_allowance": 10,
+    "learned_observation_allowance": 6,
+    "assertion_contrast_fixtures": 17,
+    "provider_replicates_per_fixture": 2
+  },
+  "qualifications": [
+    "Anchor-study training and historical development cohorts contain machine or mixed source records; later audits also link training and evaluation components.",
+    "The same fourteen employment-instruction memory IDs create twenty-eight phase flags. Their interpretation depends on a disputed memory-request policy; they are not fourteen independent factual inventions.",
+    "All six stale-current flags in the fictional-history study follow withholding of the correcting observation by the experimental selector.",
+    "All-source and learned-selection conditions have different observation allowances; their comparison is not equal-budget.",
+    "Repeated questions across two fictional templates do not form independent natural conversation samples.",
+    "Support from retrieved memory is not independent factual verification; an incorrect stored claim may supply apparent support.",
+    "Source presence in a retrieval list is not entailment or answer correctness.",
+    "Model-authored fixtures and model judgments require independent human review.",
+    "No prompt, production admission rule, or trained model was promoted in these diagnostics."
+  ],
+  "source_summary_sha256": {
+    "anchors": "cd188dba819d22532215978d6ad9a6f5b2d672567083b85c3b8dcbf3d4370541",
+    "downstream": "fa6d600f50b4aaa241b5d00675f061e229e95c18d6c97c0a6aa0e887e2b4d4f6",
+    "semantic": "2216b316f026c2c0a1571ef7298e390836f80d00c0027598b9ffa1a21bb451d0",
+    "retrieval": "eec6203f8da0029a041e81e585341c6d7c18f3f4a95530e90147b144706345c7",
+    "hybrid": "1717602231041e916516a2d9975d2b453f912880d295932047e831b671b31aba",
+    "assertion": "1c91d40f0a304e41b53e03b76ba58dc511e07070deb53afadfb8190fafb6ea8e"
+  },
+  "aggregate_results": {
+    "synthetic_anchor_comparison": {
+      "ordinary_mixed": {
+        "synthetic_dev": {
+          "retention": {
+            "anchor0": 0.7103235255567493,
+            "anchor8": 0.9797417229100637,
+            "change": 0.26941819735331435
+          },
+          "kind": {
+            "anchor0": 0.7930522829966311,
+            "anchor8": 0.9780900920188387,
+            "change": 0.18503780902220757
+          }
+        },
+        "old_reserved_group": {
+          "retention": {
+            "anchor0": 0.410570287200722,
+            "anchor8": 0.5469703907203907,
+            "change": 0.13640010351966872
+          },
+          "kind": {
+            "anchor0": 0.43333333333333335,
+            "anchor8": 0.43333333333333335,
+            "change": 0.0
+          }
+        },
+        "new_natural_dev": {
+          "retention": {
+            "anchor0": 0.20238095238095238,
+            "anchor8": 0.2484425088367409,
+            "change": 0.046061556455788515
+          },
+          "kind": {
+            "anchor0": 0.3932178932178932,
+            "anchor8": 0.32287157287157287,
+            "change": -0.07034632034632032
+          }
+        },
+        "synthetic_relationship_recall": {
+          "anchor0": 0.2631578947368421,
+          "anchor8": 0.9824561403508771
+        }
+      },
+      "matched_repeat": {
+        "synthetic_dev": {
+          "retention": {
+            "anchor0": 0.8113897102450977,
+            "anchor8": 0.9752930269989758,
+            "change": 0.16390331675387818
+          },
+          "kind": {
+            "anchor0": 0.805776894868345,
+            "anchor8": 0.9697179925898287,
+            "change": 0.16394109772148366
+          }
+        },
+        "old_reserved_group": {
+          "retention": {
+            "anchor0": 0.3462794937794938,
+            "anchor8": 0.3331196581196581,
+            "change": -0.013159835659835667
+          },
+          "kind": {
+            "anchor0": 0.4222222222222222,
+            "anchor8": 0.4222222222222222,
+            "change": 0.0
+          }
+        },
+        "new_natural_dev": {
+          "retention": {
+            "anchor0": 0.2709576584256891,
+            "anchor8": 0.1545031055900621,
+            "change": -0.116454552835627
+          },
+          "kind": {
+            "anchor0": 0.25,
+            "anchor8": 0.255050505050505,
+            "change": 0.005050505050505046
+          }
+        },
+        "synthetic_relationship_recall": {
+          "anchor0": 0.2982456140350877,
+          "anchor8": 0.9824561403508771
+        }
+      },
+      "paraphrase": {
+        "synthetic_dev": {
+          "retention": {
+            "anchor0": 0.6971938790547033,
+            "anchor8": 0.978014162535474,
+            "change": 0.28082028348077065
+          },
+          "kind": {
+            "anchor0": 0.787056948234746,
+            "anchor8": 0.9756604813156746,
+            "change": 0.1886035330809286
+          }
+        },
+        "old_reserved_group": {
+          "retention": {
+            "anchor0": 0.22337962962962965,
+            "anchor8": 0.3331196581196581,
+            "change": 0.10974002849002848
+          },
+          "kind": {
+            "anchor0": 0.43333333333333335,
+            "anchor8": 0.43333333333333335,
+            "change": 0.0
+          }
+        },
+        "new_natural_dev": {
+          "retention": {
+            "anchor0": 0.11406784936196701,
+            "anchor8": 0.1545031055900621,
+            "change": 0.040435256228095094
+          },
+          "kind": {
+            "anchor0": 0.25,
+            "anchor8": 0.25,
+            "change": 0.0
+          }
+        },
+        "synthetic_relationship_recall": {
+          "anchor0": 0.2982456140350877,
+          "anchor8": 1.0
+        }
+      },
+      "recombination": {
+        "synthetic_dev": {
+          "retention": {
+            "anchor0": 0.7839338484943892,
+            "anchor8": 0.9637995812986442,
+            "change": 0.17986573280425497
+          },
+          "kind": {
+            "anchor0": 0.752254751246866,
+            "anchor8": 0.9731531976764453,
+            "change": 0.22089844642957931
+          }
+        },
+        "old_reserved_group": {
+          "retention": {
+            "anchor0": 0.33833867023522196,
+            "anchor8": 0.3616666666666667,
+            "change": 0.023327996431444693
+          },
+          "kind": {
+            "anchor0": 0.43333333333333335,
+            "anchor8": 0.4222222222222222,
+            "change": -0.01111111111111109
+          }
+        },
+        "new_natural_dev": {
+          "retention": {
+            "anchor0": 0.1971423835234577,
+            "anchor8": 0.1545031055900621,
+            "change": -0.042639277933395586
+          },
+          "kind": {
+            "anchor0": 0.255050505050505,
+            "anchor8": 0.255050505050505,
+            "change": 0.0
+          }
+        },
+        "synthetic_relationship_recall": {
+          "anchor0": 0.12280701754385964,
+          "anchor8": 1.0
+        }
+      }
+    },
+    "fictional_history_original_scores": {
+      "all_sources": {
+        "episodes_completed": 6,
+        "harness_failures": 0,
+        "phases": {
+          "early": {
+            "episodes": 6,
+            "consolidation_failures": 0,
+            "memories": 38,
+            "support_judged_memories": 38,
+            "unsupported_memories": 2,
+            "ambiguous_memories": 0,
+            "misattributed_memories": 0,
+            "stale_current_memories": 0,
+            "failed_support_batches": 0,
+            "answers": {
+              "memory_only": {
+                "questions": 54,
+                "correct": 45,
+                "invalid_batches": 0,
+                "unsupported_unanswerable_answers": 2,
+                "answerable_correct": 29,
+                "answerable_total": 36,
+                "unanswerable_total": 18
+              },
+              "memory_plus_source": {
+                "questions": 54,
+                "correct": 47,
+                "invalid_batches": 0,
+                "unsupported_unanswerable_answers": 0,
+                "answerable_correct": 29,
+                "answerable_total": 36,
+                "unanswerable_total": 18
+              }
+            }
+          },
+          "late": {
+            "episodes": 6,
+            "consolidation_failures": 0,
+            "memories": 44,
+            "support_judged_memories": 44,
+            "unsupported_memories": 2,
+            "ambiguous_memories": 0,
+            "misattributed_memories": 2,
+            "stale_current_memories": 0,
+            "failed_support_batches": 0,
+            "answers": {
+              "memory_only": {
+                "questions": 54,
+                "correct": 52,
+                "invalid_batches": 0,
+                "unsupported_unanswerable_answers": 2,
+                "answerable_correct": 36,
+                "answerable_total": 36,
+                "unanswerable_total": 18
+              },
+              "memory_plus_source": {
+                "questions": 54,
+                "correct": 54,
+                "invalid_batches": 0,
+                "unsupported_unanswerable_answers": 0,
+                "answerable_correct": 36,
+                "answerable_total": 36,
+                "unanswerable_total": 18
+              }
+            }
+          }
+        }
+      },
+      "ordinary_mixed": {
+        "episodes_completed": 6,
+        "harness_failures": 0,
+        "phases": {
+          "early": {
+            "episodes": 6,
+            "consolidation_failures": 0,
+            "memories": 26,
+            "support_judged_memories": 26,
+            "unsupported_memories": 2,
+            "ambiguous_memories": 0,
+            "misattributed_memories": 1,
+            "stale_current_memories": 0,
+            "failed_support_batches": 0,
+            "answers": {
+              "memory_only": {
+                "questions": 54,
+                "correct": 34,
+                "invalid_batches": 0,
+                "unsupported_unanswerable_answers": 2,
+                "answerable_correct": 18,
+                "answerable_total": 36,
+                "unanswerable_total": 18
+              },
+              "memory_plus_source": {
+                "questions": 54,
+                "correct": 47,
+                "invalid_batches": 0,
+                "unsupported_unanswerable_answers": 0,
+                "answerable_correct": 29,
+                "answerable_total": 36,
+                "unanswerable_total": 18
+              }
+            }
+          },
+          "late": {
+            "episodes": 6,
+            "consolidation_failures": 0,
+            "memories": 35,
+            "support_judged_memories": 35,
+            "unsupported_memories": 2,
+            "ambiguous_memories": 0,
+            "misattributed_memories": 2,
+            "stale_current_memories": 1,
+            "failed_support_batches": 0,
+            "answers": {
+              "memory_only": {
+                "questions": 54,
+                "correct": 46,
+                "invalid_batches": 0,
+                "unsupported_unanswerable_answers": 2,
+                "answerable_correct": 30,
+                "answerable_total": 36,
+                "unanswerable_total": 18
+              },
+              "memory_plus_source": {
+                "questions": 54,
+                "correct": 54,
+                "invalid_batches": 0,
+                "unsupported_unanswerable_answers": 0,
+                "answerable_correct": 36,
+                "answerable_total": 36,
+                "unanswerable_total": 18
+              }
+            }
+          }
+        }
+      },
+      "matched_repeat": {
+        "episodes_completed": 6,
+        "harness_failures": 0,
+        "phases": {
+          "early": {
+            "episodes": 6,
+            "consolidation_failures": 0,
+            "memories": 26,
+            "support_judged_memories": 26,
+            "unsupported_memories": 2,
+            "ambiguous_memories": 0,
+            "misattributed_memories": 0,
+            "stale_current_memories": 0,
+            "failed_support_batches": 0,
+            "answers": {
+              "memory_only": {
+                "questions": 54,
+                "correct": 33,
+                "invalid_batches": 0,
+                "unsupported_unanswerable_answers": 2,
+                "answerable_correct": 17,
+                "answerable_total": 36,
+                "unanswerable_total": 18
+              },
+              "memory_plus_source": {
+                "questions": 54,
+                "correct": 47,
+                "invalid_batches": 0,
+                "unsupported_unanswerable_answers": 0,
+                "answerable_correct": 29,
+                "answerable_total": 36,
+                "unanswerable_total": 18
+              }
+            }
+          },
+          "late": {
+            "episodes": 6,
+            "consolidation_failures": 0,
+            "memories": 33,
+            "support_judged_memories": 33,
+            "unsupported_memories": 2,
+            "ambiguous_memories": 0,
+            "misattributed_memories": 1,
+            "stale_current_memories": 1,
+            "failed_support_batches": 0,
+            "answers": {
+              "memory_only": {
+                "questions": 54,
+                "correct": 44,
+                "invalid_batches": 0,
+                "unsupported_unanswerable_answers": 2,
+                "answerable_correct": 28,
+                "answerable_total": 36,
+                "unanswerable_total": 18
+              },
+              "memory_plus_source": {
+                "questions": 54,
+                "correct": 54,
+                "invalid_batches": 0,
+                "unsupported_unanswerable_answers": 0,
+                "answerable_correct": 36,
+                "answerable_total": 36,
+                "unanswerable_total": 18
+              }
+            }
+          }
+        }
+      },
+      "paraphrase": {
+        "episodes_completed": 6,
+        "harness_failures": 0,
+        "phases": {
+          "early": {
+            "episodes": 6,
+            "consolidation_failures": 0,
+            "memories": 28,
+            "support_judged_memories": 28,
+            "unsupported_memories": 4,
+            "ambiguous_memories": 0,
+            "misattributed_memories": 0,
+            "stale_current_memories": 0,
+            "failed_support_batches": 0,
+            "answers": {
+              "memory_only": {
+                "questions": 54,
+                "correct": 32,
+                "invalid_batches": 0,
+                "unsupported_unanswerable_answers": 4,
+                "answerable_correct": 18,
+                "answerable_total": 36,
+                "unanswerable_total": 18
+              },
+              "memory_plus_source": {
+                "questions": 54,
+                "correct": 47,
+                "invalid_batches": 0,
+                "unsupported_unanswerable_answers": 1,
+                "answerable_correct": 30,
+                "answerable_total": 36,
+                "unanswerable_total": 18
+              }
+            }
+          },
+          "late": {
+            "episodes": 6,
+            "consolidation_failures": 0,
+            "memories": 36,
+            "support_judged_memories": 36,
+            "unsupported_memories": 4,
+            "ambiguous_memories": 0,
+            "misattributed_memories": 3,
+            "stale_current_memories": 2,
+            "failed_support_batches": 0,
+            "answers": {
+              "memory_only": {
+                "questions": 54,
+                "correct": 42,
+                "invalid_batches": 0,
+                "unsupported_unanswerable_answers": 4,
+                "answerable_correct": 28,
+                "answerable_total": 36,
+                "unanswerable_total": 18
+              },
+              "memory_plus_source": {
+                "questions": 54,
+                "correct": 54,
+                "invalid_batches": 0,
+                "unsupported_unanswerable_answers": 0,
+                "answerable_correct": 36,
+                "answerable_total": 36,
+                "unanswerable_total": 18
+              }
+            }
+          }
+        }
+      },
+      "recombination": {
+        "episodes_completed": 6,
+        "harness_failures": 0,
+        "phases": {
+          "early": {
+            "episodes": 6,
+            "consolidation_failures": 0,
+            "memories": 27,
+            "support_judged_memories": 27,
+            "unsupported_memories": 4,
+            "ambiguous_memories": 0,
+            "misattributed_memories": 1,
+            "stale_current_memories": 0,
+            "failed_support_batches": 0,
+            "answers": {
+              "memory_only": {
+                "questions": 54,
+                "correct": 31,
+                "invalid_batches": 0,
+                "unsupported_unanswerable_answers": 4,
+                "answerable_correct": 17,
+                "answerable_total": 36,
+                "unanswerable_total": 18
+              },
+              "memory_plus_source": {
+                "questions": 54,
+                "correct": 46,
+                "invalid_batches": 0,
+                "unsupported_unanswerable_answers": 1,
+                "answerable_correct": 29,
+                "answerable_total": 36,
+                "unanswerable_total": 18
+              }
+            }
+          },
+          "late": {
+            "episodes": 6,
+            "consolidation_failures": 0,
+            "memories": 35,
+            "support_judged_memories": 35,
+            "unsupported_memories": 4,
+            "ambiguous_memories": 0,
+            "misattributed_memories": 2,
+            "stale_current_memories": 2,
+            "failed_support_batches": 0,
+            "answers": {
+              "memory_only": {
+                "questions": 54,
+                "correct": 41,
+                "invalid_batches": 0,
+                "unsupported_unanswerable_answers": 4,
+                "answerable_correct": 27,
+                "answerable_total": 36,
+                "unanswerable_total": 18
+              },
+              "memory_plus_source": {
+                "questions": 54,
+                "correct": 54,
+                "invalid_batches": 0,
+                "unsupported_unanswerable_answers": 0,
+                "answerable_correct": 36,
+                "answerable_total": 36,
+                "unanswerable_total": 18
+              }
+            }
+          }
+        }
+      }
+    },
+    "fictional_history_semantic_review": {
+      "all_sources": {
+        "episodes": 6,
+        "failed_review_batches": 0,
+        "counts": {
+          "early/memory_only": {
+            "reviewed": 54,
+            "correct": 51,
+            "unsupported_by_retrieved_evidence": 0,
+            "extra_unsupported_claims": 0,
+            "wrong_subject": 0,
+            "stale_current_answer": 0
+          },
+          "early/memory_plus_source": {
+            "reviewed": 54,
+            "correct": 53,
+            "unsupported_by_retrieved_evidence": 0,
+            "extra_unsupported_claims": 0,
+            "wrong_subject": 0,
+            "stale_current_answer": 0
+          },
+          "late/memory_only": {
+            "reviewed": 54,
+            "correct": 52,
+            "unsupported_by_retrieved_evidence": 0,
+            "extra_unsupported_claims": 0,
+            "wrong_subject": 0,
+            "stale_current_answer": 0
+          },
+          "late/memory_plus_source": {
+            "reviewed": 54,
+            "correct": 54,
+            "unsupported_by_retrieved_evidence": 0,
+            "extra_unsupported_claims": 0,
+            "wrong_subject": 0,
+            "stale_current_answer": 0
+          }
+        }
+      },
+      "matched_repeat": {
+        "episodes": 6,
+        "failed_review_batches": 0,
+        "counts": {
+          "early/memory_only": {
+            "reviewed": 54,
+            "correct": 39,
+            "unsupported_by_retrieved_evidence": 0,
+            "extra_unsupported_claims": 0,
+            "wrong_subject": 0,
+            "stale_current_answer": 0
+          },
+          "early/memory_plus_source": {
+            "reviewed": 54,
+            "correct": 53,
+            "unsupported_by_retrieved_evidence": 0,
+            "extra_unsupported_claims": 0,
+            "wrong_subject": 0,
+            "stale_current_answer": 0
+          },
+          "late/memory_only": {
+            "reviewed": 54,
+            "correct": 44,
+            "unsupported_by_retrieved_evidence": 0,
+            "extra_unsupported_claims": 0,
+            "wrong_subject": 0,
+            "stale_current_answer": 1
+          },
+          "late/memory_plus_source": {
+            "reviewed": 54,
+            "correct": 54,
+            "unsupported_by_retrieved_evidence": 0,
+            "extra_unsupported_claims": 0,
+            "wrong_subject": 0,
+            "stale_current_answer": 0
+          }
+        }
+      },
+      "ordinary_mixed": {
+        "episodes": 6,
+        "failed_review_batches": 0,
+        "counts": {
+          "early/memory_only": {
+            "reviewed": 54,
+            "correct": 40,
+            "unsupported_by_retrieved_evidence": 0,
+            "extra_unsupported_claims": 0,
+            "wrong_subject": 0,
+            "stale_current_answer": 0
+          },
+          "early/memory_plus_source": {
+            "reviewed": 54,
+            "correct": 54,
+            "unsupported_by_retrieved_evidence": 0,
+            "extra_unsupported_claims": 0,
+            "wrong_subject": 0,
+            "stale_current_answer": 0
+          },
+          "late/memory_only": {
+            "reviewed": 54,
+            "correct": 46,
+            "unsupported_by_retrieved_evidence": 0,
+            "extra_unsupported_claims": 0,
+            "wrong_subject": 0,
+            "stale_current_answer": 1
+          },
+          "late/memory_plus_source": {
+            "reviewed": 54,
+            "correct": 54,
+            "unsupported_by_retrieved_evidence": 0,
+            "extra_unsupported_claims": 0,
+            "wrong_subject": 0,
+            "stale_current_answer": 0
+          }
+        }
+      },
+      "paraphrase": {
+        "episodes": 6,
+        "failed_review_batches": 0,
+        "counts": {
+          "early/memory_only": {
+            "reviewed": 54,
+            "correct": 38,
+            "unsupported_by_retrieved_evidence": 0,
+            "extra_unsupported_claims": 0,
+            "wrong_subject": 0,
+            "stale_current_answer": 0
+          },
+          "early/memory_plus_source": {
+            "reviewed": 54,
+            "correct": 53,
+            "unsupported_by_retrieved_evidence": 0,
+            "extra_unsupported_claims": 0,
+            "wrong_subject": 0,
+            "stale_current_answer": 0
+          },
+          "late/memory_only": {
+            "reviewed": 54,
+            "correct": 42,
+            "unsupported_by_retrieved_evidence": 0,
+            "extra_unsupported_claims": 0,
+            "wrong_subject": 0,
+            "stale_current_answer": 2
+          },
+          "late/memory_plus_source": {
+            "reviewed": 54,
+            "correct": 54,
+            "unsupported_by_retrieved_evidence": 0,
+            "extra_unsupported_claims": 0,
+            "wrong_subject": 0,
+            "stale_current_answer": 0
+          }
+        }
+      },
+      "recombination": {
+        "episodes": 6,
+        "failed_review_batches": 0,
+        "counts": {
+          "early/memory_only": {
+            "reviewed": 54,
+            "correct": 37,
+            "unsupported_by_retrieved_evidence": 0,
+            "extra_unsupported_claims": 0,
+            "wrong_subject": 0,
+            "stale_current_answer": 0
+          },
+          "early/memory_plus_source": {
+            "reviewed": 54,
+            "correct": 52,
+            "unsupported_by_retrieved_evidence": 0,
+            "extra_unsupported_claims": 0,
+            "wrong_subject": 0,
+            "stale_current_answer": 0
+          },
+          "late/memory_only": {
+            "reviewed": 54,
+            "correct": 41,
+            "unsupported_by_retrieved_evidence": 0,
+            "extra_unsupported_claims": 0,
+            "wrong_subject": 0,
+            "stale_current_answer": 2
+          },
+          "late/memory_plus_source": {
+            "reviewed": 54,
+            "correct": 54,
+            "unsupported_by_retrieved_evidence": 0,
+            "extra_unsupported_claims": 0,
+            "wrong_subject": 0,
+            "stale_current_answer": 0
+          }
+        }
+      }
+    },
+    "snapshot_source_coverage": {
+      "lexical": {
+        "answerable_queries": 72,
+        "memory_source_covered": 71,
+        "raw_source_covered": 66,
+        "unknown_queries": 36,
+        "unknown_queries_with_memory_hits": 4,
+        "unknown_queries_with_raw_hits": 18
+      },
+      "hybrid": {
+        "answerable_queries": 72,
+        "memory_source_covered": 72,
+        "raw_source_covered": 72,
+        "unknown_queries": 36,
+        "unknown_queries_with_memory_hits": 36,
+        "unknown_queries_with_raw_hits": 36
+      }
+    },
+    "hybrid_answer_scores": {
+      "early": {
+        "memory_only": {
+          "questions": 54,
+          "strict_correct": 46,
+          "invalid_answer_batches": 0,
+          "answers_on_unanswerable_questions": 2,
+          "semantic_reviewed": 54,
+          "semantic_correct": 52,
+          "unsupported_by_retrieved_evidence": 0
+        },
+        "memory_plus_source": {
+          "questions": 54,
+          "strict_correct": 47,
+          "invalid_answer_batches": 0,
+          "answers_on_unanswerable_questions": 1,
+          "semantic_reviewed": 54,
+          "semantic_correct": 53,
+          "unsupported_by_retrieved_evidence": 0
+        }
+      },
+      "late": {
+        "memory_only": {
+          "questions": 54,
+          "strict_correct": 52,
+          "invalid_answer_batches": 0,
+          "answers_on_unanswerable_questions": 2,
+          "semantic_reviewed": 54,
+          "semantic_correct": 52,
+          "unsupported_by_retrieved_evidence": 0
+        },
+        "memory_plus_source": {
+          "questions": 54,
+          "strict_correct": 54,
+          "invalid_answer_batches": 0,
+          "answers_on_unanswerable_questions": 0,
+          "semantic_reviewed": 54,
+          "semantic_correct": 54,
+          "unsupported_by_retrieved_evidence": 0
+        }
+      }
+    },
+    "assertion_contrast_by_family": {
+      "speaker_attribution": {
+        "phases": 8,
+        "consolidation_failures": 0,
+        "invalid_reviews": 0,
+        "memories": 7,
+        "unsupported": 0,
+        "ambiguous": 0,
+        "subject_errors": 0,
+        "time_scope_errors": 0,
+        "required": 4,
+        "covered": 3,
+        "forbidden": 8,
+        "forbidden_present": 0
+      },
+      "positive_self_report": {
+        "phases": 2,
+        "consolidation_failures": 0,
+        "invalid_reviews": 0,
+        "memories": 2,
+        "unsupported": 0,
+        "ambiguous": 0,
+        "subject_errors": 0,
+        "time_scope_errors": 0,
+        "required": 2,
+        "covered": 2,
+        "forbidden": 0,
+        "forbidden_present": 0
+      },
+      "explicit_nonfact": {
+        "phases": 8,
+        "consolidation_failures": 0,
+        "invalid_reviews": 0,
+        "memories": 3,
+        "unsupported": 0,
+        "ambiguous": 0,
+        "subject_errors": 0,
+        "time_scope_errors": 0,
+        "required": 2,
+        "covered": 2,
+        "forbidden": 8,
+        "forbidden_present": 0
+      },
+      "explicit_correction": {
+        "phases": 4,
+        "consolidation_failures": 0,
+        "invalid_reviews": 0,
+        "memories": 4,
+        "unsupported": 0,
+        "ambiguous": 0,
+        "subject_errors": 0,
+        "time_scope_errors": 0,
+        "required": 4,
+        "covered": 4,
+        "forbidden": 2,
+        "forbidden_present": 0
+      },
+      "negation": {
+        "phases": 2,
+        "consolidation_failures": 0,
+        "invalid_reviews": 0,
+        "memories": 2,
+        "unsupported": 0,
+        "ambiguous": 0,
+        "subject_errors": 0,
+        "time_scope_errors": 0,
+        "required": 0,
+        "covered": 0,
+        "forbidden": 2,
+        "forbidden_present": 0
+      },
+      "plan_and_uncertainty": {
+        "phases": 8,
+        "consolidation_failures": 0,
+        "invalid_reviews": 0,
+        "memories": 8,
+        "unsupported": 0,
+        "ambiguous": 0,
+        "subject_errors": 0,
+        "time_scope_errors": 0,
+        "required": 4,
+        "covered": 4,
+        "forbidden": 6,
+        "forbidden_present": 0
+      },
+      "positive_memory_request": {
+        "phases": 4,
+        "consolidation_failures": 0,
+        "invalid_reviews": 0,
+        "memories": 4,
+        "unsupported": 0,
+        "ambiguous": 0,
+        "subject_errors": 0,
+        "time_scope_errors": 0,
+        "required": 4,
+        "covered": 4,
+        "forbidden": 0,
+        "forbidden_present": 0
+      },
+      "temporal_scope": {
+        "phases": 2,
+        "consolidation_failures": 0,
+        "invalid_reviews": 0,
+        "memories": 0,
+        "unsupported": 0,
+        "ambiguous": 0,
+        "subject_errors": 0,
+        "time_scope_errors": 0,
+        "required": 0,
+        "covered": 0,
+        "forbidden": 2,
+        "forbidden_present": 0
+      }
+    },
+    "assertion_contrast_totals": {
+      "phases": 38,
+      "consolidation_failures": 0,
+      "invalid_reviews": 0,
+      "memories": 30,
+      "unsupported": 0,
+      "ambiguous": 0,
+      "subject_errors": 0,
+      "time_scope_errors": 0,
+      "required": 20,
+      "covered": 19,
+      "forbidden": 28,
+      "forbidden_present": 0
+    },
+    "provider_resources": {
+      "fictional_history": {
+        "all_sources": {
+          "calls_by_state": {
+            "returned": 48
+          },
+          "returned_usage": {
+            "prompt_tokens": 90246,
+            "completion_tokens": 13081,
+            "total_tokens": 103327
+          },
+          "summed_call_seconds": 322.30379558377314,
+          "unknown_usage_attempts": 0,
+          "verified_currency_cost": null
+        },
+        "ordinary_mixed": {
+          "calls_by_state": {
+            "returned": 48
+          },
+          "returned_usage": {
+            "prompt_tokens": 81201,
+            "completion_tokens": 11462,
+            "total_tokens": 92663
+          },
+          "summed_call_seconds": 229.5692915840101,
+          "unknown_usage_attempts": 0,
+          "verified_currency_cost": null
+        },
+        "matched_repeat": {
+          "calls_by_state": {
+            "returned": 48
+          },
+          "returned_usage": {
+            "prompt_tokens": 78451,
+            "completion_tokens": 11305,
+            "total_tokens": 89756
+          },
+          "summed_call_seconds": 220.87438620574568,
+          "unknown_usage_attempts": 0,
+          "verified_currency_cost": null
+        },
+        "paraphrase": {
+          "calls_by_state": {
+            "returned": 48
+          },
+          "returned_usage": {
+            "prompt_tokens": 81245,
+            "completion_tokens": 12506,
+            "total_tokens": 93751
+          },
+          "summed_call_seconds": 249.42898050283645,
+          "unknown_usage_attempts": 0,
+          "verified_currency_cost": null
+        },
+        "recombination": {
+          "calls_by_state": {
+            "returned": 48
+          },
+          "returned_usage": {
+            "prompt_tokens": 80580,
+            "completion_tokens": 11968,
+            "total_tokens": 92548
+          },
+          "summed_call_seconds": 231.71661549927254,
+          "unknown_usage_attempts": 0,
+          "verified_currency_cost": null
+        }
+      },
+      "hybrid_answers": {
+        "provider_states": {
+          "returned": 36
+        },
+        "returned_usage": {
+          "prompt_tokens": 870682,
+          "completion_tokens": 23261,
+          "total_tokens": 893943
+        },
+        "summed_request_seconds": 355.1484405832598
+      },
+      "assertion_contrast": {
+        "provider_states": {
+          "returned": 76
+        },
+        "returned_usage": {
+          "prompt_tokens": 79317,
+          "completion_tokens": 6817,
+          "total_tokens": 86134
+        },
+        "summed_seconds": 205.11506495541883
+      }
+    }
+  }
+}

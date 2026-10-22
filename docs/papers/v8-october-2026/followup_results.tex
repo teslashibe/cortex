@@ -1,0 +1,21 @@
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrrr}
+\toprule
+Retrieval & Complete & Partial & Incorrect\\
+\midrule
+Single query & 9 & 0 & 3\\
+Multiple queries & 8 & 1 & 3\\
+\bottomrule
+\end{tabular}
+\caption{Frozen public follow-up, twelve cases per condition. Codex inspected answers against the reference answers; no independent human adjudication was performed. Partial answers are not included in the complete total.}
+\label{tab:retrieval-followup}
+\end{table}
+The single-query condition produced 9 complete answers out of 12. Multiple queries produced 8 complete answers, one inconsistent partial answer and three incorrect answers. This small probe provides no evidence of an aggregate improvement from query expansion. One expanded retrieval answered a studio-location question missed by single-query retrieval; another answer incorrectly withheld confirmation of a location despite retrieving its explicit source. A temporal answer stated both four and five months and was not counted as complete. Both conditions abstained on an elapsed-duration question even though dated departure and return evidence was present. These cases distinguish evidence availability from successful use by the reader.
+
+Advice questions were assessed for meaningful personalization to prior context; illustrative suggestions in their reference answers were not treated as mandatory wording. The assessment remains subjective and was performed by Codex, not by an independent human. The small sample, stochastic query generation and reader responses do not establish statistical superiority of either condition.
+
+\subsection{Input and implementation checks}
+The final input audit covered 11,400 stored observations and 32,260 tokenizer-aware windows. Every source was completely covered; no accepted window exceeded the 256-token limit. The maximum observed count was 254. The same sources produced 21 over-budget windows under the fixed 512-code-point scheme. This checks preservation and input limits, not semantic retrieval quality.
+
+All 19 prior private recall pattern checks passed with the strict adapter. These are repeated development diagnostics, not new independent questions. The final source binary reproduced all 24 public-condition evidence contexts exactly, separating documentation changes from the measured retrieval implementation. PostgreSQL race tests, Python contract tests, static checks, builds, vulnerability checks, and full-history secret scanning passed. Live checks confirmed strict rejection of an oversized classifier input, source-bound timezone resolution, and no memory writes from classification.

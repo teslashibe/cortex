@@ -1,0 +1,59 @@
+\section{Source-grounded and recombined replay}
+\label{sec:replay}
+The research cycle separates experience capture, training-example generation, model updates, and evaluation. Captured observations retain source identity and attribution. A candidate extracted from an observation remains an exact span. A generated paraphrase or recombination belongs to a synthetic training namespace, with explicit contributing source identifiers; it is never imported as a new event in the memory store. External generation and review models receive authorized training sources only. The production classification interface remains advisory.
+
+\subsection{Source and partition audits}
+The initial inventory treated selected user-role records as human input. Inspection of source metadata and known message envelopes found automatic goal reminders, compaction summaries, and wrappers containing both an assistant's question and a human answer. The audit excludes these records as a whole. Recovering an answer from a mixed wrapper would require attributed extraction and new labels. Pattern-based exclusions do not certify every remaining record as human-authored.
+
+Directory names also failed as independent project identifiers. A session can move among several related repositories. We therefore construct a graph with vertices for source sessions, original group identifiers, and known repositories in working-directory metadata. Edges connect a session to its groups and repositories. Connected components define a conservative related-project partition. Every generated derivative inherits all contributing source components. Metadata alone cannot identify every semantic relation, but it exposes overlaps hidden by the original grouping.
+
+Before fitting the historical replay comparison, we reserve the largest formerly train-only component containing both older and newer candidates, using counts and a fixed hash tie-break. Its complete source lineage is excluded from training. Original development components absent from the training set join the corresponding evaluation cohorts. Examples from components shared with training are evaluated separately as related-project diagnostics. The development cohorts, disjoint only under the graph then available, contain 24 older candidates in three components and 18 newer candidates in four components, with one component shared across time. Their labels were examined in prior work, so they are not fresh confirmatory data. The broader audit reported below finds additional training links and automated or mixed-provenance sources in these cohorts. The original grouping and authorship checks were insufficient for an independent human-conversation evaluation.
+
+\subsection{Paired replay construction}
+Let $e_i=(x_i,r_i,k_i)$ denote an earlier training candidate with its provisional retention and optional type labels. For each primary $e_i$, generation proposes a meaning-preserving paraphrase $p_i$ and a recombination $g_i$ with a second eligible source. A paraphrase must preserve entities, attribution, negation, intent, temporal scope, and certainty. A recombination may change the activity or setting while preserving the primary decision structure and using a meaningful concept from the second source. An incompatible pair may produce no recombination. The contributing sources can belong to the same connected project component.
+
+Two models label each generated utterance without the intended labels or generation condition. Generation uses Luna 6; annotation uses Luna 6 and Sol 6.1; a separate Sol 6.1 request checks faithfulness, coherent decision scope, and actual source contribution. Medium effort is requested through the local API, with returned model identifiers and usage retained. Acceptance requires both annotations to match the primary retention/type labels, atomicity, and a successful semantic check. The semantic reviewer shares a model with one annotator, and the generator also supplies an annotation. These correlated model judgments neither replace human review nor establish that a generated statement occurred.
+
+Local validation checks source membership, recorded ancestry, text duplication, and the complete 256-token encoder budget. Both conditions must pass for a primary to enter the paired library. One source appears once as a primary. The minimum of 64 unique primaries from four recorded source components was fixed before fitting. An initial library fell below that requirement after auditing. A declared extension attempted every remaining eligible primary once, with a deterministic secondary preferring compatible provisional labels. The full batch was completed without stopping when the minimum was reached. Rejected outputs and failed calls remain part of resource accounting.
+
+\subsection{Joint adaptation and controls}
+The encoder and two linear heads are trained jointly. For batch $B$, retention labels $r_i$, type labels $k_i$, and typed subset $B_k=\{i\in B:k_i\text{ is annotated}\}$, the loss is
+\[
+ \mathcal L_B=
+ \frac{\sum_{i\in B}w_{r_i}[-\log p_r(r_i\mid x_i)]}
+      {\sum_{i\in B}w_{r_i}}
+ +\frac{\sum_{i\in B_k}v_{k_i}[-\log p_k(k_i\mid x_i)]}
+       {\sum_{i\in B_k}v_{k_i}}.
+\]
+The second term is omitted when its denominator is zero. Weights are inverse square roots of class counts in the initial training pool, normalized to mean one within each head and fixed thereafter. Normalized embeddings are scaled by 20 before the linear heads. The exported head coefficients absorb that scale.
+
+Each seed begins with 64 updates containing 16 earlier natural candidates and 16 original synthetic candidates. The second stage has 64 updates of 32 examples. All conditions share the same 16 newer candidates at each update. The other 16 are sampled from the complete earlier pool for ordinary mixed training, or from a common paired-source schedule for repeated examples, paraphrases, and recombinations. The paired arms therefore share source identity and the exact label sequence. Ordinary mixed training retains its broader source distribution.
+
+The temporal cutoff is 12 October 2026 at 02:14:29.962 UTC. It was set from the original natural training inventory before the source audit and retained during regrouping. Source timestamps determine temporal membership; they do not establish when a described event occurred.
+
+AdamW uses encoder learning rate $2\cdot10^{-5}$, head learning rate $10^{-3}$, weight decay $0.01$, and global gradient clipping at one. Every batch is padded to 256 tokens without truncation. Seeds are 17, 41, and 73. Conditions share the seed-specific initial checkpoint and begin their second stage with a fresh optimizer. The final checkpoint is fixed in advance; temperature is one and the existing joint acceptance threshold is $0.8$. There is no checkpoint selection or temperature fitting within this comparison.
+
+A pooled ordinary reference uses the exact multiset of 4,096 presentations from the corresponding initial and ordinary mixed stages, shuffled once with a fixed seed offset. It starts from the same base initialization and resets the optimizer halfway through its 128 updates. It has access to later examples from the first update, so it is an offline reference with no valid pre/post forgetting interpretation.
+
+Example presentations, update counts, capacity, and training tensor dimensions are controlled. Actual non-padding tokens, generation and review inference, and wall-clock contention differ. Equal tensor dimensions are not a measurement of equal hardware work or equal end-to-end cost.
+
+\subsection{Outcomes and interpretation}
+The primary outcomes are retention/type agreement on the historically partitioned older and newer cohorts, change from the initial checkpoint, and joint acceptance coverage and disagreement. Reports retain all class supports, seed results, and separately measured synthetic and related-project cohorts. Retention macro-F1 averages all four declared classes, assigning zero to unsupported classes; supported type macro-F1 averages only types present in the cohort. Class support and constant-label references are therefore necessary to interpret the absolute scores. With three seeds and few originally separated components, paired seed intervals are descriptive and cannot certify population-level transfer.
+
+Here, retention of performance means preserving classification decisions on older examples. Factual knowledge retention, source-correct downstream answers, and unsupported-memory creation require separate tests. A classifier can improve its macro-F1 while causing a complete memory system to omit a needed fact. A replay mechanism becomes a production candidate only if it improves older-knowledge retention and unseen-conversation performance against ordinary and repeated-example controls without increasing unsupported memories.
+
+\begin{proposition}[Recorded-lineage separation]
+Let $c(o)$ map each source record to its connected component. Suppose training and evaluation use disjoint component sets $C_T,C_E$. For any admitted training example $z$, let $A(z)$ be its complete recorded source ancestry and require $\{c(o):o\in A(z)\}\subseteq C_T$. Then no source in an evaluation component is a recorded ancestor of an admitted training example.
+\end{proposition}
+\begin{proof}
+If an evaluation source $o$ were an ancestor of admitted $z$, admission would imply $c(o)\in C_T$, while evaluation membership would imply $c(o)\in C_E$. This contradicts $C_T\cap C_E=\varnothing$. For multiple generation stages, the same argument applies to transitive ancestry, provided every stage preserves the complete ancestor set.
+\end{proof}
+The property is conditional on correct ancestry and grouping. It does not rule out unrecorded semantic overlap or foundation-model pretraining exposure.
+
+\begin{proposition}[Matched label schedules]
+Suppose repeated, paraphrased, and recombined examples at each scheduled position share the same retention label, optional type label, and source index. If all arms receive the same newer-example positions, then their per-update retention counts, type counts, and type-label masks are identical. If all batches also use shape $32\times256$, their padded-token counts are identical.
+\end{proposition}
+\begin{proof}
+Equality of labels and masks holds position by position for the paired examples by assumption and for the newer examples by the common schedule. Summing their indicator functions over each batch gives equal class counts. Each update contains $32\cdot256$ padded positions, so summing over equal update counts gives equal padded-token totals.
+\end{proof}
+The proposition makes no claim that gradients, real token counts, generation costs, or generalization are equal. It does not establish that replay improves learning.

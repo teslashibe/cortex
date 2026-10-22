@@ -1,0 +1,90 @@
+{
+  "study": "Fictional chronological and historical-backfill development diagnostic",
+  "completed_cases": 8,
+  "by_family": {
+    "chronological_preference": {
+      "phases": 4,
+      "consolidation_failures": 0,
+      "invalid_reviews": 0,
+      "memories": 4,
+      "unsupported": 0,
+      "ambiguous": 0,
+      "subject_errors": 0,
+      "time_scope_errors": 0,
+      "required": 4,
+      "covered": 4,
+      "forbidden": 2,
+      "forbidden_present": 0
+    },
+    "backfill_preference": {
+      "phases": 4,
+      "consolidation_failures": 0,
+      "invalid_reviews": 0,
+      "memories": 6,
+      "unsupported": 0,
+      "ambiguous": 0,
+      "subject_errors": 0,
+      "time_scope_errors": 0,
+      "required": 4,
+      "covered": 4,
+      "forbidden": 4,
+      "forbidden_present": 0
+    },
+    "backfill_city": {
+      "phases": 4,
+      "consolidation_failures": 0,
+      "invalid_reviews": 0,
+      "memories": 4,
+      "unsupported": 0,
+      "ambiguous": 0,
+      "subject_errors": 0,
+      "time_scope_errors": 0,
+      "required": 4,
+      "covered": 4,
+      "forbidden": 4,
+      "forbidden_present": 0
+    },
+    "chronological_city": {
+      "phases": 4,
+      "consolidation_failures": 0,
+      "invalid_reviews": 0,
+      "memories": 5,
+      "unsupported": 0,
+      "ambiguous": 0,
+      "subject_errors": 0,
+      "time_scope_errors": 0,
+      "required": 4,
+      "covered": 4,
+      "forbidden": 2,
+      "forbidden_present": 0
+    }
+  },
+  "totals": {
+    "phases": 16,
+    "consolidation_failures": 0,
+    "invalid_reviews": 0,
+    "memories": 19,
+    "unsupported": 0,
+    "ambiguous": 0,
+    "subject_errors": 0,
+    "time_scope_errors": 0,
+    "required": 16,
+    "covered": 16,
+    "forbidden": 12,
+    "forbidden_present": 0
+  },
+  "provider_states": {
+    "returned": 32
+  },
+  "returned_usage": {
+    "prompt_tokens": 36363,
+    "completion_tokens": 4167,
+    "total_tokens": 40530
+  },
+  "summed_seconds": 101.05280770532231,
+  "human_reviewed": 0,
+  "production_promoted": false,
+  "setup_failures_before_provider_calls": 1,
+  "setup_recovery": "Original failure preserved; verified empty database and final TCP readiness before resuming; no provider attempt repeated",
+  "interpretation": "Fictional out-of-order historical-ingestion probes with model-authored expectations and provisional semantic judgments. Not a natural-email safety evaluation or a learning comparison."
+}

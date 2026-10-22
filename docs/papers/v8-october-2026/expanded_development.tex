@@ -1,0 +1,208 @@
+% Expanded development studies with provisional model judgments.
+\section{Source eligibility and experimental interpretation}
+
+A role field identifies a transport role; it does not establish who authored a
+message. Inspection of partial annotation disagreements revealed scheduled
+automation prompts inside records marked as user messages. The source filter
+had omitted this envelope format. The same audit identified mixed records
+containing pasted material, injected instructions, and command or interface
+context. Some mixed records contain genuine user requests. Their complete
+contents cannot be treated as independent human-authored observations without
+further attribution.
+
+The expanded extraction produced 24,497 candidate spans from 6,425 selected
+source records. Before fitting a model, we stopped annotation and preserved its
+requests, responses, and unresolved attempts. Whole-source quarantine removed
+1,362 records and their 15,385 candidates. A further 35 eligible candidates had
+issued annotation attempts without validated outcomes and were excluded rather
+than silently retried. The corrected pool contains 9,077 candidates. Completed
+valid annotations are reused under a separate, frozen protocol. This correction
+followed inspection of partial training labels and is an adaptive development
+decision. Remaining authorship is unverified; whole-source quarantine also
+excludes some genuine text embedded in mixed records.
+
+The broader source graph links 35 of the earlier replay study's 42 primary
+development candidates to components represented in training. A separate check
+of complete source records finds automated or mixed envelopes behind 34 of the
+42 candidates, including 32 scheduled automation messages. The same issue
+affects 196 of 485 training candidates. The earlier measurements remain
+historical regression diagnostics. Filtering the evaluation rows alone would
+leave affected training in place. The corrected study preserves the existing
+conservative component assignments and reserved confirmation groups.
+
+\input{expanded_classification}
+
+\subsection{Retaining synthetic training examples}
+
+A twelve-run development study tested whether retaining original synthetic
+training examples reduces forgetting of the designed classification tasks.
+Each of four conditions used three seeds and 64 updates of 32 presentations.
+Every update contained the same sixteen newer-source examples, eight older or
+replayed examples, and eight original synthetic examples. Relative to the
+earlier zero-anchor comparison, the synthetic block replaced half of the
+older or replayed block. Update counts, model capacity, and padded token shapes
+were held fixed. Data composition changed intentionally; actual input tokens,
+earlier generation work, and wall time were not matched.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Condition & Synthetic 0 & Synthetic 8 & Older & Newer \\
+\midrule
+Ordinary training & 0.710 & 0.980 & 0.547 & 0.248 \\
+Repeated examples & 0.811 & 0.975 & 0.333 & 0.155 \\
+Paraphrases & 0.697 & 0.978 & 0.333 & 0.155 \\
+Recombination & 0.784 & 0.964 & 0.362 & 0.155 \\
+\bottomrule
+\end{tabular}
+\caption{Mean retention-classification macro-F1 over three seeds. The first
+two numeric columns compare zero and eight synthetic presentations per update.
+The older and newer columns report the eight-anchor runs on the historical
+24- and 18-candidate development cohorts. Those cohorts are affected by the
+source-authorship and overlap findings above and do not establish independent
+human-conversation transfer.}
+\end{table}
+
+Synthetic type-classification macro-F1 after the eight-anchor runs ranged from
+0.970 to 0.978, and synthetic relationship recall ranged from 0.982 to 1.000.
+These results support retaining task coverage during this adaptation exercise.
+Neither generated-replay condition exceeded ordinary training on both
+historical development measures. They provide no evidence that generated
+rehearsal improves factual knowledge retention or reduces unsupported memories.
+
+\section{Visibility of corrections}
+
+Classification agreement does not establish factual retention. A memory system
+must also receive the observation that changes an existing fact. Let $I(H)$
+denote all information available to a consolidation and answering procedure
+after admission and retrieval from history $H$. This includes its initial
+memory state and every supplied source, timestamp, and metadata value. It
+excludes observations withheld by the host policy.
+
+\begin{samepage}
+\begin{proposition}[Indistinguishable omitted corrections]
+Suppose two histories $H_0,H_1$ satisfy $I(H_0)=I(H_1)$ but the correct current
+answer to the same query is respectively $y_0$ and $y_1$, with $y_0\ne y_1$.
+For any procedure whose output depends only on $I(H)$ and randomness independent
+of the history, the output distribution is identical in both histories.
+Under a uniform mixture of the two histories, if the procedure answers with
+probability $a$ and otherwise abstains, its probability of an incorrect answer
+is at least $a/2$.
+\end{proposition}
+
+\begin{proof}
+Equal available inputs and the same distribution of independent randomness
+induce the same output law. Write $p(y)$ for the probability of answering $y$.
+The total answer probability is $a=\sum_y p(y)$. The probability of a correct
+answer under the uniform mixture is
+$\tfrac12 p(y_0)+\tfrac12 p(y_1)\leq a/2$ because the two correct values are
+distinct. Subtracting correct-answer probability from $a$ gives an error
+probability of at least $a/2$. Abstention contributes to neither term.
+\end{proof}
+\end{samepage}
+
+The proposition is conditional on identical available information. It gives no
+empirical error rate and makes no claim about biological consolidation or
+learning convergence. It explains why a source-admission policy and the
+consolidator need separate evaluation: an omitted correction cannot be recovered
+from an unchanged summary alone.
+
+\section{Fictional history diagnostics}
+
+We evaluated two explicitly fictional, two-stage histories with an earlier
+state, later corrections, and unchanged facts. Four learned source-selection
+policies each supplied six of ten observations per stage. The policies used
+ordinary training, repeated examples, source-grounded paraphrases, or
+recombination, with three training seeds. An additional all-source reference
+supplied ten observations and therefore had a larger source allowance. All
+learned conditions shared consolidation-call and retrieval limits. Provider
+sampling seeds were not controllable.
+
+The resulting thirty episodes completed the persistence and consolidation
+checks. At the later stage, strict memory-only answer counts were 46/54 for
+ordinary training, 44/54 for repetition, 42/54 for paraphrases, and 41/54 for
+recombination. The all-source reference obtained 52/54. These denominators
+contain repeated questions over two templates; they are not independent
+conversation samples. Supplying retrieved original observations produced
+54/54 later answers in every condition. That result can conceal failures in
+source admission because the source reader can access observations omitted from
+consolidation.
+
+Six later memories were judged stale. In every case, the source-selection
+policy had withheld the correcting observation. The all-source reference had
+no stale-current flags in this study. This diagnosis supports testing admission
+separately from correction handling; it does not demonstrate an error in the
+production consolidator, whose classifier remains advisory.
+
+The original support judge flagged fourteen distinct memory identifiers across
+the thirty episodes. Each persisted into the second stage, producing
+twenty-eight phase-level flags. All fourteen concern the same employment
+instruction pattern. The original fixture treated an instruction to store a
+claim as insufficient support. Ordinary memory requests can also communicate
+self-reports, so this boundary depends on the intended annotation policy.
+The flags cannot be presented as fourteen independent factual inventions.
+Original scores remain unchanged. A separate fictional contrast study examines
+direct self-reports, ordinary memory requests, explicit fabrication, quotations,
+assistant suggestions, negation, and corrections. Its model-written expectations
+also require independent human review.
+
+That contrast study used seventeen fixtures with two provider replicates, for
+thirty-four cases and thirty-eight consolidation stages. Every consolidation
+and semantic-review call returned a valid result. Model review found no
+forbidden current claim in twenty-eight checks. Nineteen of twenty required
+phase-level claims were present; one quoted employment report about another
+person was omitted in one replicate. Direct self-reports and ordinary memory
+requests were retained in all six corresponding checks. No model-judged subject
+or temporal-scope error occurred. These results qualify the earlier instruction
+test and identify an omission to investigate. They do not establish a zero
+unsupported-memory rate on natural conversations.
+
+The contrast study used 76 provider calls and 86,134 returned tokens, with
+205.1 seconds of summed request time. The database was isolated, its dump was
+retained privately, and its container was removed after completion. This study
+tested the current consolidation prompt without changing a production policy.
+
+\subsection{Retrieval and answer quality}
+
+For twelve frozen snapshots from the all-source reference, we compared lexical
+retrieval with hybrid retrieval using the pinned MiniLM encoder. Both methods
+returned at most four memory hits and four original-source windows. Among
+seventy-two answerable queries, the prescribed source was present in 71/72
+lexical memory lists and 66/72 lexical source lists. Hybrid retrieval returned
+it in 72/72 lists for both representations. Source presence does not establish
+entailment, attribution, or a correct answer.
+
+Hybrid retrieval also returned memory and source hits for all thirty-six
+unanswerable queries. Subsequent model-only semantic review found 52/54 correct
+early memory-only answers for hybrid retrieval and 51/54 for lexical retrieval.
+Early source-assisted answers were 53/54 for both. Later memory-only results
+were 52/54 for both, and later source-assisted results were 54/54. One early
+hybrid source-assisted answer supplied the policy-dependent employer claim.
+These small development results do not establish a general retrieval advantage
+or justify a production-default change.
+
+
+
+\subsection{Historical ingestion order}
+
+A separate diagnostic supplies dated fictional observations in chronological
+and reverse order. Four fixtures describe changing residence or preference,
+each with two provider replicates, for eight episodes and sixteen consolidation
+stages. All observations are supplied directly; no classifier selects them.
+Source dates also appear in the text. The historical-backfill cases require an
+older observation arriving later to preserve the newer current claim.
+
+Model review finds all sixteen required phase-level claims and none of twelve
+forbidden current claims. No consolidation, subject-attribution, or temporal-scope
+error is recorded in the completed episodes. One database startup attempt failed
+before any provider request or persisted row; its failure record was preserved
+and the empty database was verified before resuming. This setup failure is
+separate from the completed consolidation results.
+
+The diagnostic used 32 returned provider calls, 40,530 tokens and 101.1 seconds
+of summed request time. Its expectations and semantic judgments are model-authored,
+and the fixtures are fictional. The result supports further testing of dated
+imports; it does not measure safety on natural email or establish that arbitrary
+historical backfills preserve current beliefs.

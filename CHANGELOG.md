@@ -1,12 +1,15 @@
 # Changelog
 
-## Unreleased
+## v1.5.0 (interim milestone)
 
 - Add an exact-selection consolidation API with required host permission checks before inference and inside the atomic memory commit
 - Bound the selected path to one model call, with no automatic format repair or input reduction
 - Add saved consolidation outcome reads for host reconciliation after cancellation or a lost response
 - Add opt-in class-balanced classifier heads with per-class, provenance-separated and joint-policy diagnostics
 - Record a matched development comparison on previously examined private data; retain unweighted defaults and shadow-only classification
+- Publish paper revision 8 with corrected-source learning curves, source-audit qualifications, synthetic-anchor experiments, and fictional memory and historical-date diagnostics
+- Report the unmet comparative quality criteria and retain advisory classification; no trained weights or private data are released
+- Package the current code, paper, aggregate results, dependency notices and checksums as an interim checkpoint
 
 ## v1.4.0
 
