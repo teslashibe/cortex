@@ -18,7 +18,7 @@ local caller, as the other Cortex endpoints do.
 
 The operation makes three model calls, plus at most one format-repair call: query planning, evidence extraction,
 and composition. It makes no automatic transport retries and writes no observations, memories,
-embeddings, feedback, or training labels. A malformed successful response can be repaired once; all source checks still apply. Each call has the existing model timeout;
+embeddings, feedback, or training labels. A malformed successful response or an inexactly copied quotation can be repaired once; all source checks still apply. Each call has the existing model timeout;
 the operation has a four-call deadline. Empty retrieval returns an insufficient
 answer after planning. Provider failures return an error.
 

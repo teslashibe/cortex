@@ -182,3 +182,31 @@ func TestAnswerFormatRepairBoundAndIsolation(t *testing.T) {
 		}
 	}
 }
+
+func TestAnswerRepairsLiteralCopyWithoutRelaxingSourceChecks(t *testing.T) {
+	s := testStore(t)
+	ctx := context.Background()
+	at := time.Date(2026, 10, 21, 0, 0, 0, 0, time.UTC)
+	_, err := s.WriteObservations(ctx, []Observation{{ID: "o", UserID: "u", Content: "I prefer green tea.", At: at, IdempotencyKey: "o"}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	m := &answerModel{respond: func(call int, _ []llm.Message) (string, error) {
+		switch call {
+		case 1:
+			return `{"queries":["tea preference"],"speaker":"user"}`, nil
+		case 2:
+			return `{"facts":[{"id":"f","source_id":"o","quote":"I prefer green teas.","claim":"Prefers green tea"}],"calculation":{"operation":"none"}}`, nil
+		case 3:
+			return `{"facts":[{"id":"f","source_id":"o","quote":"I prefer green tea.","claim":"Prefers green tea"}],"calculation":{"operation":"none"}}`, nil
+		case 4:
+			return `{"answer":"Green tea.","status":"answered","citations":["f"]}`, nil
+		}
+		t.Fatal("unbounded repair")
+		return "", nil
+	}}
+	out, err := NewEngine(s, m).AnswerEvidence(ctx, "u", "What tea do I prefer?", AnswerOptions{at, "UTC", true})
+	if err != nil || out.FormatRepairs != 1 || out.ModelCalls != 4 || out.Facts[0].Quote != "I prefer green tea." {
+		t.Fatalf("repair: %+v %v", out, err)
+	}
+}

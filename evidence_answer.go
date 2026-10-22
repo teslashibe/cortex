@@ -258,44 +258,63 @@ func (e *Engine) AnswerEvidence(ctx context.Context, user, question string, opts
 	if err = e.answerCall(ctx, answerExtractPrompt, map[string]any{"question": question, "as_of": opts.AsOf, "timezone": opts.Timezone, "excerpts": excerpts}, &ledger, &out); err != nil {
 		return out, err
 	}
-	if len(ledger.Facts) > 48 {
-		return out, errors.New("too many evidence facts")
-	}
 	ids := map[string]bool{}
-	for _, f := range ledger.Facts {
-		o, ok := sources[f.SourceID]
-		if !ok || f.ID == "" || len(f.ID) > 64 || ids[f.ID] || strings.TrimSpace(f.Quote) == "" || utf8.RuneCountInString(f.Quote) > 2048 || len(f.Claim) > 2048 || len(f.DateAssumption) > 1024 {
-			return out, errors.New("invalid evidence fact")
+	for attempt := 0; attempt < 2; attempt++ {
+		if len(ledger.Facts) > 48 {
+			return out, errors.New("too many evidence facts")
 		}
-		// A valid quote must actually have been supplied to this call, not only
-		// exist somewhere else in the same observation.
-		start := -1
-		for _, x := range excerpts {
-			if x.SourceID == f.SourceID {
-				if i := strings.Index(x.Text, f.Quote); i >= 0 {
-					start = x.StartRune + utf8.RuneCountInString(x.Text[:i])
-					break
+		ids = map[string]bool{}
+		out.Facts = nil
+		quoteMismatch := false
+		for _, f := range ledger.Facts {
+			o, ok := sources[f.SourceID]
+			if !ok || f.ID == "" || len(f.ID) > 64 || ids[f.ID] || strings.TrimSpace(f.Quote) == "" || utf8.RuneCountInString(f.Quote) > 2048 || len(f.Claim) > 2048 || len(f.DateAssumption) > 1024 {
+				return out, errors.New("invalid evidence fact")
+			}
+			// A valid quote must actually have been supplied to this call, not only
+			// exist somewhere else in the same observation.
+			start := -1
+			for _, x := range excerpts {
+				if x.SourceID == f.SourceID {
+					if i := strings.Index(x.Text, f.Quote); i >= 0 {
+						start = x.StartRune + utf8.RuneCountInString(x.Text[:i])
+						break
+					}
 				}
 			}
+			if start < 0 {
+				quoteMismatch = true
+				break
+			}
+			fact := EvidenceFact{ID: f.ID, SourceID: f.SourceID, Quote: f.Quote, Claim: f.Claim, DateExpression: f.DateExpression, StartRune: start, EndRune: start + utf8.RuneCountInString(f.Quote), ContentHash: contentHash(o.Content), ObservedAt: o.At}
+			fact.DateAssumption = f.DateAssumption
+			if f.DateExpression != "" && !strings.Contains(f.Quote, f.DateExpression) {
+				// A rejected date proposal cannot anchor arithmetic. Keep the valid
+				// quotation usable for a non-temporal answer, with explicit status.
+				fact.DateExpression = ""
+				fact.DateRule = "rejected_nonverbatim_expression"
+			} else if f.DateExpression != "" {
+				fact.Date, fact.DateRule, err = resolveAnswerDate(f.DateExpression, o.At, opts.Timezone)
+				if err != nil {
+					return out, err
+				}
+			}
+			out.Facts = append(out.Facts, fact)
+			ids[f.ID] = true
 		}
-		if start < 0 {
+		if !quoteMismatch {
+			break
+		}
+		if out.FormatRepairs != 0 || attempt == 1 {
 			return out, errors.New("evidence quotation does not match an excerpt")
 		}
-		fact := EvidenceFact{ID: f.ID, SourceID: f.SourceID, Quote: f.Quote, Claim: f.Claim, DateExpression: f.DateExpression, StartRune: start, EndRune: start + utf8.RuneCountInString(f.Quote), ContentHash: contentHash(o.Content), ObservedAt: o.At}
-		fact.DateAssumption = f.DateAssumption
-		if f.DateExpression != "" && !strings.Contains(f.Quote, f.DateExpression) {
-			// A rejected date proposal cannot anchor arithmetic. Keep the valid
-			// quotation usable for a non-temporal answer, with explicit status.
-			fact.DateExpression = ""
-			fact.DateRule = "rejected_nonverbatim_expression"
-		} else if f.DateExpression != "" {
-			fact.Date, fact.DateRule, err = resolveAnswerDate(f.DateExpression, o.At, opts.Timezone)
-			if err != nil {
-				return out, err
-			}
+		// A copying error may use the same single repair allowance as malformed
+		// JSON. The repaired ledger must pass every original source check.
+		out.FormatRepairs++
+		payload := map[string]any{"question": question, "as_of": opts.AsOf, "timezone": opts.Timezone, "excerpts": excerpts, "rejected_ledger": ledger}
+		if err = e.answerCall(ctx, answerExtractPrompt+"\nA quotation in the rejected ledger was not an exact substring of its source excerpt. Rebuild the ledger using exact contiguous quotations only, or omit an unsupported fact. Do not add sources or relax the schema.", payload, &ledger, &out); err != nil {
+			return out, err
 		}
-		out.Facts = append(out.Facts, fact)
-		ids[f.ID] = true
 	}
 	out.Calculation = ledger.Calculation
 	if err = calculateEvidence(&out.Calculation, out.Facts, opts); err != nil {
