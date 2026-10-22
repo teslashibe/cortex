@@ -23,6 +23,21 @@ func TestConsolidationRoutes(t *testing.T) {
 	}
 }
 
+func TestConsolidationContextOmitsHistoricalSourceIDs(t *testing.T) {
+	memories := []Memory{{ID: "memory-to-reinforce", Kind: KindFact, Summary: "Known fact", Sources: []string{"historical-source-id"}, Confidence: .9}}
+	messages, err := consolidationMessages("test", "owner", []Observation{{ID: "current-source-id", Content: "New support"}}, memories)
+	if err != nil {
+		t.Fatal(err)
+	}
+	text := messages[1].Content
+	if strings.Contains(text, "historical-source-id") || !strings.Contains(text, "current-source-id") || !strings.Contains(text, "memory-to-reinforce") || !strings.Contains(text, "Known fact") {
+		t.Fatalf("incorrect prompt projection: %s", text)
+	}
+	if len(memories[0].Sources) != 1 || memories[0].Sources[0] != "historical-source-id" {
+		t.Fatal("stored provenance was mutated")
+	}
+}
+
 func TestParseOps(t *testing.T) {
 	valid := `{"ops":[{"kind":"insert","memory":{"kind":"preference","summary":"Likes tea","confidence":0.8},"sources":["obs_1"]}]}`
 	for _, text := range []string{`{"ops":[]}`, valid, `{"ops":[{"kind":"reinforce","old_id":"mem_1","sources":["obs_1"]}]}`, `{"ops":[{"kind":"contradict","old_id":"mem_1","memory":{"kind":"preference","summary":"Likes coffee","confidence":0},"sources":["obs_1"],"reason":"Changed preference"}]}`} {

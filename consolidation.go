@@ -30,11 +30,22 @@ type Model interface {
 }
 
 func consolidationMessages(model, userID string, observations []Observation, memories []Memory) ([]llm.Message, error) {
+	// Historical source IDs cannot support a new operation. Hide only those
+	// IDs from inference so the model cannot copy them from an existing memory;
+	// retain the full provenance in storage and preserve all other context.
+	type memoryContext struct {
+		Memory
+		Sources []string `json:"sources,omitempty"`
+	}
+	existing := make([]memoryContext, len(memories))
+	for i, memory := range memories {
+		existing[i] = memoryContext{Memory: memory}
+	}
 	body, err := json.Marshal(struct {
-		UserID       string        `json:"user_id"`
-		Observations []Observation `json:"observations"`
-		Memories     []Memory      `json:"memories"`
-	}{userID, observations, memories})
+		UserID       string          `json:"user_id"`
+		Observations []Observation   `json:"observations"`
+		Memories     []memoryContext `json:"memories"`
+	}{userID, observations, existing})
 	if err != nil {
 		return nil, fmt.Errorf("encode consolidation context: %w", err)
 	}
