@@ -1,0 +1,27 @@
+{
+  "qualification": "Expanded source grouping supersedes the independence interpretation of the revision 7 primary development cohorts",
+  "cohorts": {
+    "older_primary": {
+      "rows": 24,
+      "unmapped": 1,
+      "ambiguous_components": 0,
+      "mapped_to_expanded_training_component": 21
+    },
+    "newer_primary": {
+      "rows": 18,
+      "unmapped": 3,
+      "ambiguous_components": 0,
+      "mapped_to_expanded_training_component": 14
+    }
+  },
+  "linked_candidates": 35,
+  "primary_candidates": 42,
+  "unmapped_candidates": 4,
+  "mapped_without_detected_training_link": 3,
+  "method": "Exact casefold/whitespace-normalized complete source content with at least 100 characters. Short or unmatched sources are unresolved. No inferred ID mapping or new label outcomes.",
+  "private_mapping_sha256": "d1cf8e052de6088cdf74ab413d1598cadb18ffd564c6166d8446ce3c1c6be9ed",
+  "expanded_source_audit_sha256": "6368be79da6079b3119fd2b7017736dcdfdab32041ad1f8c195ba294bfca88ac",
+  "human_reviewed": 0,
+  "production_model_promoted": false,
+  "frozen_results_changed": false
+}

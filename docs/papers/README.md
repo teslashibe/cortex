@@ -1,6 +1,6 @@
 # Papers
 
-- [Source audits and controlled sleep-inspired replay: October 2026](v7-october-2026/paper.pdf), with component-disjoint development comparisons, matched training schedules, and qualifications on historical classifier results; [LaTeX source](v7-october-2026/main.tex)
+- [Source audits and controlled sleep-inspired replay: October 2026](v7-october-2026/paper.pdf), with matched training schedules and qualified development comparisons; see the [subsequent source-audit qualification](../experiments/expanded-source-audit-2026-10-22.md); [LaTeX source](v7-october-2026/main.tex)
 
 - [Sleep-inspired consolidation and comparative evaluation protocol: October 2026](v6-october-2026/paper.pdf), with classifier imbalance analysis and sourced platform context; [LaTeX source](v6-october-2026/main.tex)
 
@@ -33,3 +33,8 @@ and related-project overlap across original classifier partitions. Historical
 scores remain available, with their limitations explained in revision 7. The
 corrected replay study is developmental and does not establish improved factual
 retention or authorize learned memory writes.
+
+The expanded audit after revision 7 links 35 of its 42 primary development
+candidates to source components represented in training. The frozen PDF is
+preserved; the [audit qualification](../experiments/expanded-source-audit-2026-10-22.md)
+supersedes any independent-transfer interpretation of those cohorts.
