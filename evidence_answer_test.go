@@ -27,7 +27,7 @@ func (m *answerModel) Complete(_ context.Context, messages []llm.Message) (llm.R
 }
 
 func TestAnswerEvidenceSourceAndDeletionFence(t *testing.T) {
-	for _, mode := range []string{"ok", "fabricated_quote", "foreign_source", "deleted_during_answer", "transport_failure", "missing_citation"} {
+	for _, mode := range []string{"ok", "invalid_plan", "fabricated_quote", "foreign_source", "deleted_during_answer", "transport_failure", "missing_citation"} {
 		t.Run(mode, func(t *testing.T) {
 			s := testStore(t)
 			ctx := context.Background()
@@ -40,6 +40,9 @@ func TestAnswerEvidenceSourceAndDeletionFence(t *testing.T) {
 			m.respond = func(call int, msg []llm.Message) (string, error) {
 				switch call {
 				case 1:
+					if mode == "invalid_plan" {
+						return `{"queries":[""],"speaker":"both"}`, nil
+					}
 					return `{"queries":["Brookfield arrival"],"speaker":"user"}`, nil
 				case 2:
 					if mode == "transport_failure" {
@@ -69,11 +72,14 @@ func TestAnswerEvidenceSourceAndDeletionFence(t *testing.T) {
 			}
 			e := NewEngine(s, m)
 			out, err := e.AnswerEvidence(ctx, "u", "When did I arrive in Brookfield?", AnswerOptions{anchor, "UTC", true})
-			if mode != "ok" {
+			if mode != "ok" && mode != "invalid_plan" {
 				if err == nil || out.Answer != "" || len(out.Facts) > 0 || len(out.Citations) > 0 {
 					t.Fatalf("private partial result escaped: %+v %v", out, err)
 				}
 				return
+			}
+			if out.QueryPlanFallback != (mode == "invalid_plan") {
+				t.Fatalf("incorrect plan fallback: %+v", out)
 			}
 			if err != nil || out.Calculation.Value != 0 || out.ModelCalls != 3 || len(out.Facts) != 1 || out.Facts[0].Quote != text || out.Facts[0].StartRune != 0 || out.Facts[0].EndRune != len(text) {
 				t.Fatalf("answer %+v: %v", out, err)

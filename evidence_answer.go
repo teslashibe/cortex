@@ -49,20 +49,21 @@ type EvidenceCalculation struct {
 }
 
 type EvidenceAnswer struct {
-	Answer          string              `json:"answer"`
-	Status          string              `json:"status"`
-	Facts           []EvidenceFact      `json:"facts"`
-	Citations       []string            `json:"citations"`
-	Assumptions     []string            `json:"assumptions,omitempty"`
-	Calculation     EvidenceCalculation `json:"calculation"`
-	Coverage        string              `json:"coverage"`
-	Truncated       bool                `json:"truncated"`
-	IndexIncomplete bool                `json:"index_incomplete"`
-	ModelCalls      int                 `json:"model_calls"`
-	FormatRepairs   int                 `json:"format_repairs"`
-	Model           string              `json:"model"`
-	Tokens          int                 `json:"tokens"`
-	EvidenceBytes   int                 `json:"evidence_bytes"`
+	Answer            string              `json:"answer"`
+	Status            string              `json:"status"`
+	Facts             []EvidenceFact      `json:"facts"`
+	Citations         []string            `json:"citations"`
+	Assumptions       []string            `json:"assumptions,omitempty"`
+	Calculation       EvidenceCalculation `json:"calculation"`
+	Coverage          string              `json:"coverage"`
+	Truncated         bool                `json:"truncated"`
+	IndexIncomplete   bool                `json:"index_incomplete"`
+	ModelCalls        int                 `json:"model_calls"`
+	FormatRepairs     int                 `json:"format_repairs"`
+	QueryPlanFallback bool                `json:"query_plan_fallback"`
+	Model             string              `json:"model"`
+	Tokens            int                 `json:"tokens"`
+	EvidenceBytes     int                 `json:"evidence_bytes"`
 }
 
 type answerExcerpt struct {
@@ -189,15 +190,21 @@ func (e *Engine) AnswerEvidence(ctx context.Context, user, question string, opts
 	if err := e.answerCall(ctx, answerPlanPrompt, map[string]any{"question": question}, &plan, &out); err != nil {
 		return out, err
 	}
-	if len(plan.Queries) < 1 || len(plan.Queries) > 3 || (plan.Speaker != "user" && plan.Speaker != "assistant" && plan.Speaker != "any") {
-		return out, errors.New("invalid evidence plan")
+	validPlan := len(plan.Queries) >= 1 && len(plan.Queries) <= 3 && (plan.Speaker == "user" || plan.Speaker == "assistant" || plan.Speaker == "any")
+	for _, q := range plan.Queries {
+		validPlan = validPlan && strings.TrimSpace(q) != "" && len(q) <= 4096
+	}
+	if !validPlan {
+		// Expansion and speaker preference are advisory. An invalid plan can
+		// safely fall back to the caller's already-validated question without
+		// relaxing any quotation, ownership, or answer validation.
+		plan.Queries = nil
+		plan.Speaker = "any"
+		out.QueryPlanFallback = true
 	}
 	queries := []string{question}
 	for _, q := range plan.Queries {
 		q = strings.TrimSpace(q)
-		if q == "" || len(q) > 4096 {
-			return out, errors.New("invalid evidence query")
-		}
 		found := false
 		for _, old := range queries {
 			found = found || q == old

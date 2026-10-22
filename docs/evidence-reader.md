@@ -23,6 +23,8 @@ the operation has a four-call deadline. Empty retrieval returns an insufficient
 answer after planning. Provider failures return an error.
 
 The reader combines up to four query variants with an additional lexical channel.
+An invalid query plan falls back to the original question and reports
+`query_plan_fallback`; quotation and owner checks are unchanged.
 Simple plural normalization, month-name aliases, speaker preference, overlapping
 window suppression, and a two-excerpt-per-source cap improve evidence diversity.
 The evidence array contains at most 80 excerpts and 32,000 UTF-8 bytes, including
