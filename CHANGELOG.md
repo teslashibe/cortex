@@ -5,6 +5,8 @@
 - Add an exact-selection consolidation API with required host permission checks before inference and inside the atomic memory commit
 - Bound the selected path to one model call, with no automatic format repair or input reduction
 - Add saved consolidation outcome reads for host reconciliation after cancellation or a lost response
+- Add opt-in class-balanced classifier heads with per-class, provenance-separated and joint-policy diagnostics
+- Record a matched development comparison on previously examined private data; retain unweighted defaults and shadow-only classification
 
 ## v1.4.0
 

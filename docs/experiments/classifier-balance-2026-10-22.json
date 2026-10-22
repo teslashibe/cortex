@@ -1,0 +1,3405 @@
+{
+  "protocol": {
+    "purpose": "Development comparison of training-head class balancing on previously examined project splits",
+    "dataset_sha256": "fdddc7ee2599a570d789aea4bb083ae7b515173615276e802887a8d08067ad2b",
+    "encoders": [
+      "mixed-linear",
+      "mixed-setfit"
+    ],
+    "weights": [
+      "none",
+      "balanced"
+    ],
+    "encoder_update": false,
+    "C": 10.0,
+    "seed": 17,
+    "max_iter": 1500,
+    "temperature_candidates": [
+      0.5,
+      0.75,
+      1,
+      1.5,
+      2,
+      3,
+      5
+    ],
+    "temperature_selection": "minimum dev negative log likelihood on original mixed dev partition",
+    "decision_threshold": 0.8,
+    "natural_report": "teacher rows separately from synthetic rows; labels unreviewed",
+    "baseline": "training majority fixed before evaluation",
+    "interpretation": "Previously observed test set is development evidence; no independent confirmation or automatic promotion",
+    "promotion": "shadow_only"
+  },
+  "models": {
+    "mixed-linear-none": {
+      "encoder_model": "cortex-linear-6aa30d9e87bfcfac",
+      "class_weight": "none",
+      "temperature": {
+        "retention": 1.5,
+        "kind": 1.0
+      },
+      "refit_seconds": 1.3426817079307511,
+      "maximum_probability_difference_from_original": 0.0,
+      "natural": {
+        "retention": {
+          "dev": {
+            "n": 1040,
+            "accuracy": 0.5961538461538461,
+            "macro_f1": 0.35290702727469137,
+            "supported_macro_f1": 0.35290702727469137,
+            "balanced_accuracy": 0.3634271161240448,
+            "brier": 0.553490908511173,
+            "ece_10_bins": 0.03561142635901544,
+            "coverage_at_0.8": 0.1519230769230769,
+            "error_at_0.8": 0.2088607594936709,
+            "labels": [
+              "durable",
+              "temporary",
+              "ignore",
+              "uncertain"
+            ],
+            "confusion": [
+              [
+                30,
+                75,
+                21,
+                9
+              ],
+              [
+                52,
+                535,
+                65,
+                17
+              ],
+              [
+                25,
+                52,
+                50,
+                3
+              ],
+              [
+                21,
+                49,
+                31,
+                5
+              ]
+            ],
+            "per_class": {
+              "durable": {
+                "support": 135,
+                "predicted": 128,
+                "correct": 30,
+                "precision": 0.234375,
+                "recall": 0.2222222222222222,
+                "f1": 0.22813688212927757
+              },
+              "temporary": {
+                "support": 669,
+                "predicted": 711,
+                "correct": 535,
+                "precision": 0.7524613220815752,
+                "recall": 0.7997010463378177,
+                "f1": 0.7753623188405797
+              },
+              "ignore": {
+                "support": 130,
+                "predicted": 167,
+                "correct": 50,
+                "precision": 0.2994011976047904,
+                "recall": 0.38461538461538464,
+                "f1": 0.3367003367003367
+              },
+              "uncertain": {
+                "support": 106,
+                "predicted": 34,
+                "correct": 5,
+                "precision": 0.14705882352941177,
+                "recall": 0.04716981132075472,
+                "f1": 0.07142857142857142
+              }
+            },
+            "unevaluated_classes": []
+          },
+          "test": {
+            "n": 363,
+            "accuracy": 0.5922865013774105,
+            "macro_f1": 0.33881977489538995,
+            "supported_macro_f1": 0.33881977489538995,
+            "balanced_accuracy": 0.3504479901368157,
+            "brier": 0.5467161050794037,
+            "ece_10_bins": 0.07174814749821093,
+            "coverage_at_0.8": 0.17079889807162535,
+            "error_at_0.8": 0.2903225806451613,
+            "labels": [
+              "durable",
+              "temporary",
+              "ignore",
+              "uncertain"
+            ],
+            "confusion": [
+              [
+                5,
+                30,
+                1,
+                1
+              ],
+              [
+                16,
+                193,
+                28,
+                16
+              ],
+              [
+                3,
+                16,
+                13,
+                0
+              ],
+              [
+                3,
+                29,
+                5,
+                4
+              ]
+            ],
+            "per_class": {
+              "durable": {
+                "support": 37,
+                "predicted": 27,
+                "correct": 5,
+                "precision": 0.18518518518518517,
+                "recall": 0.13513513513513514,
+                "f1": 0.15625
+              },
+              "temporary": {
+                "support": 253,
+                "predicted": 268,
+                "correct": 193,
+                "precision": 0.7201492537313433,
+                "recall": 0.7628458498023716,
+                "f1": 0.7408829174664108
+              },
+              "ignore": {
+                "support": 32,
+                "predicted": 47,
+                "correct": 13,
+                "precision": 0.2765957446808511,
+                "recall": 0.40625,
+                "f1": 0.3291139240506329
+              },
+              "uncertain": {
+                "support": 41,
+                "predicted": 21,
+                "correct": 4,
+                "precision": 0.19047619047619047,
+                "recall": 0.0975609756097561,
+                "f1": 0.12903225806451613
+              }
+            },
+            "unevaluated_classes": []
+          }
+        },
+        "kind": {
+          "dev": {
+            "n": 871,
+            "accuracy": 0.9070034443168772,
+            "macro_f1": 0.16782543412978193,
+            "supported_macro_f1": 0.20139052095573834,
+            "balanced_accuracy": 0.19920626089536736,
+            "brier": 0.1648809144857297,
+            "ece_10_bins": 0.04470278241550359,
+            "coverage_at_0.8": 0.8691159586681975,
+            "error_at_0.8": 0.0607661822985469,
+            "labels": [
+              "fact",
+              "behavior",
+              "preference",
+              "relationship",
+              "project",
+              "routine"
+            ],
+            "confusion": [
+              [
+                1,
+                0,
+                2,
+                0,
+                30,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                2,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                13,
+                1
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                5,
+                0
+              ],
+              [
+                3,
+                0,
+                10,
+                0,
+                789,
+                15
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            ],
+            "per_class": {
+              "fact": {
+                "support": 33,
+                "predicted": 4,
+                "correct": 1,
+                "precision": 0.25,
+                "recall": 0.030303030303030304,
+                "f1": 0.05405405405405406
+              },
+              "behavior": {
+                "support": 2,
+                "predicted": 0,
+                "correct": 0,
+                "precision": null,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "preference": {
+                "support": 14,
+                "predicted": 12,
+                "correct": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "relationship": {
+                "support": 5,
+                "predicted": 0,
+                "correct": 0,
+                "precision": null,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "project": {
+                "support": 817,
+                "predicted": 839,
+                "correct": 789,
+                "precision": 0.9404052443384983,
+                "recall": 0.9657282741738066,
+                "f1": 0.9528985507246377
+              },
+              "routine": {
+                "support": 0,
+                "predicted": 16,
+                "correct": 0,
+                "precision": 0.0,
+                "recall": null,
+                "f1": 0.0
+              }
+            },
+            "unevaluated_classes": [
+              "routine"
+            ]
+          },
+          "test": {
+            "n": 310,
+            "accuracy": 0.9,
+            "macro_f1": 0.15789473684210525,
+            "supported_macro_f1": 0.23684210526315788,
+            "balanced_accuracy": 0.24388111888111888,
+            "brier": 0.16924308987246134,
+            "ece_10_bins": 0.051616043049372624,
+            "coverage_at_0.8": 0.8870967741935484,
+            "error_at_0.8": 0.06909090909090909,
+            "labels": [
+              "fact",
+              "behavior",
+              "preference",
+              "relationship",
+              "project",
+              "routine"
+            ],
+            "confusion": [
+              [
+                0,
+                0,
+                0,
+                0,
+                9,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                14,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                1,
+                0,
+                6,
+                0,
+                279,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                1,
+                0
+              ]
+            ],
+            "per_class": {
+              "fact": {
+                "support": 9,
+                "predicted": 1,
+                "correct": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "behavior": {
+                "support": 0,
+                "predicted": 0,
+                "correct": 0,
+                "precision": null,
+                "recall": null,
+                "f1": 0.0
+              },
+              "preference": {
+                "support": 14,
+                "predicted": 6,
+                "correct": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "relationship": {
+                "support": 0,
+                "predicted": 0,
+                "correct": 0,
+                "precision": null,
+                "recall": null,
+                "f1": 0.0
+              },
+              "project": {
+                "support": 286,
+                "predicted": 303,
+                "correct": 279,
+                "precision": 0.9207920792079208,
+                "recall": 0.9755244755244755,
+                "f1": 0.9473684210526315
+              },
+              "routine": {
+                "support": 1,
+                "predicted": 0,
+                "correct": 0,
+                "precision": null,
+                "recall": 0.0,
+                "f1": 0.0
+              }
+            },
+            "unevaluated_classes": [
+              "behavior",
+              "relationship"
+            ]
+          }
+        },
+        "joint_policy": {
+          "dev": {
+            "n": 1040,
+            "accepted": 154,
+            "errors": 34,
+            "coverage": 0.14807692307692308,
+            "error": 0.22077922077922077
+          },
+          "test": {
+            "n": 363,
+            "accepted": 61,
+            "errors": 18,
+            "coverage": 0.16804407713498623,
+            "error": 0.29508196721311475
+          }
+        },
+        "majority_baseline": {
+          "retention": {
+            "label": "temporary",
+            "dev": {
+              "n": 1040,
+              "accuracy": 0.6432692307692308,
+              "macro_f1": 0.1957284961966062,
+              "supported_macro_f1": 0.1957284961966062,
+              "balanced_accuracy": 0.25,
+              "brier": 0.7134615384615385,
+              "ece_10_bins": 0.35673076923076924,
+              "coverage_at_0.8": 1.0,
+              "error_at_0.8": 0.35673076923076924,
+              "labels": [
+                "durable",
+                "temporary",
+                "ignore",
+                "uncertain"
+              ],
+              "confusion": [
+                [
+                  0,
+                  135,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  669,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  130,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  106,
+                  0,
+                  0
+                ]
+              ],
+              "per_class": {
+                "durable": {
+                  "support": 135,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "temporary": {
+                  "support": 669,
+                  "predicted": 1040,
+                  "correct": 669,
+                  "precision": 0.6432692307692308,
+                  "recall": 1.0,
+                  "f1": 0.7829139847864248
+                },
+                "ignore": {
+                  "support": 130,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "uncertain": {
+                  "support": 106,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                }
+              },
+              "unevaluated_classes": []
+            },
+            "test": {
+              "n": 363,
+              "accuracy": 0.696969696969697,
+              "macro_f1": 0.20535714285714285,
+              "supported_macro_f1": 0.20535714285714285,
+              "balanced_accuracy": 0.25,
+              "brier": 0.6060606060606061,
+              "ece_10_bins": 0.30303030303030304,
+              "coverage_at_0.8": 1.0,
+              "error_at_0.8": 0.30303030303030304,
+              "labels": [
+                "durable",
+                "temporary",
+                "ignore",
+                "uncertain"
+              ],
+              "confusion": [
+                [
+                  0,
+                  37,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  253,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  32,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  41,
+                  0,
+                  0
+                ]
+              ],
+              "per_class": {
+                "durable": {
+                  "support": 37,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "temporary": {
+                  "support": 253,
+                  "predicted": 363,
+                  "correct": 253,
+                  "precision": 0.696969696969697,
+                  "recall": 1.0,
+                  "f1": 0.8214285714285714
+                },
+                "ignore": {
+                  "support": 32,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "uncertain": {
+                  "support": 41,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                }
+              },
+              "unevaluated_classes": []
+            }
+          },
+          "kind": {
+            "label": "project",
+            "dev": {
+              "n": 871,
+              "accuracy": 0.9380022962112514,
+              "macro_f1": 0.1613349131121643,
+              "supported_macro_f1": 0.19360189573459716,
+              "balanced_accuracy": 0.2,
+              "brier": 0.12399540757749714,
+              "ece_10_bins": 0.06199770378874857,
+              "coverage_at_0.8": 1.0,
+              "error_at_0.8": 0.06199770378874857,
+              "labels": [
+                "fact",
+                "behavior",
+                "preference",
+                "relationship",
+                "project",
+                "routine"
+              ],
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  33,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  2,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  14,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  5,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  817,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "per_class": {
+                "fact": {
+                  "support": 33,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "behavior": {
+                  "support": 2,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "preference": {
+                  "support": 14,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "relationship": {
+                  "support": 5,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "project": {
+                  "support": 817,
+                  "predicted": 871,
+                  "correct": 817,
+                  "precision": 0.9380022962112514,
+                  "recall": 1.0,
+                  "f1": 0.9680094786729858
+                },
+                "routine": {
+                  "support": 0,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": null,
+                  "f1": 0.0
+                }
+              },
+              "unevaluated_classes": [
+                "routine"
+              ]
+            },
+            "test": {
+              "n": 310,
+              "accuracy": 0.9225806451612903,
+              "macro_f1": 0.1599552572706935,
+              "supported_macro_f1": 0.23993288590604026,
+              "balanced_accuracy": 0.25,
+              "brier": 0.15483870967741936,
+              "ece_10_bins": 0.07741935483870968,
+              "coverage_at_0.8": 1.0,
+              "error_at_0.8": 0.07741935483870968,
+              "labels": [
+                "fact",
+                "behavior",
+                "preference",
+                "relationship",
+                "project",
+                "routine"
+              ],
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  9,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  14,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  286,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0
+                ]
+              ],
+              "per_class": {
+                "fact": {
+                  "support": 9,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "behavior": {
+                  "support": 0,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": null,
+                  "f1": 0.0
+                },
+                "preference": {
+                  "support": 14,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "relationship": {
+                  "support": 0,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": null,
+                  "f1": 0.0
+                },
+                "project": {
+                  "support": 286,
+                  "predicted": 310,
+                  "correct": 286,
+                  "precision": 0.9225806451612903,
+                  "recall": 1.0,
+                  "f1": 0.959731543624161
+                },
+                "routine": {
+                  "support": 1,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                }
+              },
+              "unevaluated_classes": [
+                "behavior",
+                "relationship"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "mixed-linear-balanced": {
+      "encoder_model": "cortex-linear-6aa30d9e87bfcfac",
+      "class_weight": "balanced",
+      "temperature": {
+        "retention": 2.0,
+        "kind": 1.0
+      },
+      "refit_seconds": 0.17515949998050928,
+      "maximum_probability_difference_from_original": 0.673659916107956,
+      "natural": {
+        "retention": {
+          "dev": {
+            "n": 1040,
+            "accuracy": 0.4932692307692308,
+            "macro_f1": 0.34286313976448884,
+            "supported_macro_f1": 0.34286313976448884,
+            "balanced_accuracy": 0.3667943161682057,
+            "brier": 0.6305422240610994,
+            "ece_10_bins": 0.04055762443652616,
+            "coverage_at_0.8": 0.014423076923076924,
+            "error_at_0.8": 0.26666666666666666,
+            "labels": [
+              "durable",
+              "temporary",
+              "ignore",
+              "uncertain"
+            ],
+            "confusion": [
+              [
+                29,
+                49,
+                32,
+                25
+              ],
+              [
+                56,
+                404,
+                133,
+                76
+              ],
+              [
+                25,
+                36,
+                61,
+                8
+              ],
+              [
+                19,
+                28,
+                40,
+                19
+              ]
+            ],
+            "per_class": {
+              "durable": {
+                "support": 135,
+                "predicted": 129,
+                "correct": 29,
+                "precision": 0.2248062015503876,
+                "recall": 0.21481481481481482,
+                "f1": 0.2196969696969697
+              },
+              "temporary": {
+                "support": 669,
+                "predicted": 517,
+                "correct": 404,
+                "precision": 0.781431334622824,
+                "recall": 0.6038863976083707,
+                "f1": 0.6812816188870152
+              },
+              "ignore": {
+                "support": 130,
+                "predicted": 266,
+                "correct": 61,
+                "precision": 0.22932330827067668,
+                "recall": 0.46923076923076923,
+                "f1": 0.30808080808080807
+              },
+              "uncertain": {
+                "support": 106,
+                "predicted": 128,
+                "correct": 19,
+                "precision": 0.1484375,
+                "recall": 0.1792452830188679,
+                "f1": 0.1623931623931624
+              }
+            },
+            "unevaluated_classes": []
+          },
+          "test": {
+            "n": 363,
+            "accuracy": 0.5041322314049587,
+            "macro_f1": 0.3383607191799205,
+            "supported_macro_f1": 0.3383607191799205,
+            "balanced_accuracy": 0.3818907983890089,
+            "brier": 0.620827646783274,
+            "ece_10_bins": 0.0761675334843794,
+            "coverage_at_0.8": 0.024793388429752067,
+            "error_at_0.8": 0.3333333333333333,
+            "labels": [
+              "durable",
+              "temporary",
+              "ignore",
+              "uncertain"
+            ],
+            "confusion": [
+              [
+                5,
+                25,
+                2,
+                5
+              ],
+              [
+                14,
+                150,
+                54,
+                35
+              ],
+              [
+                3,
+                8,
+                17,
+                4
+              ],
+              [
+                4,
+                21,
+                5,
+                11
+              ]
+            ],
+            "per_class": {
+              "durable": {
+                "support": 37,
+                "predicted": 26,
+                "correct": 5,
+                "precision": 0.19230769230769232,
+                "recall": 0.13513513513513514,
+                "f1": 0.15873015873015872
+              },
+              "temporary": {
+                "support": 253,
+                "predicted": 204,
+                "correct": 150,
+                "precision": 0.7352941176470589,
+                "recall": 0.5928853754940712,
+                "f1": 0.6564551422319475
+              },
+              "ignore": {
+                "support": 32,
+                "predicted": 78,
+                "correct": 17,
+                "precision": 0.21794871794871795,
+                "recall": 0.53125,
+                "f1": 0.3090909090909091
+              },
+              "uncertain": {
+                "support": 41,
+                "predicted": 55,
+                "correct": 11,
+                "precision": 0.2,
+                "recall": 0.2682926829268293,
+                "f1": 0.22916666666666666
+              }
+            },
+            "unevaluated_classes": []
+          }
+        },
+        "kind": {
+          "dev": {
+            "n": 871,
+            "accuracy": 0.8140068886337543,
+            "macro_f1": 0.16510618572739366,
+            "supported_macro_f1": 0.19812742287287238,
+            "balanced_accuracy": 0.19100923556247915,
+            "brier": 0.26985799586236353,
+            "ece_10_bins": 0.03402750570058789,
+            "coverage_at_0.8": 0.6337543053960965,
+            "error_at_0.8": 0.07427536231884058,
+            "labels": [
+              "fact",
+              "behavior",
+              "preference",
+              "relationship",
+              "project",
+              "routine"
+            ],
+            "confusion": [
+              [
+                3,
+                0,
+                3,
+                1,
+                25,
+                1
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                2,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                13,
+                1
+              ],
+              [
+                1,
+                0,
+                0,
+                0,
+                4,
+                0
+              ],
+              [
+                30,
+                2,
+                64,
+                0,
+                706,
+                15
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            ],
+            "per_class": {
+              "fact": {
+                "support": 33,
+                "predicted": 34,
+                "correct": 3,
+                "precision": 0.08823529411764706,
+                "recall": 0.09090909090909091,
+                "f1": 0.08955223880597014
+              },
+              "behavior": {
+                "support": 2,
+                "predicted": 2,
+                "correct": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "preference": {
+                "support": 14,
+                "predicted": 67,
+                "correct": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "relationship": {
+                "support": 5,
+                "predicted": 1,
+                "correct": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "project": {
+                "support": 817,
+                "predicted": 750,
+                "correct": 706,
+                "precision": 0.9413333333333334,
+                "recall": 0.8641370869033048,
+                "f1": 0.9010848755583918
+              },
+              "routine": {
+                "support": 0,
+                "predicted": 17,
+                "correct": 0,
+                "precision": 0.0,
+                "recall": null,
+                "f1": 0.0
+              }
+            },
+            "unevaluated_classes": [
+              "routine"
+            ]
+          },
+          "test": {
+            "n": 310,
+            "accuracy": 0.8451612903225807,
+            "macro_f1": 0.21584168755221386,
+            "supported_macro_f1": 0.3237625313283208,
+            "balanced_accuracy": 0.33377733377733376,
+            "brier": 0.2740114187846902,
+            "ece_10_bins": 0.07088018479702271,
+            "coverage_at_0.8": 0.5548387096774193,
+            "error_at_0.8": 0.0872093023255814,
+            "labels": [
+              "fact",
+              "behavior",
+              "preference",
+              "relationship",
+              "project",
+              "routine"
+            ],
+            "confusion": [
+              [
+                2,
+                0,
+                0,
+                0,
+                7,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                3,
+                0,
+                10,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                7,
+                1,
+                19,
+                0,
+                257,
+                2
+              ],
+              [
+                1,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            ],
+            "per_class": {
+              "fact": {
+                "support": 9,
+                "predicted": 10,
+                "correct": 2,
+                "precision": 0.2,
+                "recall": 0.2222222222222222,
+                "f1": 0.21052631578947367
+              },
+              "behavior": {
+                "support": 0,
+                "predicted": 2,
+                "correct": 0,
+                "precision": 0.0,
+                "recall": null,
+                "f1": 0.0
+              },
+              "preference": {
+                "support": 14,
+                "predicted": 22,
+                "correct": 3,
+                "precision": 0.13636363636363635,
+                "recall": 0.21428571428571427,
+                "f1": 0.16666666666666666
+              },
+              "relationship": {
+                "support": 0,
+                "predicted": 0,
+                "correct": 0,
+                "precision": null,
+                "recall": null,
+                "f1": 0.0
+              },
+              "project": {
+                "support": 286,
+                "predicted": 274,
+                "correct": 257,
+                "precision": 0.9379562043795621,
+                "recall": 0.8986013986013986,
+                "f1": 0.9178571428571428
+              },
+              "routine": {
+                "support": 1,
+                "predicted": 2,
+                "correct": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0
+              }
+            },
+            "unevaluated_classes": [
+              "behavior",
+              "relationship"
+            ]
+          }
+        },
+        "joint_policy": {
+          "dev": {
+            "n": 1040,
+            "accepted": 13,
+            "errors": 3,
+            "coverage": 0.0125,
+            "error": 0.23076923076923078
+          },
+          "test": {
+            "n": 363,
+            "accepted": 9,
+            "errors": 3,
+            "coverage": 0.024793388429752067,
+            "error": 0.3333333333333333
+          }
+        },
+        "majority_baseline": {
+          "retention": {
+            "label": "temporary",
+            "dev": {
+              "n": 1040,
+              "accuracy": 0.6432692307692308,
+              "macro_f1": 0.1957284961966062,
+              "supported_macro_f1": 0.1957284961966062,
+              "balanced_accuracy": 0.25,
+              "brier": 0.7134615384615385,
+              "ece_10_bins": 0.35673076923076924,
+              "coverage_at_0.8": 1.0,
+              "error_at_0.8": 0.35673076923076924,
+              "labels": [
+                "durable",
+                "temporary",
+                "ignore",
+                "uncertain"
+              ],
+              "confusion": [
+                [
+                  0,
+                  135,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  669,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  130,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  106,
+                  0,
+                  0
+                ]
+              ],
+              "per_class": {
+                "durable": {
+                  "support": 135,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "temporary": {
+                  "support": 669,
+                  "predicted": 1040,
+                  "correct": 669,
+                  "precision": 0.6432692307692308,
+                  "recall": 1.0,
+                  "f1": 0.7829139847864248
+                },
+                "ignore": {
+                  "support": 130,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "uncertain": {
+                  "support": 106,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                }
+              },
+              "unevaluated_classes": []
+            },
+            "test": {
+              "n": 363,
+              "accuracy": 0.696969696969697,
+              "macro_f1": 0.20535714285714285,
+              "supported_macro_f1": 0.20535714285714285,
+              "balanced_accuracy": 0.25,
+              "brier": 0.6060606060606061,
+              "ece_10_bins": 0.30303030303030304,
+              "coverage_at_0.8": 1.0,
+              "error_at_0.8": 0.30303030303030304,
+              "labels": [
+                "durable",
+                "temporary",
+                "ignore",
+                "uncertain"
+              ],
+              "confusion": [
+                [
+                  0,
+                  37,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  253,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  32,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  41,
+                  0,
+                  0
+                ]
+              ],
+              "per_class": {
+                "durable": {
+                  "support": 37,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "temporary": {
+                  "support": 253,
+                  "predicted": 363,
+                  "correct": 253,
+                  "precision": 0.696969696969697,
+                  "recall": 1.0,
+                  "f1": 0.8214285714285714
+                },
+                "ignore": {
+                  "support": 32,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "uncertain": {
+                  "support": 41,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                }
+              },
+              "unevaluated_classes": []
+            }
+          },
+          "kind": {
+            "label": "project",
+            "dev": {
+              "n": 871,
+              "accuracy": 0.9380022962112514,
+              "macro_f1": 0.1613349131121643,
+              "supported_macro_f1": 0.19360189573459716,
+              "balanced_accuracy": 0.2,
+              "brier": 0.12399540757749714,
+              "ece_10_bins": 0.06199770378874857,
+              "coverage_at_0.8": 1.0,
+              "error_at_0.8": 0.06199770378874857,
+              "labels": [
+                "fact",
+                "behavior",
+                "preference",
+                "relationship",
+                "project",
+                "routine"
+              ],
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  33,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  2,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  14,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  5,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  817,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "per_class": {
+                "fact": {
+                  "support": 33,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "behavior": {
+                  "support": 2,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "preference": {
+                  "support": 14,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "relationship": {
+                  "support": 5,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "project": {
+                  "support": 817,
+                  "predicted": 871,
+                  "correct": 817,
+                  "precision": 0.9380022962112514,
+                  "recall": 1.0,
+                  "f1": 0.9680094786729858
+                },
+                "routine": {
+                  "support": 0,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": null,
+                  "f1": 0.0
+                }
+              },
+              "unevaluated_classes": [
+                "routine"
+              ]
+            },
+            "test": {
+              "n": 310,
+              "accuracy": 0.9225806451612903,
+              "macro_f1": 0.1599552572706935,
+              "supported_macro_f1": 0.23993288590604026,
+              "balanced_accuracy": 0.25,
+              "brier": 0.15483870967741936,
+              "ece_10_bins": 0.07741935483870968,
+              "coverage_at_0.8": 1.0,
+              "error_at_0.8": 0.07741935483870968,
+              "labels": [
+                "fact",
+                "behavior",
+                "preference",
+                "relationship",
+                "project",
+                "routine"
+              ],
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  9,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  14,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  286,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0
+                ]
+              ],
+              "per_class": {
+                "fact": {
+                  "support": 9,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "behavior": {
+                  "support": 0,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": null,
+                  "f1": 0.0
+                },
+                "preference": {
+                  "support": 14,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "relationship": {
+                  "support": 0,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": null,
+                  "f1": 0.0
+                },
+                "project": {
+                  "support": 286,
+                  "predicted": 310,
+                  "correct": 286,
+                  "precision": 0.9225806451612903,
+                  "recall": 1.0,
+                  "f1": 0.959731543624161
+                },
+                "routine": {
+                  "support": 1,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                }
+              },
+              "unevaluated_classes": [
+                "behavior",
+                "relationship"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "mixed-setfit-none": {
+      "encoder_model": "cortex-setfit-1a98d6527c4ac7e4",
+      "class_weight": "none",
+      "temperature": {
+        "retention": 1.5,
+        "kind": 1.0
+      },
+      "refit_seconds": 0.17213604203425348,
+      "maximum_probability_difference_from_original": 0.0,
+      "natural": {
+        "retention": {
+          "dev": {
+            "n": 1040,
+            "accuracy": 0.6471153846153846,
+            "macro_f1": 0.4174971404118834,
+            "supported_macro_f1": 0.4174971404118834,
+            "balanced_accuracy": 0.40676125336841135,
+            "brier": 0.5086398760597985,
+            "ece_10_bins": 0.08218040540859342,
+            "coverage_at_0.8": 0.07019230769230769,
+            "error_at_0.8": 0.136986301369863,
+            "labels": [
+              "durable",
+              "temporary",
+              "ignore",
+              "uncertain"
+            ],
+            "confusion": [
+              [
+                47,
+                69,
+                19,
+                0
+              ],
+              [
+                31,
+                574,
+                50,
+                14
+              ],
+              [
+                26,
+                63,
+                40,
+                1
+              ],
+              [
+                4,
+                69,
+                21,
+                12
+              ]
+            ],
+            "per_class": {
+              "durable": {
+                "support": 135,
+                "predicted": 108,
+                "correct": 47,
+                "precision": 0.4351851851851852,
+                "recall": 0.34814814814814815,
+                "f1": 0.3868312757201646
+              },
+              "temporary": {
+                "support": 669,
+                "predicted": 775,
+                "correct": 574,
+                "precision": 0.7406451612903225,
+                "recall": 0.8579970104633782,
+                "f1": 0.7950138504155124
+              },
+              "ignore": {
+                "support": 130,
+                "predicted": 130,
+                "correct": 40,
+                "precision": 0.3076923076923077,
+                "recall": 0.3076923076923077,
+                "f1": 0.3076923076923077
+              },
+              "uncertain": {
+                "support": 106,
+                "predicted": 27,
+                "correct": 12,
+                "precision": 0.4444444444444444,
+                "recall": 0.11320754716981132,
+                "f1": 0.18045112781954886
+              }
+            },
+            "unevaluated_classes": []
+          },
+          "test": {
+            "n": 363,
+            "accuracy": 0.6418732782369146,
+            "macro_f1": 0.34091271226307723,
+            "supported_macro_f1": 0.34091271226307723,
+            "balanced_accuracy": 0.3605237479839813,
+            "brier": 0.5095871830065092,
+            "ece_10_bins": 0.07423644260970519,
+            "coverage_at_0.8": 0.12396694214876033,
+            "error_at_0.8": 0.28888888888888886,
+            "labels": [
+              "durable",
+              "temporary",
+              "ignore",
+              "uncertain"
+            ],
+            "confusion": [
+              [
+                1,
+                35,
+                1,
+                0
+              ],
+              [
+                10,
+                213,
+                23,
+                7
+              ],
+              [
+                4,
+                11,
+                16,
+                1
+              ],
+              [
+                0,
+                36,
+                2,
+                3
+              ]
+            ],
+            "per_class": {
+              "durable": {
+                "support": 37,
+                "predicted": 15,
+                "correct": 1,
+                "precision": 0.06666666666666667,
+                "recall": 0.02702702702702703,
+                "f1": 0.038461538461538464
+              },
+              "temporary": {
+                "support": 253,
+                "predicted": 295,
+                "correct": 213,
+                "precision": 0.7220338983050848,
+                "recall": 0.841897233201581,
+                "f1": 0.7773722627737226
+              },
+              "ignore": {
+                "support": 32,
+                "predicted": 42,
+                "correct": 16,
+                "precision": 0.38095238095238093,
+                "recall": 0.5,
+                "f1": 0.43243243243243246
+              },
+              "uncertain": {
+                "support": 41,
+                "predicted": 11,
+                "correct": 3,
+                "precision": 0.2727272727272727,
+                "recall": 0.07317073170731707,
+                "f1": 0.11538461538461539
+              }
+            },
+            "unevaluated_classes": []
+          }
+        },
+        "kind": {
+          "dev": {
+            "n": 871,
+            "accuracy": 0.9299655568312285,
+            "macro_f1": 0.16944597433857578,
+            "supported_macro_f1": 0.20333516920629094,
+            "balanced_accuracy": 0.20410222172768072,
+            "brier": 0.12921181466733064,
+            "ece_10_bins": 0.03800348901017127,
+            "coverage_at_0.8": 0.8978185993111366,
+            "error_at_0.8": 0.058823529411764705,
+            "labels": [
+              "fact",
+              "behavior",
+              "preference",
+              "relationship",
+              "project",
+              "routine"
+            ],
+            "confusion": [
+              [
+                1,
+                0,
+                2,
+                0,
+                30,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                2,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                14,
+                0
+              ],
+              [
+                1,
+                0,
+                0,
+                0,
+                4,
+                0
+              ],
+              [
+                4,
+                0,
+                3,
+                0,
+                809,
+                1
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            ],
+            "per_class": {
+              "fact": {
+                "support": 33,
+                "predicted": 6,
+                "correct": 1,
+                "precision": 0.16666666666666666,
+                "recall": 0.030303030303030304,
+                "f1": 0.05128205128205128
+              },
+              "behavior": {
+                "support": 2,
+                "predicted": 0,
+                "correct": 0,
+                "precision": null,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "preference": {
+                "support": 14,
+                "predicted": 5,
+                "correct": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "relationship": {
+                "support": 5,
+                "predicted": 0,
+                "correct": 0,
+                "precision": null,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "project": {
+                "support": 817,
+                "predicted": 859,
+                "correct": 809,
+                "precision": 0.9417927823050058,
+                "recall": 0.9902080783353733,
+                "f1": 0.9653937947494033
+              },
+              "routine": {
+                "support": 0,
+                "predicted": 1,
+                "correct": 0,
+                "precision": 0.0,
+                "recall": null,
+                "f1": 0.0
+              }
+            },
+            "unevaluated_classes": [
+              "routine"
+            ]
+          },
+          "test": {
+            "n": 310,
+            "accuracy": 0.9193548387096774,
+            "macro_f1": 0.1596638655462185,
+            "supported_macro_f1": 0.23949579831932774,
+            "balanced_accuracy": 0.2491258741258741,
+            "brier": 0.14674317952444368,
+            "ece_10_bins": 0.03116062810278875,
+            "coverage_at_0.8": 0.9,
+            "error_at_0.8": 0.06810035842293907,
+            "labels": [
+              "fact",
+              "behavior",
+              "preference",
+              "relationship",
+              "project",
+              "routine"
+            ],
+            "confusion": [
+              [
+                0,
+                0,
+                0,
+                0,
+                9,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                14,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                1,
+                0,
+                285,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                1,
+                0
+              ]
+            ],
+            "per_class": {
+              "fact": {
+                "support": 9,
+                "predicted": 0,
+                "correct": 0,
+                "precision": null,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "behavior": {
+                "support": 0,
+                "predicted": 0,
+                "correct": 0,
+                "precision": null,
+                "recall": null,
+                "f1": 0.0
+              },
+              "preference": {
+                "support": 14,
+                "predicted": 1,
+                "correct": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "relationship": {
+                "support": 0,
+                "predicted": 0,
+                "correct": 0,
+                "precision": null,
+                "recall": null,
+                "f1": 0.0
+              },
+              "project": {
+                "support": 286,
+                "predicted": 309,
+                "correct": 285,
+                "precision": 0.9223300970873787,
+                "recall": 0.9965034965034965,
+                "f1": 0.957983193277311
+              },
+              "routine": {
+                "support": 1,
+                "predicted": 0,
+                "correct": 0,
+                "precision": null,
+                "recall": 0.0,
+                "f1": 0.0
+              }
+            },
+            "unevaluated_classes": [
+              "behavior",
+              "relationship"
+            ]
+          }
+        },
+        "joint_policy": {
+          "dev": {
+            "n": 1040,
+            "accepted": 71,
+            "errors": 9,
+            "coverage": 0.06826923076923076,
+            "error": 0.1267605633802817
+          },
+          "test": {
+            "n": 363,
+            "accepted": 45,
+            "errors": 13,
+            "coverage": 0.12396694214876033,
+            "error": 0.28888888888888886
+          }
+        },
+        "majority_baseline": {
+          "retention": {
+            "label": "temporary",
+            "dev": {
+              "n": 1040,
+              "accuracy": 0.6432692307692308,
+              "macro_f1": 0.1957284961966062,
+              "supported_macro_f1": 0.1957284961966062,
+              "balanced_accuracy": 0.25,
+              "brier": 0.7134615384615385,
+              "ece_10_bins": 0.35673076923076924,
+              "coverage_at_0.8": 1.0,
+              "error_at_0.8": 0.35673076923076924,
+              "labels": [
+                "durable",
+                "temporary",
+                "ignore",
+                "uncertain"
+              ],
+              "confusion": [
+                [
+                  0,
+                  135,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  669,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  130,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  106,
+                  0,
+                  0
+                ]
+              ],
+              "per_class": {
+                "durable": {
+                  "support": 135,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "temporary": {
+                  "support": 669,
+                  "predicted": 1040,
+                  "correct": 669,
+                  "precision": 0.6432692307692308,
+                  "recall": 1.0,
+                  "f1": 0.7829139847864248
+                },
+                "ignore": {
+                  "support": 130,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "uncertain": {
+                  "support": 106,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                }
+              },
+              "unevaluated_classes": []
+            },
+            "test": {
+              "n": 363,
+              "accuracy": 0.696969696969697,
+              "macro_f1": 0.20535714285714285,
+              "supported_macro_f1": 0.20535714285714285,
+              "balanced_accuracy": 0.25,
+              "brier": 0.6060606060606061,
+              "ece_10_bins": 0.30303030303030304,
+              "coverage_at_0.8": 1.0,
+              "error_at_0.8": 0.30303030303030304,
+              "labels": [
+                "durable",
+                "temporary",
+                "ignore",
+                "uncertain"
+              ],
+              "confusion": [
+                [
+                  0,
+                  37,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  253,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  32,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  41,
+                  0,
+                  0
+                ]
+              ],
+              "per_class": {
+                "durable": {
+                  "support": 37,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "temporary": {
+                  "support": 253,
+                  "predicted": 363,
+                  "correct": 253,
+                  "precision": 0.696969696969697,
+                  "recall": 1.0,
+                  "f1": 0.8214285714285714
+                },
+                "ignore": {
+                  "support": 32,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "uncertain": {
+                  "support": 41,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                }
+              },
+              "unevaluated_classes": []
+            }
+          },
+          "kind": {
+            "label": "project",
+            "dev": {
+              "n": 871,
+              "accuracy": 0.9380022962112514,
+              "macro_f1": 0.1613349131121643,
+              "supported_macro_f1": 0.19360189573459716,
+              "balanced_accuracy": 0.2,
+              "brier": 0.12399540757749714,
+              "ece_10_bins": 0.06199770378874857,
+              "coverage_at_0.8": 1.0,
+              "error_at_0.8": 0.06199770378874857,
+              "labels": [
+                "fact",
+                "behavior",
+                "preference",
+                "relationship",
+                "project",
+                "routine"
+              ],
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  33,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  2,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  14,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  5,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  817,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "per_class": {
+                "fact": {
+                  "support": 33,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "behavior": {
+                  "support": 2,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "preference": {
+                  "support": 14,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "relationship": {
+                  "support": 5,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "project": {
+                  "support": 817,
+                  "predicted": 871,
+                  "correct": 817,
+                  "precision": 0.9380022962112514,
+                  "recall": 1.0,
+                  "f1": 0.9680094786729858
+                },
+                "routine": {
+                  "support": 0,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": null,
+                  "f1": 0.0
+                }
+              },
+              "unevaluated_classes": [
+                "routine"
+              ]
+            },
+            "test": {
+              "n": 310,
+              "accuracy": 0.9225806451612903,
+              "macro_f1": 0.1599552572706935,
+              "supported_macro_f1": 0.23993288590604026,
+              "balanced_accuracy": 0.25,
+              "brier": 0.15483870967741936,
+              "ece_10_bins": 0.07741935483870968,
+              "coverage_at_0.8": 1.0,
+              "error_at_0.8": 0.07741935483870968,
+              "labels": [
+                "fact",
+                "behavior",
+                "preference",
+                "relationship",
+                "project",
+                "routine"
+              ],
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  9,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  14,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  286,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0
+                ]
+              ],
+              "per_class": {
+                "fact": {
+                  "support": 9,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "behavior": {
+                  "support": 0,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": null,
+                  "f1": 0.0
+                },
+                "preference": {
+                  "support": 14,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "relationship": {
+                  "support": 0,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": null,
+                  "f1": 0.0
+                },
+                "project": {
+                  "support": 286,
+                  "predicted": 310,
+                  "correct": 286,
+                  "precision": 0.9225806451612903,
+                  "recall": 1.0,
+                  "f1": 0.959731543624161
+                },
+                "routine": {
+                  "support": 1,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                }
+              },
+              "unevaluated_classes": [
+                "behavior",
+                "relationship"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "mixed-setfit-balanced": {
+      "encoder_model": "cortex-setfit-1a98d6527c4ac7e4",
+      "class_weight": "balanced",
+      "temperature": {
+        "retention": 1.5,
+        "kind": 0.75
+      },
+      "refit_seconds": 0.16670591698493809,
+      "maximum_probability_difference_from_original": 0.6710259810077888,
+      "natural": {
+        "retention": {
+          "dev": {
+            "n": 1040,
+            "accuracy": 0.5807692307692308,
+            "macro_f1": 0.44413578260853104,
+            "supported_macro_f1": 0.44413578260853104,
+            "balanced_accuracy": 0.46022809860698005,
+            "brier": 0.5896543138311691,
+            "ece_10_bins": 0.07646973571552114,
+            "coverage_at_0.8": 0.02403846153846154,
+            "error_at_0.8": 0.52,
+            "labels": [
+              "durable",
+              "temporary",
+              "ignore",
+              "uncertain"
+            ],
+            "confusion": [
+              [
+                45,
+                54,
+                22,
+                14
+              ],
+              [
+                33,
+                459,
+                101,
+                76
+              ],
+              [
+                3,
+                48,
+                70,
+                9
+              ],
+              [
+                4,
+                30,
+                42,
+                30
+              ]
+            ],
+            "per_class": {
+              "durable": {
+                "support": 135,
+                "predicted": 85,
+                "correct": 45,
+                "precision": 0.5294117647058824,
+                "recall": 0.3333333333333333,
+                "f1": 0.4090909090909091
+              },
+              "temporary": {
+                "support": 669,
+                "predicted": 591,
+                "correct": 459,
+                "precision": 0.7766497461928934,
+                "recall": 0.6860986547085202,
+                "f1": 0.7285714285714285
+              },
+              "ignore": {
+                "support": 130,
+                "predicted": 235,
+                "correct": 70,
+                "precision": 0.2978723404255319,
+                "recall": 0.5384615384615384,
+                "f1": 0.3835616438356164
+              },
+              "uncertain": {
+                "support": 106,
+                "predicted": 129,
+                "correct": 30,
+                "precision": 0.23255813953488372,
+                "recall": 0.2830188679245283,
+                "f1": 0.2553191489361702
+              }
+            },
+            "unevaluated_classes": []
+          },
+          "test": {
+            "n": 363,
+            "accuracy": 0.5564738292011019,
+            "macro_f1": 0.3539523336643496,
+            "supported_macro_f1": 0.3539523336643496,
+            "balanced_accuracy": 0.4004028536272704,
+            "brier": 0.5948015313313043,
+            "ece_10_bins": 0.06511356836559865,
+            "coverage_at_0.8": 0.0440771349862259,
+            "error_at_0.8": 0.25,
+            "labels": [
+              "durable",
+              "temporary",
+              "ignore",
+              "uncertain"
+            ],
+            "confusion": [
+              [
+                2,
+                25,
+                4,
+                6
+              ],
+              [
+                7,
+                169,
+                39,
+                38
+              ],
+              [
+                3,
+                3,
+                18,
+                8
+              ],
+              [
+                1,
+                25,
+                2,
+                13
+              ]
+            ],
+            "per_class": {
+              "durable": {
+                "support": 37,
+                "predicted": 13,
+                "correct": 2,
+                "precision": 0.15384615384615385,
+                "recall": 0.05405405405405406,
+                "f1": 0.08
+              },
+              "temporary": {
+                "support": 253,
+                "predicted": 222,
+                "correct": 169,
+                "precision": 0.7612612612612613,
+                "recall": 0.6679841897233202,
+                "f1": 0.7115789473684211
+              },
+              "ignore": {
+                "support": 32,
+                "predicted": 63,
+                "correct": 18,
+                "precision": 0.2857142857142857,
+                "recall": 0.5625,
+                "f1": 0.37894736842105264
+              },
+              "uncertain": {
+                "support": 41,
+                "predicted": 65,
+                "correct": 13,
+                "precision": 0.2,
+                "recall": 0.3170731707317073,
+                "f1": 0.24528301886792453
+              }
+            },
+            "unevaluated_classes": []
+          }
+        },
+        "kind": {
+          "dev": {
+            "n": 871,
+            "accuracy": 0.8691159586681975,
+            "macro_f1": 0.1832738257758735,
+            "supported_macro_f1": 0.21992859093104822,
+            "balanced_accuracy": 0.2390664822733366,
+            "brier": 0.20736442026821444,
+            "ece_10_bins": 0.03228557551262033,
+            "coverage_at_0.8": 0.7233065442020666,
+            "error_at_0.8": 0.06507936507936508,
+            "labels": [
+              "fact",
+              "behavior",
+              "preference",
+              "relationship",
+              "project",
+              "routine"
+            ],
+            "confusion": [
+              [
+                2,
+                0,
+                3,
+                0,
+                28,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                2,
+                0
+              ],
+              [
+                0,
+                0,
+                3,
+                0,
+                11,
+                0
+              ],
+              [
+                1,
+                0,
+                0,
+                0,
+                4,
+                0
+              ],
+              [
+                23,
+                0,
+                40,
+                0,
+                752,
+                2
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            ],
+            "per_class": {
+              "fact": {
+                "support": 33,
+                "predicted": 26,
+                "correct": 2,
+                "precision": 0.07692307692307693,
+                "recall": 0.06060606060606061,
+                "f1": 0.06779661016949153
+              },
+              "behavior": {
+                "support": 2,
+                "predicted": 0,
+                "correct": 0,
+                "precision": null,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "preference": {
+                "support": 14,
+                "predicted": 46,
+                "correct": 3,
+                "precision": 0.06521739130434782,
+                "recall": 0.21428571428571427,
+                "f1": 0.1
+              },
+              "relationship": {
+                "support": 5,
+                "predicted": 0,
+                "correct": 0,
+                "precision": null,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "project": {
+                "support": 817,
+                "predicted": 797,
+                "correct": 752,
+                "precision": 0.9435382685069009,
+                "recall": 0.9204406364749081,
+                "f1": 0.9318463444857497
+              },
+              "routine": {
+                "support": 0,
+                "predicted": 2,
+                "correct": 0,
+                "precision": 0.0,
+                "recall": null,
+                "f1": 0.0
+              }
+            },
+            "unevaluated_classes": [
+              "routine"
+            ]
+          },
+          "test": {
+            "n": 310,
+            "accuracy": 0.8516129032258064,
+            "macro_f1": 0.22366805307981777,
+            "supported_macro_f1": 0.33550207961972667,
+            "balanced_accuracy": 0.3525086025086025,
+            "brier": 0.24835129995741212,
+            "ece_10_bins": 0.04463959286601802,
+            "coverage_at_0.8": 0.6870967741935484,
+            "error_at_0.8": 0.08450704225352113,
+            "labels": [
+              "fact",
+              "behavior",
+              "preference",
+              "relationship",
+              "project",
+              "routine"
+            ],
+            "confusion": [
+              [
+                2,
+                0,
+                0,
+                0,
+                7,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                4,
+                0,
+                10,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                6,
+                0,
+                22,
+                0,
+                258,
+                0
+              ],
+              [
+                1,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            ],
+            "per_class": {
+              "fact": {
+                "support": 9,
+                "predicted": 9,
+                "correct": 2,
+                "precision": 0.2222222222222222,
+                "recall": 0.2222222222222222,
+                "f1": 0.2222222222222222
+              },
+              "behavior": {
+                "support": 0,
+                "predicted": 0,
+                "correct": 0,
+                "precision": null,
+                "recall": null,
+                "f1": 0.0
+              },
+              "preference": {
+                "support": 14,
+                "predicted": 26,
+                "correct": 4,
+                "precision": 0.15384615384615385,
+                "recall": 0.2857142857142857,
+                "f1": 0.2
+              },
+              "relationship": {
+                "support": 0,
+                "predicted": 0,
+                "correct": 0,
+                "precision": null,
+                "recall": null,
+                "f1": 0.0
+              },
+              "project": {
+                "support": 286,
+                "predicted": 275,
+                "correct": 258,
+                "precision": 0.9381818181818182,
+                "recall": 0.9020979020979021,
+                "f1": 0.9197860962566845
+              },
+              "routine": {
+                "support": 1,
+                "predicted": 0,
+                "correct": 0,
+                "precision": null,
+                "recall": 0.0,
+                "f1": 0.0
+              }
+            },
+            "unevaluated_classes": [
+              "behavior",
+              "relationship"
+            ]
+          }
+        },
+        "joint_policy": {
+          "dev": {
+            "n": 1040,
+            "accepted": 15,
+            "errors": 4,
+            "coverage": 0.014423076923076924,
+            "error": 0.26666666666666666
+          },
+          "test": {
+            "n": 363,
+            "accepted": 13,
+            "errors": 2,
+            "coverage": 0.03581267217630854,
+            "error": 0.15384615384615385
+          }
+        },
+        "majority_baseline": {
+          "retention": {
+            "label": "temporary",
+            "dev": {
+              "n": 1040,
+              "accuracy": 0.6432692307692308,
+              "macro_f1": 0.1957284961966062,
+              "supported_macro_f1": 0.1957284961966062,
+              "balanced_accuracy": 0.25,
+              "brier": 0.7134615384615385,
+              "ece_10_bins": 0.35673076923076924,
+              "coverage_at_0.8": 1.0,
+              "error_at_0.8": 0.35673076923076924,
+              "labels": [
+                "durable",
+                "temporary",
+                "ignore",
+                "uncertain"
+              ],
+              "confusion": [
+                [
+                  0,
+                  135,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  669,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  130,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  106,
+                  0,
+                  0
+                ]
+              ],
+              "per_class": {
+                "durable": {
+                  "support": 135,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "temporary": {
+                  "support": 669,
+                  "predicted": 1040,
+                  "correct": 669,
+                  "precision": 0.6432692307692308,
+                  "recall": 1.0,
+                  "f1": 0.7829139847864248
+                },
+                "ignore": {
+                  "support": 130,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "uncertain": {
+                  "support": 106,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                }
+              },
+              "unevaluated_classes": []
+            },
+            "test": {
+              "n": 363,
+              "accuracy": 0.696969696969697,
+              "macro_f1": 0.20535714285714285,
+              "supported_macro_f1": 0.20535714285714285,
+              "balanced_accuracy": 0.25,
+              "brier": 0.6060606060606061,
+              "ece_10_bins": 0.30303030303030304,
+              "coverage_at_0.8": 1.0,
+              "error_at_0.8": 0.30303030303030304,
+              "labels": [
+                "durable",
+                "temporary",
+                "ignore",
+                "uncertain"
+              ],
+              "confusion": [
+                [
+                  0,
+                  37,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  253,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  32,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  41,
+                  0,
+                  0
+                ]
+              ],
+              "per_class": {
+                "durable": {
+                  "support": 37,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "temporary": {
+                  "support": 253,
+                  "predicted": 363,
+                  "correct": 253,
+                  "precision": 0.696969696969697,
+                  "recall": 1.0,
+                  "f1": 0.8214285714285714
+                },
+                "ignore": {
+                  "support": 32,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "uncertain": {
+                  "support": 41,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                }
+              },
+              "unevaluated_classes": []
+            }
+          },
+          "kind": {
+            "label": "project",
+            "dev": {
+              "n": 871,
+              "accuracy": 0.9380022962112514,
+              "macro_f1": 0.1613349131121643,
+              "supported_macro_f1": 0.19360189573459716,
+              "balanced_accuracy": 0.2,
+              "brier": 0.12399540757749714,
+              "ece_10_bins": 0.06199770378874857,
+              "coverage_at_0.8": 1.0,
+              "error_at_0.8": 0.06199770378874857,
+              "labels": [
+                "fact",
+                "behavior",
+                "preference",
+                "relationship",
+                "project",
+                "routine"
+              ],
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  33,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  2,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  14,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  5,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  817,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "per_class": {
+                "fact": {
+                  "support": 33,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "behavior": {
+                  "support": 2,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "preference": {
+                  "support": 14,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "relationship": {
+                  "support": 5,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "project": {
+                  "support": 817,
+                  "predicted": 871,
+                  "correct": 817,
+                  "precision": 0.9380022962112514,
+                  "recall": 1.0,
+                  "f1": 0.9680094786729858
+                },
+                "routine": {
+                  "support": 0,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": null,
+                  "f1": 0.0
+                }
+              },
+              "unevaluated_classes": [
+                "routine"
+              ]
+            },
+            "test": {
+              "n": 310,
+              "accuracy": 0.9225806451612903,
+              "macro_f1": 0.1599552572706935,
+              "supported_macro_f1": 0.23993288590604026,
+              "balanced_accuracy": 0.25,
+              "brier": 0.15483870967741936,
+              "ece_10_bins": 0.07741935483870968,
+              "coverage_at_0.8": 1.0,
+              "error_at_0.8": 0.07741935483870968,
+              "labels": [
+                "fact",
+                "behavior",
+                "preference",
+                "relationship",
+                "project",
+                "routine"
+              ],
+              "confusion": [
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  9,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  14,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  286,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0
+                ]
+              ],
+              "per_class": {
+                "fact": {
+                  "support": 9,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "behavior": {
+                  "support": 0,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": null,
+                  "f1": 0.0
+                },
+                "preference": {
+                  "support": 14,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                },
+                "relationship": {
+                  "support": 0,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": null,
+                  "f1": 0.0
+                },
+                "project": {
+                  "support": 286,
+                  "predicted": 310,
+                  "correct": 286,
+                  "precision": 0.9225806451612903,
+                  "recall": 1.0,
+                  "f1": 0.959731543624161
+                },
+                "routine": {
+                  "support": 1,
+                  "predicted": 0,
+                  "correct": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "f1": 0.0
+                }
+              },
+              "unevaluated_classes": [
+                "behavior",
+                "relationship"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "date": "2026-10-22",
+  "data_privacy": "Aggregate metrics only; no source text, individual IDs, predictions, vectors, or trained parameters"
+}

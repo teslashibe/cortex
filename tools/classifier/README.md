@@ -4,6 +4,9 @@ These tools classify exact candidate spans into retention and semantic type. The
 Go API runs in **shadow mode**: predictions never change stored memories. The
 classifier is separate from summary extraction and conflict resolution.
 
+Class balancing and the expanded reports described here are development tooling
+on `main`; they are not included in the v1.4.0 release tag.
+
 Use a dedicated Python environment. Install `requirements.txt` there. Training and
 serving run locally; only downloading the pinned public encoder needs network
 access. Labeling explicitly sends the selected observations to your chosen model
@@ -23,6 +26,12 @@ These results do not justify autonomous memory decisions. Include constant-label
 baselines, per-class support, and independent human review in new experiments;
 headline accuracy alone hides minority-class failures. The paper's benchmark
 protocol is proposed work, not a completed comparison with other platforms.
+
+An [October 22 development experiment](../../docs/experiments/classifier-balance-2026-10-22.md)
+tested class balancing on the same previously examined data. Balancing the adapted
+encoder's heads recovered 2/9 facts and 4/14 preferences, but only 2/37 durable
+candidates. Joint acceptance fell to 13/363, with two disagreements. These small,
+provisional results do not justify changing the default or enabling memory writes.
 
 ## Data contract
 
@@ -54,6 +63,9 @@ python tools/classifier/train.py train \
 python tools/classifier/train.py train \
   --data "$PRIVATE_EXPERIMENT/labels.jsonl" \
   --output "$PRIVATE_EXPERIMENT/setfit" --backend setfit
+python tools/classifier/train.py train \
+  --data "$PRIVATE_EXPERIMENT/labels.jsonl" \
+  --output "$PRIVATE_EXPERIMENT/balanced" --backend linear --class-weight balanced
 ```
 
 For a reproducible fabricated control (648 examples), run:
@@ -68,10 +80,28 @@ transfer benchmark. Actual session labels need independent review.
 
 The default encoder revision is pinned. Linear heads use normalized embeddings,
 C=10, seed 17 and at most 1500 optimization iterations. The SetFit comparison uses
-80 contrastive steps by default, then fits the same linear heads. Development
-loss selects temperature from 0.5, 0.75, 1, 1.5, 2, 3, 5. Reports include F1,
-Brier score, calibration error, and coverage/error at 0.8. Synthetic scores do not
-certify deployment performance. Both model variants remain marked `shadow_only`.
+80 contrastive steps by default, then fits the same linear heads. Optional
+`--class-weight balanced` weights each head's training examples by inverse class
+frequency: `training_count / (class_count * class_support)`. It applies to the
+linear heads, not SetFit's encoder adaptation. The default is `none`; the manifest
+records the choice. Development loss selects temperature from 0.5, 0.75, 1, 1.5,
+2, 3, 5. Neither weights nor temperature are selected using test labels.
+
+Reports include per-class support, precision, recall and F1, plus balanced
+accuracy, Brier score, calibration error, and coverage/error at 0.8. `macro_f1`
+averages all declared classes, assigning zero to undefined F1; `supported_macro_f1`
+averages only classes present in that evaluation partition. Missing classes have
+null recall and appear in `unevaluated_classes`. Every confidence contributes to
+exactly one calibration bin, including values on bin boundaries.
+
+`majority_baseline` fixes each head's constant prediction from the training
+partition, then evaluates it on the other partitions. `by_label_source` reports
+human, teacher and synthetic rows separately, retaining that same baseline.
+`joint_policy` mirrors Go's abstention policy, including the type threshold for
+retained candidates and unconditional abstention on `uncertain`. A head's
+`coverage_at_0.8` alone does not measure this joint policy. No accepted predictions
+means the error estimate is null. Synthetic scores do not certify deployment
+performance. Both model variants remain marked `shadow_only`.
 The manifest hashes the encoder files, heads, input data, and label provenance.
 
 Training and serving count the complete formatted input with the encoder's own

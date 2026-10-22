@@ -8,6 +8,8 @@ import os
 from pathlib import Path
 import time
 
+from reports import metrics, evaluation_report
+
 os.environ.setdefault('HF_HUB_DISABLE_TELEMETRY', '1')
 os.environ.setdefault('TOKENIZERS_PARALLELISM', 'false')
 os.environ.setdefault('WANDB_DISABLED', 'true')
@@ -86,31 +88,37 @@ def probabilities(vectors, head):
     return p / p.sum(axis=1, keepdims=True)
 
 
-def metrics(y, p, names):
+def fit_heads(rows, vectors, class_weight='none'):
+    """Fit both heads on train and select temperature on dev, keeping test untouched."""
     import numpy as np
-    from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
-    prediction = p.argmax(axis=1)
-    confidence = p.max(axis=1)
-    accepted = confidence >= .8
-    truth = np.eye(len(names))[y]
-    ece = 0.
-    for lo in np.linspace(0, .9, 10):
-        mask = (confidence >= lo) & (confidence < lo + .1 + (1e-10 if lo > .89 else 0))
-        if mask.any():
-            ece += mask.mean() * abs((prediction[mask] == y[mask]).mean() - confidence[mask].mean())
-    return {'n': len(y), 'accuracy': float(accuracy_score(y, prediction)),
-            'macro_f1': float(f1_score(y, prediction, labels=list(range(len(names))), average='macro', zero_division=0)),
-            'brier': float(((p-truth)**2).sum(axis=1).mean()), 'ece_10_bins': float(ece),
-            'coverage_at_0.8': float(accepted.mean()),
-            'error_at_0.8': float((prediction[accepted] != y[accepted]).mean()) if accepted.any() else None,
-            'labels': names, 'confusion': confusion_matrix(y, prediction, labels=list(range(len(names)))).tolist()}
+    from sklearn.linear_model import LogisticRegression
+    if class_weight not in ('none', 'balanced'):
+        raise ValueError('unknown class weight')
+    heads = {}
+    for name, labels in LABELS.items():
+        selected = {split: [i for i, r in enumerate(rows) if r['split'] == split and r.get(name) is not None]
+                    for split in ('train', 'dev', 'test')}
+        y = {split: np.array([labels.index(rows[i][name]) for i in indices]) for split, indices in selected.items()}
+        if set(y['train']) != set(range(len(labels))) or any(len(x) == 0 for x in y.values()):
+            raise ValueError('each training head needs every class and nonempty dev/test data')
+        clf = LogisticRegression(C=10., max_iter=1500, random_state=17,
+                                 class_weight=None if class_weight == 'none' else 'balanced')
+        clf.fit(vectors[selected['train']], y['train'])
+        head = {'coef': clf.coef_.tolist(), 'intercept': clf.intercept_.tolist(), 'temperature': 1.}
+        candidates = []
+        for t in [.5, .75, 1., 1.5, 2., 3., 5.]:
+            head['temperature'] = t
+            p = probabilities(vectors[selected['dev']], head)
+            candidates.append((float(-np.log(p[np.arange(len(y['dev'])), y['dev']] + 1e-15).mean()), t))
+        head['temperature'] = min(candidates)[1]
+        heads[name] = head
+    distributions = {name: probabilities(vectors, head) for name, head in heads.items()}
+    return heads, evaluation_report(rows, distributions, LABELS)
 
 
 def train(args):
-    import numpy as np
     import torch
     from sentence_transformers import SentenceTransformer
-    from sklearn.linear_model import LogisticRegression
     torch.set_num_threads(2)
     rows = load_rows(args.data, args.allow_provisional)
     encoder = SentenceTransformer(args.encoder, revision=args.revision, device='cpu')
@@ -137,25 +145,7 @@ def train(args):
     encoder.save(str(out / 'encoder'))
     vectors = encoder.encode(texts, batch_size=32,
                              normalize_embeddings=True, show_progress_bar=False)
-    heads, report = {}, {}
-    for name, labels in LABELS.items():
-        selected = {split: [i for i, r in enumerate(rows) if r['split'] == split and r.get(name) is not None]
-                    for split in ('train', 'dev', 'test')}
-        y = {split: np.array([labels.index(rows[i][name]) for i in indices]) for split, indices in selected.items()}
-        if set(y['train']) != set(range(len(labels))) or any(len(x) == 0 for x in y.values()):
-            raise ValueError('each training head needs every class and nonempty dev/test data')
-        clf = LogisticRegression(C=10., max_iter=1500, random_state=17).fit(vectors[selected['train']], y['train'])
-        head = {'coef': clf.coef_.tolist(), 'intercept': clf.intercept_.tolist(), 'temperature': 1.}
-        # Freeze temperature on dev; never use test labels for model selection.
-        candidates = []
-        for t in [.5, .75, 1., 1.5, 2., 3., 5.]:
-            head['temperature'] = t
-            p = probabilities(vectors[selected['dev']], head)
-            candidates.append((float(-np.log(p[np.arange(len(y['dev'])), y['dev']] + 1e-15).mean()), t))
-        head['temperature'] = min(candidates)[1]
-        heads[name] = head
-        report[name] = {split: metrics(y[split], probabilities(vectors[idx], head), labels)
-                        for split, idx in selected.items()}
+    heads, report = fit_heads(rows, vectors, args.class_weight)
     (out / 'heads.json').write_text(json.dumps(heads, indent=2))
     file_hashes = {str(p.relative_to(out)): hashlib.sha256(p.read_bytes()).hexdigest()
                    for p in sorted(out.rglob('*')) if p.is_file()}
@@ -163,7 +153,8 @@ def train(args):
         'max_tokens': limit, 'policy_version': POLICY}, sort_keys=True).encode()).hexdigest()
     manifest = {'model': 'cortex-' + args.backend + '-' + identity[:16], 'policy_version': POLICY,
                 'input_format': INPUT_FORMAT, 'max_tokens': limit,
-                'backend': args.backend, 'training_device': training_device, 'base_encoder': args.encoder, 'base_revision': args.revision,
+                'backend': args.backend, 'class_weight': args.class_weight,
+                'training_device': training_device, 'base_encoder': args.encoder, 'base_revision': args.revision,
                 'labels': LABELS, 'files': file_hashes, 'seed': 17, 'steps': args.steps if args.backend == 'setfit' else 0,
                 'training_seconds': time.monotonic()-started,
                 'dataset_sha256': hashlib.sha256(Path(args.data).read_bytes()).hexdigest(),
@@ -237,6 +228,8 @@ def main():
     p.add_argument('--data', required=True)
     p.add_argument('--output', required=True)
     p.add_argument('--backend', choices=['linear', 'setfit'], default='linear')
+    p.add_argument('--class-weight', choices=['none', 'balanced'], default='none',
+                   help='optional inverse-frequency weights from each head\'s training partition')
     p.add_argument('--encoder', default='sentence-transformers/all-MiniLM-L6-v2')
     p.add_argument('--revision', default='1110a243fdf4706b3f48f1d95db1a4f5529b4d41')
     p.add_argument('--steps', type=int, default=80)

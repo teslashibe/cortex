@@ -557,6 +557,14 @@ including two without test support. The constant-label rows are retrospective
 accuracy checks, not validated policies. These results do not support autonomous
 retention or a claim of general six-type classification.
 
+The development training tools on `main` support optional class balancing, per-class diagnostics,
+training-majority baselines, and separate reports for human, teacher and synthetic
+labels. An [October 22 development comparison](docs/experiments/classifier-balance-2026-10-22.md)
+recovered some minority types but left durable-memory recall poor. The default
+remains unweighted and shadow-only. This experiment reuses previously examined
+data and supplements the frozen paper; it is not a new independent benchmark.
+These tooling changes are not included in the v1.4.0 release tag.
+
 ### Comparative benchmark plan
 
 No matched comparison with Mem0, Zep, or Hindsight has been run. Their published
