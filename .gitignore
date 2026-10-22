@@ -17,3 +17,11 @@
 *.log
 *.out
 *.toc
+__pycache__/
+*.pyc
+*.safetensors
+*.onnx
+*.pt
+*.pkl
+/checkpoints/
+/runs/

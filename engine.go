@@ -14,15 +14,19 @@ import (
 var ErrNoObservations = errors.New("no unconsolidated observations")
 
 type Engine struct {
-	store    *Store
-	model    Model
-	embedder Embedder
-	policy   RetentionPolicy
+	store      *Store
+	model      Model
+	embedder   Embedder
+	policy     RetentionPolicy
+	classifier Classifier
 }
 
 type Option func(*Engine)
 
-func WithEmbedder(embedder Embedder) Option             { return func(e *Engine) { e.embedder = embedder } }
+func WithEmbedder(embedder Embedder) Option { return func(e *Engine) { e.embedder = embedder } }
+func WithClassifier(classifier Classifier) Option {
+	return func(e *Engine) { e.classifier = classifier }
+}
 func WithRetentionPolicy(policy RetentionPolicy) Option { return func(e *Engine) { e.policy = policy } }
 func NewEngine(store *Store, model Model, options ...Option) *Engine {
 	e := &Engine{store: store, model: model, policy: DefaultRetentionPolicy()}

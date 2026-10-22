@@ -10,14 +10,18 @@ application that presents them.
 
 Consolidation sends observations and existing memories to the configured model
 endpoint. Choose that endpoint according to your data-handling requirements.
-`IndexObservations` also sends raw text to the embedding endpoint, but only when
-explicitly called. Original-observation recall retains source text and attribution;
+`IndexObservations` and `IndexObservationWindows` send raw text to the embedding
+endpoint only when explicitly called. `ClassifyCandidates` sends selected source
+spans and surrounding context to a configured classifier only on an explicit call.
+Its output is advisory and cannot change memory state. Original-observation recall retains source text and attribution;
 access to this route must be authorized separately by the host when appropriate.
 Cortex does not provide encryption at rest or automatic source-permission
 revocation. Restrict database access and protect backups separately.
 
 Keep credentials, exports, database dumps, and personal profiles out of source
-control. The repository's examples contain synthetic data only.
+control. Keep classification journals and weights outside Git as well. Deleting
+a Cortex source cannot remove it from an external dataset or from model weights.
+The repository's examples contain synthetic data only.
 
 ## Reporting a vulnerability
 

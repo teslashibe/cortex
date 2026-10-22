@@ -9,6 +9,40 @@ import (
 	"time"
 )
 
+func (a *API) getObservationWindows(w http.ResponseWriter, r *http.Request) {
+	limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
+	out, err := a.engine.RecallObservationWindows(r.Context(), r.URL.Query().Get("user"), r.URL.Query().Get("q"), RecallOptions{Limit: limit, LexicalOnly: r.URL.Query().Get("mode") == "lexical"})
+	if err != nil {
+		writeErr(w, 400, err)
+		return
+	}
+	writeJSON(w, 200, out)
+}
+func (a *API) postObservationWindowIndex(w http.ResponseWriter, r *http.Request) {
+	out, err := a.engine.IndexObservationWindows(r.Context(), r.URL.Query().Get("user"), 1000)
+	if err != nil {
+		writeErr(w, 400, err)
+		return
+	}
+	writeJSON(w, 200, out)
+}
+func (a *API) postClassify(w http.ResponseWriter, r *http.Request) {
+	var body struct {
+		User       string      `json:"user_id"`
+		Candidates []Candidate `json:"candidates"`
+	}
+	if err := decodeBounded(w, r, &body); err != nil {
+		writeErr(w, 400, err)
+		return
+	}
+	out, err := a.engine.ClassifyCandidates(r.Context(), body.User, body.Candidates)
+	if err != nil {
+		writeErr(w, 400, err)
+		return
+	}
+	writeJSON(w, 200, out)
+}
+
 func (a *API) getObservationRecall(w http.ResponseWriter, r *http.Request) {
 	limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
 	out, err := a.engine.RecallObservations(r.Context(), r.URL.Query().Get("user"), r.URL.Query().Get("q"), RecallOptions{Limit: limit, LexicalOnly: r.URL.Query().Get("mode") == "lexical"})

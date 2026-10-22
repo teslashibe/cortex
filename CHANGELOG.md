@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.2.0
+
+- Add opt-in source-window indexing and recall with exact offsets and attribution.
+- Publish a complete observation's vectors atomically; recheck owner and lifecycle eligibility after provider work.
+- Add a shadow classifier interface and HTTP adapter separating retention from memory kind. Classification never mutates memories.
+- Add private labeling, baseline/SetFit training, group-split validation, calibration metrics, and local serving tools.
+- Replace the current research presentation with an academic manuscript, including conditional proofs and an audited evaluation record. Preserve historical papers and link their grading erratum.
+
 ## v1.1.0
 
 - An explicit `fact` kind preserves statements that do not fit a preference, routine, relationship, behavior or project.

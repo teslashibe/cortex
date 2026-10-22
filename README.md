@@ -10,19 +10,19 @@ OpenAI-compatible `/chat/completions` endpoint. The default target is
 Use the tagged Go package:
 
 ```sh
-go get github.com/teslashibe/cortex@v1.1.0
+go get github.com/teslashibe/cortex@v1.2.0
 ```
 
 Install the commands with Go:
 
 ```sh
-go install github.com/teslashibe/cortex/cmd/cortex@v1.1.0
-go install github.com/teslashibe/cortex/cmd/cortex-import@v1.1.0
-go install github.com/teslashibe/cortex/cmd/cortex-once@v1.1.0
+go install github.com/teslashibe/cortex/cmd/cortex@v1.2.0
+go install github.com/teslashibe/cortex/cmd/cortex-import@v1.2.0
+go install github.com/teslashibe/cortex/cmd/cortex-once@v1.2.0
 ```
 
 Prebuilt command archives and checksums are available from the
-[v1.1.0 release](https://github.com/teslashibe/cortex/releases/tag/v1.1.0).
+[v1.2.0 release](https://github.com/teslashibe/cortex/releases/tag/v1.2.0).
 For the source examples below, clone this repository and run the commands from
 its root directory.
 
@@ -179,6 +179,57 @@ superseded, archived or expired memory are excluded, even if shared with another
 fact. Use `ForgetObservation` to remove an unretained source; deleting it also
 removes exact-content copies, derived memories and associated vectors.
 
+## Retrieve bounded source excerpts
+
+Use source windows when a whole observation would consume too much reader context:
+
+```go
+_, err := engine.IndexObservationWindows(ctx, userID, 1000)
+if err != nil { return err }
+windows, err := engine.RecallObservationWindows(ctx, userID, question,
+    cortex.RecallOptions{Limit: 8})
+_ = windows
+```
+
+Each hit has exact text, parent observation ID, half-open Unicode code-point
+positions, speaker references, and `observed_at`. This timestamp is the message
+time; event dates need evidence from its text. Windows contain at most 512 code
+points with 128 overlap. These are character bounds, not token bounds: choose an
+encoder that accepts them without truncation. A user's full eligible window set
+is capped at 100,000 and errors before provider work if it is larger.
+
+`POST /v1/observations/windows/index?user=` explicitly indexes this representation.
+`GET /v1/observations/windows?user=&q=&limit=` returns excerpts; `mode=lexical`
+selects lexical-only retrieval. Existing whole-observation routes are unchanged.
+Window indexing reports complete observations indexed, while recall reports
+indexed windows. Index publication is atomic per observation and deletion cascades
+to every window. The same lifecycle and owner checks apply to both source paths.
+
+## Train and inspect a classifier
+
+The optional `Classifier` interface accepts exact candidate spans. Configure it
+with `WithClassifier`, or set `CORTEX_CLASSIFIER_URL` and
+`CORTEX_CLASSIFIER_MODEL` for the HTTP adapter. `POST /v1/classify` accepts:
+
+```json
+{"user_id":"example","candidates":[{"id":"candidate-1","observation_id":"source-id","start_rune":0,"end_rune":24}]}
+```
+
+The source must exist in that user's eligible observations. Spans are at most
+512 code points; requests contain at most 128 candidates. Results separate
+retention (`durable`, `temporary`, `ignore`, `uncertain`) from the six memory kinds.
+They include all class probabilities, model and policy versions, and source
+hashes. Probabilities do not replace evidence confidence.
+
+Classification is **shadow-only**. It never changes memories or stores training
+examples. Source eligibility is checked again after inference. The host owns
+extraction, annotation review, private journals, and any later adoption decision.
+See [the classifier workflow](tools/classifier/README.md) for local baseline and
+SetFit training, data partitioning, calibration, and a provisional labeling tool.
+Actual sessions, labels, model artifacts, and per-example evaluations belong
+outside Git. A deleted source must also be removed from any host-managed exports;
+source deletion does not erase information from separately trained weights.
+
 ## Checks
 
 ```bash
@@ -253,4 +304,4 @@ maintenance.** Older binaries can write data without these new policies.
 
 ## Papers
 
-See the [March original and October implementation paper](docs/papers/README.md).
+See the [academic manuscript, source, and historical papers](docs/papers/README.md).

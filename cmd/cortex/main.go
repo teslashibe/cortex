@@ -41,6 +41,13 @@ func run() error {
 		return err
 	}
 	var options []cortex.Option
+	if endpoint := os.Getenv("CORTEX_CLASSIFIER_URL"); endpoint != "" {
+		classifier, err := cortex.NewHTTPClassifier(endpoint, os.Getenv("CORTEX_CLASSIFIER_MODEL"), os.Getenv("CORTEX_CLASSIFIER_KEY"))
+		if err != nil {
+			return err
+		}
+		options = append(options, cortex.WithClassifier(classifier))
+	}
 	if model := os.Getenv("CORTEX_EMBEDDING_MODEL"); model != "" {
 		embedder, err := llm.NewEmbeddingClient(llm.Config{BaseURL: os.Getenv("CORTEX_EMBEDDING_URL"), APIKey: os.Getenv("CORTEX_EMBEDDING_KEY"), Model: model, Timeout: cortex.ModelTimeout})
 		if err != nil {
