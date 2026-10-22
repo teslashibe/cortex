@@ -84,6 +84,9 @@ func TestAnswerEvidenceSourceAndDeletionFence(t *testing.T) {
 			if err != nil || out.Calculation.Value != 0 || out.ModelCalls != 3 || len(out.Facts) != 1 || out.Facts[0].Quote != text || out.Facts[0].StartRune != 0 || out.Facts[0].EndRune != len(text) {
 				t.Fatalf("answer %+v: %v", out, err)
 			}
+			if out.Facts[0].ObservedAt.Format("2006-01-02T15:04:05Z07:00") != "2026-10-21T00:00:00Z" {
+				t.Fatalf("model anchor was not normalized to the requested timezone: %v", out.Facts[0].ObservedAt)
+			}
 		})
 	}
 }

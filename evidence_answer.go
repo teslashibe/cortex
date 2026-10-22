@@ -178,6 +178,8 @@ func (e *Engine) AnswerEvidence(ctx context.Context, user, question string, opts
 	if _, _, err := ResolveDateExpression("", opts.AsOf, opts.Timezone); err != nil {
 		return out, err
 	}
+	location, _ := time.LoadLocation(opts.Timezone)
+	opts.AsOf = opts.AsOf.In(location)
 	if e.model == nil {
 		return out, errors.New("no model configured")
 	}
@@ -225,6 +227,11 @@ func (e *Engine) AnswerEvidence(ctx context.Context, user, question string, opts
 	if err != nil {
 		return out, err
 	}
+	// Present anchors in the same explicit timezone used by date arithmetic.
+	// A database driver's display timezone must not shift the model's date.
+	for i := range obs {
+		obs[i].At = obs[i].At.In(location)
+	}
 	excerpts, sources, truncated, err := answerExcerpts(obs, r.Hits, queries, plan.Speaker, opts.AsOf)
 	if err != nil {
 		return out, err
@@ -248,7 +255,7 @@ func (e *Engine) AnswerEvidence(ctx context.Context, user, question string, opts
 		} `json:"facts"`
 		Calculation EvidenceCalculation `json:"calculation"`
 	}
-	if err = e.answerCall(ctx, answerExtractPrompt, map[string]any{"question": question, "as_of": opts.AsOf, "excerpts": excerpts}, &ledger, &out); err != nil {
+	if err = e.answerCall(ctx, answerExtractPrompt, map[string]any{"question": question, "as_of": opts.AsOf, "timezone": opts.Timezone, "excerpts": excerpts}, &ledger, &out); err != nil {
 		return out, err
 	}
 	if len(ledger.Facts) > 48 {
@@ -299,7 +306,7 @@ func (e *Engine) AnswerEvidence(ctx context.Context, user, question string, opts
 		Status    string   `json:"status"`
 		Citations []string `json:"citations"`
 	}
-	if err = e.answerCall(ctx, answerWritePrompt, map[string]any{"question": question, "as_of": opts.AsOf, "facts": out.Facts, "calculation": out.Calculation}, &draft, &out); err != nil {
+	if err = e.answerCall(ctx, answerWritePrompt, map[string]any{"question": question, "as_of": opts.AsOf, "timezone": opts.Timezone, "facts": out.Facts, "calculation": out.Calculation}, &draft, &out); err != nil {
 		return out, err
 	}
 	if strings.TrimSpace(draft.Answer) == "" || len(draft.Answer) > 16000 || (draft.Status != "answered" && draft.Status != "insufficient") || len(draft.Citations) > 48 {
