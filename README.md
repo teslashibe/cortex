@@ -10,19 +10,19 @@ OpenAI-compatible `/chat/completions` endpoint. The default target is
 Use the tagged Go package:
 
 ```sh
-go get github.com/teslashibe/cortex@v1.3.0
+go get github.com/teslashibe/cortex@v1.4.0
 ```
 
 Install the commands with Go:
 
 ```sh
-go install github.com/teslashibe/cortex/cmd/cortex@v1.3.0
-go install github.com/teslashibe/cortex/cmd/cortex-import@v1.3.0
-go install github.com/teslashibe/cortex/cmd/cortex-once@v1.3.0
+go install github.com/teslashibe/cortex/cmd/cortex@v1.4.0
+go install github.com/teslashibe/cortex/cmd/cortex-import@v1.4.0
+go install github.com/teslashibe/cortex/cmd/cortex-once@v1.4.0
 ```
 
 Prebuilt command archives and checksums are available from the
-[v1.3.0 release](https://github.com/teslashibe/cortex/releases/tag/v1.3.0).
+[v1.4.0 release](https://github.com/teslashibe/cortex/releases/tag/v1.4.0).
 For the source examples below, clone this repository and run the commands from
 its root directory.
 
@@ -337,6 +337,6 @@ maintenance.** Older binaries can write data without these new policies.
 
 See the [academic manuscript, source, and historical papers](docs/papers/README.md).
 
-### Evidence answers
+## Evidence answers
 
 The optional [evidence reader](docs/evidence-reader.md) answers a question with exact source quotations, date-calculation inputs, and explicit coverage limits. It uses three model calls, plus at most one format-repair call and does not mutate memory. The host must authorize sending raw excerpts to the configured model.

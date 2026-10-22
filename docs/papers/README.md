@@ -1,5 +1,7 @@
 # Papers
 
+- [Academic manuscript with the expanded reliability study: October 2026](v5-october-2026/paper.pdf), with biological motivation, source-checked answers, and broader evaluation; [LaTeX source](v5-october-2026/main.tex)
+
 - [Revised academic manuscript: October 2026](v4-october-2026/paper.pdf), with exact token budgets, source-linked dates, and a frozen follow-up evaluation; [LaTeX source](v4-october-2026/main.tex)
 
 - [Academic manuscript: October 2026](v3-october-2026/paper.pdf), with conditional proofs, retrieval experiments, classification results, and a conclusion; [LaTeX source](v3-october-2026/main.tex)

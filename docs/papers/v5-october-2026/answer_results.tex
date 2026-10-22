@@ -1,0 +1,93 @@
+The recovered full-corpus run acknowledged all 2,814 observations exactly
+once, with no missing or foreign source references. A fresh run using local
+aliases processed 2,600 observations before a summary-length rejection; a retry
+processed the remaining 214. Across the fresh run and retry, fifteen successful
+chunks acknowledged all observations, and one rejected chunk acknowledged none.
+The original recovery run contained five rejected chunks. These tests establish
+observed persistence behavior, not the factual accuracy of every retained memory.
+
+The twelve-case development set was evaluated twice with the frozen reader.
+Source review found 11 reference-aligned answers in the first run and 12 in the
+second, including respectively three and four explicitly conditional answers.
+The first run abstained on an ambiguous museum-visit date. In the second, it
+provided the reference value under a stated interpretation of that date. Thus
+12/12 was attained in one run; the combined result was 23/24, not evidence of
+perfect repeatability.
+
+\subsection{Held-out public evaluation}
+Sixty additional LongMemEval cases were selected before implementation changes:
+ten per question type, ordered by a fixed SHA256 rule, excluding all nineteen
+cases used in earlier development. Full supplied histories were ingested under
+separate owner scopes. Questions and reference answers were excluded from
+memory ingestion. The reader implementation was frozen before the final
+measurement. Earlier partial executions were retained privately and were not
+used to select prompts or tune against reference answers.
+
+Both conditions received at most eighty excerpts and 32,000 serialized UTF-8
+evidence bytes. The baseline used single-query retrieval and one direct reading
+call. The source-checked reader used query planning, extraction and composition,
+with at most one additional format repair. This is an equal evidence-size
+comparison, not an equal-call-budget comparison. Scoring combined model grading
+with Codex review of references and source evidence. No independent human judge
+participated. Table~\ref{tab:heldout-results} reports qualified answers separately.
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrrrrr}
+\toprule
+Reader & Complete & Conditional & Partial & Incorrect & Error\\
+\midrule
+Direct baseline & 44 & 1 & 4 & 11 & 0 \\
+Source-checked & 36 & 11 & 4 & 6 & 3 \\
+\bottomrule
+\end{tabular}
+\caption{Sixty held-out cases per condition. A conditional answer states an
+assumption and gives the matching reference value. Such an answer does not
+establish that the assumption is true. Reference alignment combines the first
+two columns; it is distinct from unqualified correctness.}
+\label{tab:heldout-results}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrr}
+\toprule
+Question type & Direct baseline & Source-checked\\
+\midrule
+Knowledge updates & 8/10 & 9/10 \\
+Multi-session reasoning & 6/10 & 7/10 \\
+Assistant recall & 10/10 & 8/10 \\
+Personalized responses & 3/10 & 6/10 \\
+User facts & 10/10 & 10/10 \\
+Temporal reasoning & 8/10 & 7/10 \\
+\bottomrule
+\end{tabular}
+\caption{Reference-aligned answers, including conditional answers, out of ten
+cases per type. Partial answers and errors are excluded.}
+\end{table}
+
+The source-checked reader returned 47 reference-aligned answers, compared with
+45 for the baseline. The two-case difference is too small to establish a
+reliable advantage. Personalization improved, while several assistant-recall
+and temporal cases deteriorated. The reader produced more conditional answers
+and three validation errors. Two errors rejected inexact quotations; one
+rejected an unresolved arithmetic endpoint. Counts of distinct events and
+retrieval of every required event remain weaknesses.
+
+The final source review also found a timezone presentation inconsistency: date
+arithmetic used the configured timezone, while a displayed source timestamp
+could use the database driver's timezone. The release normalizes the model's
+anchors to the requested timezone. It also permits one inexact quotation to use
+the existing repair allowance while preserving exact-match validation. A single
+literal today or yesterday phrase can supply a conditional date candidate when
+the extractor omitted an anchor; this does not establish the event date. These
+post-measurement fixes are covered by regression checks and targeted replay;
+they are not credited with changing the frozen sixty-case score. A further
+release-model pass matched eleven of the twelve development references,
+missing a location detail. The earlier 12/12 result was therefore not stable
+across repeated model calls.
+
+The larger natural-label study and the public study address different tasks.
+Improved agreement with provisional retention labels does not establish improved
+answer quality, and reference agreement does not certify truth outside the
+supplied conversation. The learned classifiers remain advisory.

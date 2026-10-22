@@ -1,0 +1,22 @@
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrrr}
+\toprule
+Evidence & Local checks & Public checks & Public complete\\
+\midrule
+Whole observations & 19/19 & 5/7 & 4/7\\
+Source windows & 19/19 & 5/7 & 4/7\\
+Memories and windows & 19/19 & 5/7 & 5/7\\
+\bottomrule
+\end{tabular}
+\caption{One reader run per condition. Public checks are automatic; complete answers are judged by a subsequent Codex case inspection, not independent human review.}
+\label{tab:retrieval}
+\end{table}
+
+All conditions passed the 19 local expected-answer checks. Each passed five of seven automatic public checks and failed multi-session counting and elapsed-time reasoning. Inspection marked two passing recommendation answers as partial: they named the preferred editor but did not explicitly address the requested advanced-learning focus. The combined condition did address that focus. This post hoc completeness check illustrates why a keyword pass is insufficient evidence of full answer quality.
+
+The window representation preserved the observed local check count under the fixed budget. These measurements do not establish a general improvement over whole-source retrieval. The temporal responses abstained rather than supplying the earlier unsupported zero-day interval, but they still did not answer the question. Neither smaller excerpts nor the revised reader instruction solved the missing-evidence problem.
+
+The frozen-memory diagnostic preceding this comparison passed 14 of the same 19 local checks using summaries alone. That result motivated source retrieval; it does not isolate a causal effect of the present window design. Replaying all 26 window queries against the final implementation produced identical retrieval outputs.
+
+A tokenizer audit of the 3,563 retained observations found 1,165 full observations longer than the encoder's 256-wordpiece limit. The window representation contained 10,145 excerpts; 20 still exceeded that limit, with a maximum of 427 wordpieces. Thus character windows substantially reduced input-length violations in this sample but did not eliminate truncation. Token-aware segmentation remains necessary for a strict encoder-context guarantee.

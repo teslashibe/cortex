@@ -50,6 +50,10 @@ makes three model calls, plus at most one format-repair call and never changes m
 interpretations are returned as assumptions. Classification and retrieval quality
 remain empirical properties, separate from persistence guarantees.
 
+Generated evidence answers remain experimental. The source-validation and
+persistence checks are separate from answer quality. Applications should inspect
+the returned evidence and conditional assumptions before relying on an answer.
+
 ## Release checks
 
 Required checks are PostgreSQL integration tests with the race detector, Python

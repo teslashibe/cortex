@@ -1,0 +1,66 @@
+{
+  "paper_revision": "5.0",
+  "title": "Cortex: Provenance-Preserving Memory with Selective Classification for Language Agents",
+  "software_release": "v1.4.0",
+  "implementation_commit": "5e80d3d725ff8e204738d51ce35385e38556894a",
+  "reader_experiment_commit": "095a6c343171bd9cc6bc04617e08b5bac5a44919",
+  "created_at": "2026-10-22T02:57:45.694218+00:00",
+  "compiler": "XeLaTeX (TeX Live 2025), BibTeX; desktop compiler checked",
+  "pages": 17,
+  "proofs": {
+    "propositions": 7,
+    "theorems": 2,
+    "scope": "Conditional abstract-machine properties, not semantic correctness or formal implementation verification"
+  },
+  "evaluation": {
+    "heldout_cases": 60,
+    "heldout_reference_alignment": {
+      "reader": 47,
+      "baseline": 45
+    },
+    "development_runs": [
+      11,
+      12
+    ],
+    "development_cases": 12,
+    "release_development_run": 11,
+    "private_messages": 2814,
+    "private_sessions": 119,
+    "project_groups": 35,
+    "provisional_spans": 3235,
+    "natural_test_spans": 363,
+    "human_reviewed_labels": 0,
+    "classifier_promotion": "none; shadow only",
+    "evidence_utf8_bytes": 32000,
+    "max_excerpts": 80,
+    "normal_model_calls": 3,
+    "maximum_model_calls": 4,
+    "requested_model": "gpt-6-luna-medium",
+    "returned_model": "gpt-6-luna",
+    "encoder_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "post_measurement_changes": "Timezone normalization, bounded literal-quotation repair and explicit conditional relative-date candidates. Targeted regression evidence is distinct from the frozen score.",
+    "valid_natural_spans": 3032
+  },
+  "data_policy": "Only aggregate results are published. Local messages, candidate annotations, per-example results, trained weights and database exports remain private.",
+  "prior_paper": "../v4-october-2026/manifest.json",
+  "validation": {
+    "go_race_and_postgresql": "passed",
+    "python_contract_tests": "passed",
+    "native_compiler": "passed",
+    "xelatex": "passed",
+    "visual_review": "All 17 final pages inspected; no clipping, overflow or unresolved citations"
+  },
+  "sha256": {
+    "README.md": "620197df9634179a42d95c28b7ae13f0d3005e209cd752e412e89b5aca364753",
+    "answer_results.tex": "86fb99c5bf9dc1d0e2d9bfa81a4e4caae7e9be5a047fa8ec28cd99cb4e9c64a2",
+    "current_results.tex": "b5de1e626bdb55e33fc231701e2701f6ae251d8236d0985362570498852a94dd",
+    "followup.tex": "a37ec4be22ad000b1525676dd006da970a05fe6cffcd2b028411d2c52a349317",
+    "followup_results.tex": "f622546b5cb5b187c340d4d293d9fb0f6344e287cdbe51da5b907318119db929",
+    "main.tex": "df491b2cb67a3fbc057ace79efd45b1a40bc545eefc24a1de1a676c3fa55b0c5",
+    "paper.pdf": "ee7d74ab7c662697ae7a1f7fa60184c672c5800d1ce7d77482a486fde069f35a",
+    "references.bib": "e1284d3413ffe4cb1182e7f9a4559e4245565edfdfa96c1ab3ea92a0450fb7fe",
+    "results.json": "8e7e3c1e372f6f3eae5a0364911a38d477b096544f0be62d03443f7b9f52405d",
+    "results.tex": "3ff55b38277e09676732838b71333ebdc75f3f4b979af6a11953d212bc422465",
+    "retrieval_results.tex": "9df174862364e378b5a781345514d0fc30058baf55cc7008c1d35ac2164b5b2a"
+  }
+}

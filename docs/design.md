@@ -120,3 +120,11 @@ The HTTP service trusts local callers. Profile filtering is a display heuristic,
 not authorization. No autonomous scheduler, source connector, model-training
 job, source-permission reconciliation, or background worker is hidden inside
 the package. See [SECURITY.md](../SECURITY.md) before exposing an API.
+
+## Consolidation references
+
+The model sees short references local to its current request. Cortex resolves them
+to exact stored observation and memory IDs before applying its usual scope and
+transaction checks. Aliases cannot collide with real IDs, and duplicate sources
+after resolution are rejected. Existing memory source lists stay in storage and
+are omitted from inference; they are not new supporting evidence.
