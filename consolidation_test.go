@@ -132,7 +132,7 @@ func TestConsolidationContext(t *testing.T) {
 	if err := json.Unmarshal([]byte(strings.TrimPrefix(messages[1].Content, prompts.Consolidation+"\n")), &context); err != nil {
 		t.Fatal(err)
 	}
-	if context.UserID != "u" || context.Observations[0].Content != content || context.Observations[0].Refs["sender"] != "assistant" || !context.Observations[0].At.Equal(at) || context.Memories[0].Sources[0] != "obs_old" {
+	if context.UserID != "u" || context.Observations[0].Content != content || context.Observations[0].Refs["sender"] != "assistant" || !context.Observations[0].At.Equal(at) || len(context.Memories[0].Sources) != 0 || context.Memories[0].ID != "mem_1" || context.Memories[0].Summary != "Likes tea" || !context.Memories[0].LastSeenAt.Equal(at) {
 		t.Fatalf("lost evidence: %+v", context)
 	}
 	// The context fits by itself, but escaping it inside the chat envelope does not.
