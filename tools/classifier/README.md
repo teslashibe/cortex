@@ -14,13 +14,26 @@ endpoint. Do not supply sources you have not approved for that provider.
 
 ## Measured status
 
-The [revision 6 paper](../../docs/papers/v6-october-2026/paper.pdf) reports a
-363-candidate natural test partition with provisional teacher labels. The
+The [revision 7 paper](../../docs/papers/v7-october-2026/paper.pdf) preserves a
+historical 363-candidate natural test partition with provisional teacher labels. The
 adapted model reached 64.2% retention agreement and 91.9% type agreement, below
 constant-label accuracy checks of 69.7% and 92.3%. The type partition contains
 286 projects among 310 typed candidates. Joint acceptance covered 12.4% of
 candidates and disagreed on 28.9% of accepted predictions. Retention macro-F1
 was 0.341 and type macro-F1 was 0.160 across all declared classes.
+
+A subsequent source audit found machine or mixed authorship in nine of those
+test candidates and related-project overlap across the original partitions.
+Affected training must also be corrected; deleting a few test rows cannot
+establish independent transfer. These historical scores are diagnostic only.
+
+The corrected private replay experiment trains the encoder and heads jointly
+and compares ordinary training, repeated examples, paraphrases, and recombinations
+over three seeds. It reserves connected session/repository components, matches
+paired labels and source schedules, and fixes updates and padded dimensions.
+The main development cohorts are small: 24 older and 18 newer candidates.
+Generated examples never become observations. This experiment does not measure
+factual recall or unsupported-memory creation, and no trained model is promoted.
 
 These results do not justify autonomous memory decisions. Include constant-label
 baselines, per-class support, and independent human review in new experiments;
@@ -42,7 +55,11 @@ for an ignored/unresolved candidate. Keep text to 512 Unicode code points and
 context to 1024. Offsets refer to the immutable original source, never a paraphrase.
 
 A `group` must identify the whole conversation or related project. Assign groups
-before fitting. Keep near-duplicate conversations in the same partition. The
+before fitting. Join sessions that cross related repositories into the same
+component; a working-directory name alone is insufficient. Exclude automatic
+context and mixed speaker wrappers before labeling. Recover a human answer from
+a wrapper only with explicit attribution and new labels. Keep near-duplicate
+conversations and every generated derivative in the same partition. The
 loader checks exact normalized candidate text and group overlap; it cannot detect
 all semantic duplicates. Fit thresholds and temperature on development data.
 

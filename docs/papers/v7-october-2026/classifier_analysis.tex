@@ -1,0 +1,43 @@
+\subsection{Class imbalance and calibration}
+Table~\ref{tab:class-support} reports the natural test support and the adapted model's correct predictions. The dataset reflects one owner's work conversations: 253 of 363 retention labels are temporary, and 286 of 310 typed candidates are projects. Always predicting temporary would agree on 69.7\% of retention examples; always predicting project would agree on 92.3\% of typed examples. These are retrospective constant-label accuracy checks, not trained models or independently validated policies. Both exceed the adapted model's corresponding accuracy. The adapted type head predicts project for 309 of 310 inputs and preference for one; all correct type predictions are projects.
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+Head & Provisional label & Test support & Correct & Recall (\%)\\
+\midrule
+Retention & Durable & 37 & 1 & 2.7\\
+ & Temporary & 253 & 213 & 84.2\\
+ & Ignore & 32 & 16 & 50.0\\
+ & Uncertain & 41 & 3 & 7.3\\
+\midrule
+Type & Fact & 9 & 0 & 0.0\\
+ & Behavior & 0 & 0 & ---\\
+ & Preference & 14 & 0 & 0.0\\
+ & Relationship & 0 & 0 & ---\\
+ & Project & 286 & 285 & 99.7\\
+ & Routine & 1 & 0 & 0.0\\
+\bottomrule
+\end{tabular}
+\caption{Class support and adapted-model recall against provisional teacher labels. Missing test classes are unevaluated. Counts are calculated from the frozen confusion matrices, not a new inference run.}
+\label{tab:class-support}
+\end{table}
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+ & \multicolumn{2}{c}{Macro-F1} & \multicolumn{2}{c}{Brier} & \multicolumn{2}{c}{ECE}\\
+Model & Ret. & Type & Ret. & Type & Ret. & Type\\
+\midrule
+Synthetic, frozen & .133 & .153 & 1.336 & .576 & .648 & .178\\
+Mixed, frozen & .339 & .158 & .547 & .169 & .072 & .052\\
+Mixed, adapted & .341 & .160 & .510 & .147 & .074 & .031\\
+\bottomrule
+\end{tabular}
+\caption{Additional metrics from the same frozen predictions. Macro-F1 includes all four retention and all six declared type labels, assigning zero to undefined class scores; two type classes have no test support. Brier is multiclass squared probability error. ECE uses ten equal-width confidence bins. Lower Brier and ECE are better, but imbalance can make either look favorable while minority classes fail.}
+\label{tab:classifier-calibration}
+\end{table}
+
+The type macro-F1 of .160 and zero recall on every supported non-project type qualify the 91.9\% headline accuracy. No six-type generalization claim follows from this test. The retention head also recovers only one of 37 durable examples. Although development calibration reduces aggregate probability error relative to synthetic-only training, it does not make high-confidence retention reliable. More provisional examples alone do not remedy an ambiguous annotation policy or missing class coverage. Human review, class-specific errors, and representative held-out groups are required before assigning either head operational authority.

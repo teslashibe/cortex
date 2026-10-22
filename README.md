@@ -12,11 +12,12 @@ OpenAI-compatible `/chat/completions` endpoint. The default target is
 ## Current status
 
 The current software release is [v1.4.0](https://github.com/teslashibe/cortex/releases/tag/v1.4.0).
-The latest paper is revision 6,
-[Cortex: Sleep-Inspired Memory Consolidation for Language Agents](docs/papers/v6-october-2026/paper.pdf).
+The latest paper is revision 7,
+[Cortex: Sleep-Inspired Memory Consolidation for Language Agents](docs/papers/v7-october-2026/paper.pdf).
 Software and paper version numbers are independent. The v1.4.0 release includes
-paper revision 6 and preserves revision 5. Both papers and their sources are
-available in this repository.
+paper revision 6 and preserves revision 5. Revision 7 reports the subsequent
+source audits and controlled replay experiments; it does not promote a trained
+classifier into production.
 
 - Implemented: source attribution, transactional consolidation, contradiction
   history, lexical and optional semantic retrieval, relevance decay, expiry,
@@ -37,10 +38,12 @@ rapid capture and slower integration. `Observe` records attributed source text;
 `Consolidate` processes pending observations into reusable memories; `Recall`
 retrieves eligible memories with their provenance.
 
-Consolidation runs when the application calls it. Cortex does not simulate sleep
-stages or implement generative dreaming. Source-grounded replay and recombined
-synthetic training examples are proposed experiments in the paper. Relevance
-decay is an explicit retrieval policy, separate from evidence confidence.
+Consolidation runs when the application calls it. A private research prototype
+tests source-grounded replay and recombined synthetic examples during classifier
+training. Generated examples stay separate from observed user history. The paper
+reports this development comparison and its limitations; Cortex does not simulate
+biological sleep. Relevance decay is an explicit retrieval policy, separate from
+evidence confidence.
 
 ## Install
 
@@ -516,11 +519,14 @@ detector, Python contract tests, builds, static analysis, vulnerability checks,
 and secret scanning. These checks cover the tested persistence and input
 contracts; they do not establish semantic completeness or general memory quality.
 
-The [revision 6 paper](docs/papers/v6-october-2026/paper.pdf) reports the frozen
-quality experiments and their limitations. The private corpus contains 2,814
-explicit user messages from 119 sessions and 35 project groups. Natural
-classification labels were proposed by a model and have not been independently
-reviewed by humans.
+The [revision 7 paper](docs/papers/v7-october-2026/paper.pdf) reports source audits,
+controlled replay experiments, and the qualifications on earlier measurements.
+The original private inventory contained 2,814 selected user-role records from
+119 sessions and 35 directory groups. Some records contain automatic context,
+and sessions can span related repositories. User role does not certify human
+authorship, and directory groups do not establish independent projects. Natural
+classification labels remain provisional model judgments without independent
+human review.
 
 ### Source-assisted answers
 
@@ -540,8 +546,11 @@ not been demonstrated.
 
 ### Experimental classifiers
 
-The adapted model was evaluated on 363 natural candidates from held-out project
-groups; 310 had type labels.
+The historical adapted model was evaluated on 363 natural candidates from the
+original test partition; 310 had type labels. A later audit found machine or mixed
+authorship in nine test candidates and related-project overlap across partitions.
+The following frozen scores are diagnostics, not evidence of independent-project
+transfer. Removing affected test rows alone would not repair affected training.
 
 | Measure | Adapted model | Constant-label accuracy check |
 | --- | --- | --- |
@@ -565,6 +574,20 @@ remains unweighted and shadow-only. This experiment reuses previously examined
 data and supplements the frozen paper; it is not a new independent benchmark.
 These tooling changes are not included in the v1.4.0 release tag.
 
+The corrected replay study excludes detected machine context and partitions
+natural sources by connected session/repository components. It compares ordinary
+mixed training, repeated examples, paraphrases, and recombinations across three
+seeds, with three pooled ordinary references. The primary development cohorts
+contain only 24 older and 18 newer candidates. The generated conditions share
+source and label schedules with the repeated-example control; all conditions
+match update counts and padded training dimensions. Generation and review use
+additional resources. These measurements concern classification agreement, not
+retention of factual knowledge or unsupported-memory creation. All private
+training data, provider responses, and trained weights remain outside Git.
+Neither generated condition met the joint development improvement criteria.
+A separate 32-candidate API check reproduced saved probabilities and passed
+twelve invalid-request and source-lifecycle checks without writing memories.
+
 ### Comparative benchmark plan
 
 No matched comparison with Mem0, Zep, or Hindsight has been run. Their published
@@ -580,22 +603,23 @@ paper. A credible comparison needs:
 4. Independently reviewed classifier labels, class-specific metrics, and fixed
    acceptance criteria before enabling learned memory mutations.
 
-Source-grounded and synthetic replay are further controlled experiments. They
-are not implemented dreaming behavior or completed benchmark results. The
-paper's final protocol specifies these experiments and the evidence needed for
+The replay development study does not complete this benchmark plan. Independent
+human judgments, fresh component-level confirmation, and downstream memory tests
+remain necessary. The paper's final protocol specifies the evidence needed for
 comparative claims.
 
 ## Papers
 
 The current manuscript is
-[Cortex: Sleep-Inspired Memory Consolidation for Language Agents](docs/papers/v6-october-2026/paper.pdf),
-paper revision 6. It includes the biological motivation, conditional mathematical
-proofs, experimental classifier analysis, platform context, and the comparative
-benchmark protocol.
+[Cortex: Sleep-Inspired Memory Consolidation for Language Agents](docs/papers/v7-october-2026/paper.pdf),
+paper revision 7. It includes the biological motivation, conditional mathematical
+proofs, source and partition audits, controlled replay results, historical
+classifier analysis, platform context, and the comparative benchmark protocol.
 
-- [Versioned LaTeX source](docs/papers/v6-october-2026/main.tex)
-- [Artifact manifest and hashes](docs/papers/v6-october-2026/manifest.json)
-- [Aggregate measurements](docs/papers/v6-october-2026/results.json)
+- [Versioned LaTeX source](docs/papers/v7-october-2026/main.tex)
+- [Artifact manifest and hashes](docs/papers/v7-october-2026/manifest.json)
+- [Aggregate replay measurements](docs/papers/v7-october-2026/learning_results.json)
+- [Historical answer and classifier measurements](docs/papers/v7-october-2026/results.json)
 - [Paper history, including the original March paper](docs/papers/README.md)
 
 The proofs concern the stated abstract state machine, not formal verification

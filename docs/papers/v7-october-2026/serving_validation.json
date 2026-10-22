@@ -1,0 +1,51 @@
+{
+  "model_contract_test": {
+    "selected_model": "cortex-replay-contract-29f874b2f1fc0a52",
+    "candidates": 32,
+    "accepted": 17,
+    "python_probability_max_delta": 6.772168483770713e-07,
+    "go_probability_max_delta": 6.772168483770713e-07,
+    "go_abstention_policy": "matched",
+    "source_hashes": "matched",
+    "guards_http_status": {
+      "wrong_model": 400,
+      "wrong_policy": 400,
+      "empty_batch": 400,
+      "overlong_candidate": 400,
+      "over_token_budget": 400,
+      "cross_owner": 400,
+      "empty_owner": 400,
+      "duplicate_candidate_id": 400,
+      "oversized_batch": 400,
+      "archived_source": 400,
+      "invalid_span": 400,
+      "deleted_source": 400
+    },
+    "memory_rows_before": 0,
+    "memory_rows_after": 0,
+    "training_events_before": 0,
+    "training_events_after": 0,
+    "mode": "shadow",
+    "warm_single_candidate_latency_ms": {
+      "n": 20,
+      "median": 6.712521018926054,
+      "p95": 11.572724633151665
+    },
+    "latency_scope": "Python loopback CPU, 20 sequential warm samples; not an isolated production benchmark"
+  },
+  "software_checks": {
+    "go_race": {
+      "exit_code": 0,
+      "passed_tests": 86,
+      "skipped_tests": 0
+    },
+    "go_vet": {
+      "exit_code": 0
+    },
+    "go_build": {
+      "exit_code": 0
+    },
+    "commit": "2fd5d28aaac2c029c780a6678ed116b520781c20"
+  },
+  "private_content_included": false
+}

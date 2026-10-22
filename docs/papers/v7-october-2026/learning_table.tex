@@ -1,0 +1,43 @@
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}Yrrrrrr@{}}
+\toprule
+Condition & Old F1 & Change & New F1 & Type F1 & Coverage & Error\\
+\midrule
+Ordinary mixed & 0.411 & 0.078 & 0.202 & 0.786 & 0.481 & 0.331\\
+Repeated examples & 0.346 & 0.014 & 0.271 & 0.500 & 0.463 & 0.333\\
+Paraphrase replay & 0.223 & -0.109 & 0.114 & 0.500 & 0.481 & 0.562\\
+Recombined replay & 0.338 & 0.006 & 0.197 & 0.510 & 0.500 & 0.667\\
+Pooled ordinary & 0.674 & -- & 0.369 & 0.545 & 0.463 & 0.151\\
+\bottomrule
+\end{tabularx}
+\caption{Means across three seeds on component-disjoint development cohorts. Old and new retention F1 average all four declared classes; type F1 averages supported types in the newer cohort. Change is relative to the seed-specific initial checkpoint. Coverage and error concern the joint acceptance rule. Pooled ordinary has no chronological change score. These are agreements with provisional labels, not factual-retention or unsupported-memory measurements.}
+\label{tab:replay-comparison}
+\end{table}
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{lrrr}
+\toprule
+Condition & Seed & Old retention F1 & New retention F1\\
+\midrule
+Ordinary mixed & 17 & 0.317 & 0.071\\
+Repeated examples & 17 & 0.410 & 0.321\\
+Paraphrase replay & 17 & 0.056 & 0.071\\
+Recombined replay & 17 & 0.410 & 0.321\\
+Ordinary mixed & 41 & 0.338 & 0.071\\
+Repeated examples & 41 & 0.191 & 0.172\\
+Paraphrase replay & 41 & 0.338 & 0.071\\
+Recombined replay & 41 & 0.522 & 0.199\\
+Ordinary mixed & 73 & 0.577 & 0.464\\
+Repeated examples & 73 & 0.438 & 0.321\\
+Paraphrase replay & 73 & 0.277 & 0.199\\
+Recombined replay & 73 & 0.083 & 0.071\\
+\bottomrule
+\end{tabular}
+\caption{All chronological run outcomes. Seeds share evaluation examples and are not independent new conversation samples.}
+\end{table}
+
+Neither generated condition simultaneously improves mean older and newer retention agreement without greater mean accepted disagreement against both chronological controls. This comparison does not support promoting a generated replay policy.
+The audit verified identical newer-example schedules, shared initial checkpoints, paired source and label schedules, and 524,288 padded positions per adaptation stage. Each pooled reference matched the corresponding chronological ordinary arm's complete presentation multiset and 1,048,576 padded positions. Real token counts and provider inference remain separate resources.
+The training-majority retention label is temporary; its older and newer macro-F1 scores are 0.056 and 0.091. The training-majority type is project, with supported macro-F1 0.095 on newer examples. These uncalibrated constant predictions are agreement references, not acceptance policies.

@@ -1,0 +1,22 @@
+\section{Platform context and limits of comparison}
+\label{sec:platforms}
+Published platform results provide reference points for the next evaluation, not a ranking against this study. Table~\ref{tab:platforms} records vendor-reported LongMemEval headline scores inspected on 22 October 2026 (UTC). We did not rerun these systems. Their source scope, readers, inference budgets, and grading differ from the sixty-case Cortex experiment.
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}L{.16\linewidth}rY@{}}
+\toprule
+Platform & Reported (\%) & Reported scope and protocol qualification\\
+\midrule
+Mem0 & 94.4 & Managed platform, top-200 retrieval; mean 6,787 context tokens. Proprietary optimizations are excluded from the open-source SDK \citep{mem0eval}.\\
+Zep & 90.2 & 451/500 questions; multiple retrieval scopes and a cross-encoder reranker. Reader and judge are GPT-5.4; reader uses medium reasoning \citep{zepeval}.\\
+Hindsight & 94.6 & LongMemEval-S headline on the project overview. Its recall and agentic reflection paths have different call budgets; the headline alone does not identify a matched configuration \citep{hindsightdocs}.\\
+\bottomrule
+\end{tabularx}
+\caption{External, vendor-reported results, unverified by this study. Cortex's 78.3\% reference alignment includes conditional answers on a different sixty-case sample and is deliberately excluded from this table. No percentage-point gap or superiority claim can be inferred.}
+\label{tab:platforms}
+\end{table}
+
+Mem0 describes additive temporal metadata and time-sensitive retrieval ranking \citep{mem0temporal}. Zep's Graphiti represents changing entity relationships in a temporal knowledge graph \citep{graphitidocs}. Hindsight describes semantic, keyword, graph, and temporal retrieval, followed by reranking, as well as a separate reflection operation \citep{hindsightdocs}. These are concrete design comparisons. Their benefit for a particular workload still requires an experiment.
+
+Cortex emphasizes a small Go/PostgreSQL package with explicit source support and state transitions. It has lexical and semantic retrieval, contradiction history, activation decay, and source-linked date arithmetic. It does not yet have a validated learned retention policy, a general event-identity model, or an evaluated graph-based retrieval stage. Its engineering checks establish observed behavior under tests; the current evidence does not establish competitive answer quality, lower cost, or lower latency than the platforms above.

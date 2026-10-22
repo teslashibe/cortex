@@ -1,5 +1,7 @@
 # Papers
 
+- [Source audits and controlled sleep-inspired replay: October 2026](v7-october-2026/paper.pdf), with component-disjoint development comparisons, matched training schedules, and qualifications on historical classifier results; [LaTeX source](v7-october-2026/main.tex)
+
 - [Sleep-inspired consolidation and comparative evaluation protocol: October 2026](v6-october-2026/paper.pdf), with classifier imbalance analysis and sourced platform context; [LaTeX source](v6-october-2026/main.tex)
 
 - [Academic manuscript with the expanded reliability study: October 2026](v5-october-2026/paper.pdf), with biological motivation, source-checked answers, and broader evaluation; [LaTeX source](v5-october-2026/main.tex)
@@ -25,3 +27,9 @@ Its manifest identifies the exact code commit. No private session content is pub
 The academic manuscript replaces release-by-release narration with a scientific
 model and experimental account. Historical PDFs remain unchanged. Revision 2.2
 has a [case-level grading erratum](v2.2-october-2026/ERRATUM.md).
+
+Revision 7 identifies machine or mixed authorship in some earlier source records
+and related-project overlap across original classifier partitions. Historical
+scores remain available, with their limitations explained in revision 7. The
+corrected replay study is developmental and does not establish improved factual
+retention or authorize learned memory writes.

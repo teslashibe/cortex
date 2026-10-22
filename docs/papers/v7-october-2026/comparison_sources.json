@@ -1,0 +1,47 @@
+{
+  "accessed_utc": "2026-10-22",
+  "status": "External published claims, not reproduced by Cortex; not a matched ranking",
+  "sources": [
+    {
+      "id": "mem0eval",
+      "url": "https://github.com/mem0ai/mem0/blob/main/docs/core-concepts/memory-evaluation.mdx",
+      "publisher": "Mem0",
+      "reported_longmemeval_percent": 94.4,
+      "scope": "Managed platform; top-200; mean 6787 context tokens; proprietary optimizations excluded from OSS SDK"
+    },
+    {
+      "id": "zepeval",
+      "url": "https://www.getzep.com/research/",
+      "publisher": "Zep",
+      "reported_longmemeval_percent": 90.2,
+      "scope": "451/500; GPT-5.4 reader with medium reasoning and GPT-5.4 judge; multiple retrieval scopes and cross-encoder"
+    },
+    {
+      "id": "hindsightdocs",
+      "url": "https://hindsight.vectorize.io/",
+      "publisher": "Vectorize",
+      "reported_longmemeval_percent": 94.6,
+      "scope": "LongMemEval-S headline; exact matched reader/call configuration not established by overview"
+    },
+    {
+      "id": "mem0temporal",
+      "url": "https://mem0.ai/blog/introducing-temporal-reasoning-in-mem0",
+      "publisher": "Mem0"
+    },
+    {
+      "id": "graphitidocs",
+      "url": "https://help.getzep.com/graphiti/getting-started/welcome",
+      "publisher": "Zep"
+    },
+    {
+      "id": "longmemrepo",
+      "url": "https://github.com/xiaowu0162/LongMemEval",
+      "publisher": "LongMemEval authors"
+    },
+    {
+      "id": "locomorepo",
+      "url": "https://github.com/snap-research/locomo",
+      "publisher": "LoCoMo authors"
+    }
+  ]
+}

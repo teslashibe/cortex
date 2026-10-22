@@ -1,0 +1,96 @@
+{
+  "paper_revision": "7.0",
+  "title": "Cortex: Sleep-Inspired Memory Consolidation for Language Agents",
+  "software_release": "v1.4.0",
+  "implementation_commit": "2fd5d28aaac2c029c780a6678ed116b520781c20",
+  "release_commit": "7cfc68478f1e7bab91e5bc9df4b3411d471bd4d6",
+  "created_at": "2026-10-22T18:21:43.407150+00:00",
+  "prior_paper": "../v6-october-2026/manifest.json",
+  "revision_scope": "Source and partition audits, controlled replay development experiments, pooled references, and advisory API validation",
+  "pages": 28,
+  "compiler": "XeLaTeX (TeX Live 2025), BibTeX; desktop compiler verified",
+  "proofs": {
+    "propositions": 9,
+    "theorems": 2,
+    "scope": "Conditional software properties; not semantic correctness, biological fidelity, convergence, or formal implementation verification"
+  },
+  "evaluation": {
+    "chronological_adaptation_runs": 12,
+    "shared_initial_checkpoints": 3,
+    "pooled_reference_runs": 3,
+    "seeds": [
+      17,
+      41,
+      73
+    ],
+    "older_primary_development_candidates": 24,
+    "newer_primary_development_candidates": 18,
+    "primary_labels": "Provisional model judgments; previously examined development sources",
+    "human_reviewed": 0,
+    "unsupported_memory_change_measured": false,
+    "joint_development_improvement_criteria_met": false,
+    "classifier_promotion": "none; advisory only",
+    "expanded_history_or_email_in_this_experiment": false,
+    "generation_resources": "Additional to matched training presentations and padded dimensions; not equal total compute"
+  },
+  "private_protocol_sha256": {
+    "training": "1485d77afba3fac2f1da102fba0b1aa7814a703418f4c937a4b263b75af73f71",
+    "library": "f78b6b9561a0fc70024b704b71a3731756946ab1050c213fcb2767d98f6858c5",
+    "pooled_reference": "e85aa4202b4740720a95415af5efa52684fba102ca2efd6106d6365319853b21",
+    "source_authorship_audit": "c0d4c831901ee3eeb0dabcd4c8fa5fd0449cf2bf5b32952dceceeb1edd3c3d95",
+    "related_project_audit": "bf5286a7a3d05ceac0cd8e6a242bf58cc73b5b6ea90a1afefef9614ac1dd65f6"
+  },
+  "aggregate_artifacts": [
+    "learning_results.json",
+    "learning_diagnostics.json",
+    "serving_validation.json"
+  ],
+  "historical_artifacts": [
+    "results.json",
+    "classifier_analysis.json"
+  ],
+  "external_comparisons": {
+    "reproduced": false,
+    "sources": "comparison_sources.json",
+    "ranking_supported": false
+  },
+  "validation": {
+    "xelatex": "passed; no overfull boxes or undefined references",
+    "desktop_compiler": "passed",
+    "visual_review": "All pages inspected; final pages 1 through 25 pixel-identical to reviewed render, final pages 26 through 28 inspected separately",
+    "prior_paper_hashes": "unchanged",
+    "humanizer": "embedded prose review completed",
+    "go_race_tests": 86,
+    "go_skipped_tests": 0,
+    "go_vet": "passed",
+    "go_build": "passed",
+    "advisory_api_candidates": 32,
+    "rejection_checks": 12,
+    "memory_writes": 0
+  },
+  "data_policy": "Aggregate results only. Messages, email, annotations, per-example outputs, provider responses, private experiment scripts, and weights remain outside Git.",
+  "sha256": {
+    "README.md": "1337e45940ae008d6b0e3436d013290ea259a06f6a2985655af394c0b3a7e4a2",
+    "answer_results.tex": "d81b893b739a5680f257bc5989d29aa17344a6739798522050d15ed0c19caaad",
+    "benchmark_protocol.tex": "f89ec66727fa827e0b61d8456fad276d66f8221a0c88c2e34d7b377c92c55b1d",
+    "classifier_analysis.json": "d6ea06b1060a79858f065f4448b6267a0ad40992cfbd2c4075cfab068a437f42",
+    "classifier_analysis.tex": "b0de3b85c3f47f08410f789c1990b6bf79e901aae1be0ff0fdef0ebc6fdc457c",
+    "comparison_sources.json": "3b298c400fcd0cc27e887c559b1025f751f8470f8361e63e2332797f93e7171b",
+    "current_results.tex": "081ba6c29442d9c1fc05e84ccb9fc1025f19b76a6ef245ae35e5d9239e11fd6c",
+    "followup.tex": "db4e849e870a7b8fd1934c646c65012cb3347a7a62f53fa41ab64f7e221f41c9",
+    "followup_results.tex": "f622546b5cb5b187c340d4d293d9fb0f6344e287cdbe51da5b907318119db929",
+    "learning_diagnostics.json": "0cdbafb43b9a5e93b3580f42de61ee331c6a405db6dd95501ceda1096afc33e3",
+    "learning_methods.tex": "ff4e383430829139e3631b8a87a27f5d1a21a3af9536ade13e81d4e5b12a7b0d",
+    "learning_results.json": "8ed76c92fb2722cf2d38d70e35392d3929b33e416f65d354b197a0f75ebf6469",
+    "learning_results.tex": "ab651a74986169b8e5ce9818fc6b264008fc6cc3d00ce5d0f492d38ba2cbb2fc",
+    "learning_table.tex": "a53682a627ecd8509854a64678fc2a45c85dde7ab60012b0514b5c14eb2bb3b5",
+    "main.tex": "3e2795ae88b265f92b0d359be396f5e766934405423dcd8759373ac30e336656",
+    "paper.pdf": "80c86812aaf8d1a27b210a6599cbeb5e03fcb7f5fc867d4c50c69c7e2b8d79e4",
+    "platform_comparison.tex": "e45d79a8d5d5e874838bb9445dda6f6456fce85ebd45812455a06b32704a3d00",
+    "references.bib": "1388f19168708cc37d8945701bf3d364e3ef16f3c35b0ab91ce191f3fa435599",
+    "results.json": "8e7e3c1e372f6f3eae5a0364911a38d477b096544f0be62d03443f7b9f52405d",
+    "results.tex": "3ff55b38277e09676732838b71333ebdc75f3f4b979af6a11953d212bc422465",
+    "retrieval_results.tex": "9df174862364e378b5a781345514d0fc30058baf55cc7008c1d35ac2164b5b2a",
+    "serving_validation.json": "6f3ae083b96a474f54d32fd9ec23755eb84b6e60fbae8f92f6a845a43a6b2975"
+  }
+}

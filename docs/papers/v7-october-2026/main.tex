@@ -1,0 +1,351 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=25mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,microtype,amsmath,amssymb,amsthm,booktabs,array,tabularx}
+\usepackage[round,authoryear]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\setlength{\parindent}{1.2em}
+\setlength{\parskip}{3pt}
+\setlength{\emergencystretch}{2em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\ind}{\mathbf{1}}
+\hypersetup{pdftitle={Cortex: Sleep-Inspired Memory Consolidation for Language Agents},pdfauthor={Brendan Playford}}
+\title{Cortex: Sleep-Inspired Memory Consolidation\\for Language Agents}
+\author{Brendan Playford}
+\date{October 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+Sleep-dependent memory research and complementary learning systems theory motivate a separation between rapid episodic capture and slower integration. Cortex uses this separation to preserve attributed observations while consolidating derived memories. A research prototype tests NREM-inspired source-grounded replay and REM-inspired recombination during classifier training. These phases are functional analogies, with no simulated sleep physiology. Conditional proofs describe persistence, source coverage, partition separation, and matched replay schedules; they do not guarantee semantic truth or learning convergence. A source audit finds that user-role records include machine-generated context, while directory-based project groups can contain related conversations across partitions. We preserve the affected results as historical diagnostics and construct a development comparison with source exclusions, connected-project holdouts, and fixed training budgets. Its main cohorts contain 24 older and 18 newer candidates, with provisional labels and no independent human review. Across three seeds, neither generated condition improves both older and newer classification agreement without greater accepted disagreement against both chronological controls. The learned classifiers remain advisory. A separate sixty-case public retrieval study produced 47 reference-aligned answers, including eleven conditional answers, versus 45 for a direct baseline under unequal call budgets. Neither study establishes improved factual retention or reduced unsupported memories. We specify the additional human judgments, untouched-group evaluation, downstream tests, and resource accounting needed before replay can become a production policy.
+\end{abstract}
+
+\section{Introduction}
+Language agents frequently need information absent from their current context: a user's preference, a correction to an earlier statement, or a detail from a previous task. External memory can retain such information without changing model parameters. Its reliability depends on separate decisions: what to retain, which source supports it, whether a later statement supersedes it, and which evidence to retrieve for a new query.
+
+Summary-based memory introduces an information bottleneck. A fluent summary may omit a detail that later becomes relevant. Improving retrieval over those summaries cannot recover that detail. Conversely, retrieving original conversations exposes the reader to quotations, obsolete statements, and irrelevant requests. A useful memory system needs a compact representation and access to attributed evidence, with explicit lifecycle rules for each.
+
+This work gives a common state model for observations, derived memories, and source excerpts; separates statistical decisions from validated persistence; and implements a private evaluation and training workflow. The empirical study is exploratory. Its purpose is to identify failure mechanisms and establish an auditable baseline. We also separate locally trained classification parameters from external model capabilities, reanalyse class imbalance, and specify the evidence needed for a credible comparison with established memory platforms.
+
+\section{Biological motivation and scope}
+Complementary learning systems theory explains how rapid episodic learning and slower integration can coexist without continually overwriting structured knowledge \citep{cls}. This motivates separating immutable observations from derived memories. It does not imply that database rows instantiate hippocampal circuits or that summarization is equivalent to synaptic consolidation.
+
+Sleep research supplies more specific hypotheses. Human intracranial recordings during targeted memory reactivation associate successful NREM consolidation with coordinated hippocampal and cortical activity \citep{nrem2025}. In mice, selective disruption of small adult-born neuronal ensembles during REM sleep provides evidence for a causal contribution to associative fear-memory consolidation \citep{rem2025}. These results concern distinct experimental settings and do not establish a single universal REM consolidation rule.
+
+A computational model by \citet{dreaming} uses complementary waking, perturbed NREM replay, and generative REM phases for visual representation learning. Its dream phase generates novel combinations of prior experience. That study evaluates visual representations; transfer of the mechanism to conversational memory remains an empirical question. Cortex implements attributed capture, explicit offline integration, retrieval, activation decay and optional classifier training. A separate research prototype generates source-grounded and recombined training examples. These phases are software operations with no simulated sleep physiology. The formal results below concern software invariants, not a theorem derived from neuroscience.
+
+Table~\ref{tab:sleep-mapping} separates the implemented mechanisms from hypotheses. The word \emph{sleep-inspired} names the architectural motivation; it does not claim biological fidelity. Model inference over a database is not neuronal replay, and relevance decay is not a measurement of synaptic weakening.
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}L{.22\linewidth}Y L{.19\linewidth}@{}}
+\toprule
+Biological motivation & Software interpretation & Status\\
+\midrule
+Rapid episodic capture & Store attributed observations before deriving reusable memories & Implemented\\
+Slower integration & Consolidate observations with explicit source support and contradiction history & Implemented\\
+NREM replay & Revisit source-grounded training examples under a fixed replay budget & Research prototype\\
+REM recombination & Generate recombined training examples, separate from observed history & Research prototype\\
+Selective persistence & Reduce retrieval activation with time and preserve reinforced memories & Engineering heuristic\\
+\bottomrule
+\end{tabularx}
+\caption{Functional correspondences and their limits. No row establishes a neural mechanism or a simulated sleep stage.}
+\label{tab:sleep-mapping}
+\end{table}
+
+The replay comparison tests whether synthetic variation improves retention of earlier classification behavior and transfer to later conversations. Source attribution and correction tests must accompany those measurements, because a plausible synthetic recollection is not evidence that an event occurred. Generated examples remain separate training artifacts and are never inserted as observed events. Equal update counts and tensor sizes control part of the learning budget; generation and review consume additional resources.
+
+\section{Related work}
+Cognitive Architectures for Language Agents describes modular memory and decision procedures within an agent architecture \citep{coala}. MemGPT uses hierarchical memory and control flow to manage a context window \citep{memgpt}. These works motivate treating memory as more than a collection of vector embeddings. Cortex concentrates on persistence and evidence. Scheduling, user authorization, and the interaction loop belong to its host.
+
+LongMemEval separates indexing, retrieval, and reading, and evaluates information extraction, multi-session reasoning, temporal reasoning, updates, and abstention \citep{longmem}. This separation guides our experiments: answer failure alone does not identify the responsible component. Our small public probe is not comparable to a complete benchmark evaluation.
+
+Sentence-BERT supplies a practical representation for semantic similarity \citep{sbert}. SetFit adapts a sentence encoder through contrastive learning before fitting a classification head \citep{setfit}. We use these methods as baselines for classifying source spans. Temperature scaling is selected on a development partition to examine probability calibration \citep{calibration}.
+
+Memory-R1 learns memory operations using downstream rewards \citep{memoryr1}. MemRL adapts episodic-memory utility without updating the reasoning model's weights \citep{memrl}. Both directions make feedback quality consequential. We keep outcome utility, supervised labels, and model weights distinct. Grading discrepancies in our public probe provide a reason to audit rewards before optimizing a memory policy against them.
+
+Self-Synthesized Rehearsal generates and refines rehearsal examples, then selects a diverse subset for later learning \citep{ssr}. Meta-Experience Replay treats transfer and interference as a coupled optimization problem \citep{mer}. These studies motivate measuring both old-task retention and new-task acquisition. Their results do not establish a benefit for our classifier, source distribution, or memory policy.
+
+\section{Problem formulation}
+An observation is a tuple
+\[
+ o=(i,u,x,t_o,\rho),
+\]
+where $i$ is its identifier, $u$ its owner scope, $x$ immutable source text, $t_o$ observation time, and $\rho$ provenance such as speaker and conversation identity. Observation time does not establish the date of an event described in $x$.
+
+A derived memory is
+\[
+ m=(j,u,s,k,c,S,t_\ell,n,z),
+\]
+where $s$ is a summary, $k$ a semantic type, $c\in[0,1]$ evidence confidence, $S$ a nonempty set of supporting observation identifiers, $t_\ell$ the last supporting observation time, $n$ a reinforcement count, and $z$ lifecycle metadata. The supported types are fact, behavior, preference, relationship, project, and routine. They describe an annotation policy; they are not mutually exclusive properties of natural language in general.
+
+An atomic candidate is an exact span $x[a:b]$ with half-open Unicode code-point offsets. Atomicity is an annotation goal, not a property guaranteed by span validation. Retention belongs to
+\[
+ \mathcal{R}=\{\text{durable},\text{temporary},\text{ignore},\text{uncertain}\}.
+\]
+Retention and type answer different questions. A one-time project request can be temporary. A quotation can resemble a preference without supporting an inference about the user's preference.
+
+For query $q$ and evidence budget $B$, a conceptual objective is
+\[
+ \max_C \E[\mathrm{answer\ quality}\mid q,C]
+ \quad\text{subject to}\quad
+ \mathrm{tokens}(C)\leq B,\quad C\subseteq\mathcal{E}_u,
+\]
+where $\mathcal{E}_u$ is currently eligible evidence for owner $u$. Rank fusion approximates selection; scope and lifecycle constraints are enforced separately. Quality must distinguish unsupported retention, omitted facts, stale answers, attribution mistakes, and reader errors.
+
+\section{Memory operations and retrieval}
+\subsection{Consolidation}
+Consolidation processes a bounded snapshot of pending observations. A model proposes insertion, reinforcement, or contradiction operations. Validation requires known operation types, bounded summaries, finite confidence values, sources within the current chunk, and update targets in the same owner scope. Contradiction records a successor while preserving the earlier memory's provenance.
+
+Accepted operations and acknowledgement of their exact source snapshot commit in one transaction. Inference occurs outside that transaction. A malformed successful response may receive one format-repair request; the result passes the same validation. This bounds recovery without treating provider calls as exactly-once events.
+
+Inference receives short request-local identifiers for observations and existing memories. An injective mapping $\pi$ associates each permitted stored identifier with a local alias; the application resolves $\pi^{-1}$ before validating or committing a proposal. Aliases are chosen outside the set of real identifiers to avoid collisions, and duplicate sources after resolution are rejected. Historical source lists are retained in storage and omitted from the model context, since they cannot support a new operation. These measures reduce identifier-copying burden without expanding the set of permitted sources.
+
+The host decides when consolidation runs and whether observations may be sent to an embedding provider or classifier. Ordinary retrieval does not create a training label.
+
+\subsection{Summary and source retrieval}
+A query can retrieve derived memories or source excerpts. Lexical overlap and cosine similarity produce ranked lists within each representation. Reciprocal rank fusion assigns
+\[
+ R(d)=\sum_{c\in\mathcal{C}}
+ \frac{\ind\{d\text{ appears in }c\}}{\kappa+\operatorname{rank}_c(d)},
+ \qquad \kappa=60,
+\]
+following \citet{rrf}. The score orders candidates; it is not a relevance probability.
+
+The default segmentation divides source text into overlapping windows of $W=512$ code points with overlap $O=128$. An optional tokenizer-aware segmentation limits both code points and encoder tokens; dense text may require less overlap. Windows retain parent identifiers, offsets, attribution, and observation time. Stored vectors include encoder identity and source hash. Changes to weights or preprocessing require a new model identity.
+
+Code-point limits do not imply token limits. The model card documents a 256-wordpiece truncation default \citep{minilmcard}. Our local adapter uses the embedding tokenizer, including special tokens, to check each window against its 256-token budget. It reduces window length and, when needed, overlap until the next window advances. The embedding endpoint checks the limit independently and rejects oversized inputs. Model and segmentation identities include hashes of weights, tokenizer, and preprocessing policy. A remote tokenizer remains a trusted component: the library validates its declared counts and offsets but cannot independently establish their accuracy. Queries receive the same input-limit check.
+
+An observation supporting any superseded, archived, or expired memory is excluded from source retrieval. This conservative rule can suppress useful information when a source supports several memories. Unassociated observations can still contain obsolete claims, so eligibility alone does not establish current truth.
+
+
+\subsection{Evidence collection and event dates}
+A bounded evidence operation combines up to four caller-supplied query variants and deduplicates source windows by parent identifier and offset. Reciprocal rank fusion orders the combined results. The result states whether candidate lists were truncated, whether vector indexing was incomplete, and whether source changes invalidated retrieved material. Its coverage claim is limited to retrieved evidence. Several retrieved sources may describe one event, and a complete ranking list need not contain every relevant event.
+
+Event-date resolution takes an exact source span and an explicit IANA timezone. Supported expressions include a complete calendar date, today, yesterday, a stated number of days ago, and the previous named weekday. Relative expressions use the local civil date of the source timestamp. Dates lacking a year and ambiguous week expressions remain unresolved. The result retains the source hash, original phrase, anchor and resolution rule. This validates date arithmetic, not event occurrence: a quoted or hypothetical event still needs semantic interpretation. The host owns event extraction, identity, correction handling and any final count.
+
+\subsection{A source-checked evidence reader}
+An optional reader uses three bounded model calls: question-based query planning, evidence extraction, and answer composition. One malformed response or inexact quotation may receive a single additional repair call, whose result passes the original validation. The host supplies an explicit question date and timezone and authorizes transfer of selected source excerpts. The reader fuses the existing retrieval channel with a lexical channel that normalizes simple plural endings and month names. Speaker preference and per-source limits reduce crowding by long generic responses. The serialized evidence array is bounded to 32,000 UTF-8 bytes and 80 excerpts. This is a wire-size budget, not a tokenizer guarantee or an exhaustive search claim.
+
+An extracted fact retains an exact source quotation, source identifier, code-point offsets, source hash, observation time and a model-written interpretation. Quotations must occur within the excerpts actually supplied. Proposed date phrases must occur inside those quotations to support arithmetic; an unmatched phrase remains unresolved. Supported missing-year forms use the observation year under an explicitly reported assumption. This optional reader policy is separate from the stricter date-resolution operation, which leaves missing years unresolved.
+
+Civil-day and completed-calendar-month differences are computed deterministically from resolved endpoints. Event counting counts the distinct event identifiers selected by the model, not source rows. The model still decides whether two accounts describe the same event, whether a visit occurred, and whether it falls inside the requested period. Exact quotes establish provenance, not semantic truth. The final answer cites ledger identifiers; its phrasing and interpretation remain statistical outputs. Cited date assumptions and inferred years produce a conditional response status, with assumptions retained separately.
+
+All selected sources are rechecked for owner, content and lifecycle eligibility after composition. If any selected source changed or became unavailable, the operation returns an error without partial facts or an answer. This cannot retract evidence that an authorized provider already received or an answer returned before a later deletion.
+
+\subsection{Activation and outcome utility}
+For an unpinned memory with base half-life $H>0$, define
+\[
+ A(m,t)=2^{-d/(H(1+\log n'))},\quad
+ d=\max(0,t-t_\ell),\quad n'=\max(1,n).
+\]
+Time reduces activation while leaving evidence confidence unchanged. Pinning or a disabled half-life sets activation to one. Explicit expiry takes precedence over pinning.
+
+Outcome utility is separate. Starting from $U_0=1/2$, an explicitly used memory with a known binary outcome updates as
+\[
+ U_{N+1}=\frac{(N+2)U_N+r_{N+1}}{N+3}
+        =\frac{1+\sum_{i=1}^{N+1}r_i}{N+3}.
+\]
+Duplicate events do not update utility again. The statistic records attributed outcomes; it does not establish that a memory caused success or update model weights.
+
+\section{Selective classification}
+The classifier estimates retention and type distributions for a candidate and its surrounding text. Training and serving use the same input format. A single exact occurrence of the candidate in its context is replaced with a marker to avoid repetition. The complete formatted input is counted with the encoder tokenizer; an oversized input is rejected before inference, without silently removing context. Its training loss is
+\[
+ \mathcal{L}(\theta)=
+ -\sum_i\log p_\theta(r_i\mid x_i)
+ -\sum_{i:k_i\text{ annotated}}\log p_\theta(k_i\mid x_i).
+\]
+For the frozen and contrastive baselines, $\theta$ denotes linear heads conditional on an encoder; contrastive adaptation precedes head fitting. In the replay experiment, $\theta$ includes the encoder and both heads, which are updated jointly with class-weighted cross-entropy. The type loss excludes ignored or unresolved candidates without meaningful type labels. Neither objective learns conflict resolution or generates summaries.
+
+\subsection{Trained components and runtime responsibilities}
+The base representation is the public \texttt{all-MiniLM-L6-v2} sentence encoder, which maps text to 384-dimensional vectors \citep{minilmcard}. Cortex does not train a foundation model. The task-specific parameters are two local multinomial logistic-regression heads and, in the adapted variant, a fine-tuned copy of the encoder. For normalized representation $h(x)$, head $j\in\{r,k\}$ returns
+\[
+ p_j(y\mid x)=\operatorname{softmax}\!\left((W_jh(x)+b_j)/T_j\right)_y.
+\]
+The historical frozen variant fits only $W_j,b_j$. Its adapted counterpart first performs eighty SetFit contrastive steps using type annotations, then fits the same heads. Logistic regression uses $C=10$, seed 17, and at most 1,500 iterations. Each temperature $T_j$ is selected by development loss from $\{0.5,0.75,1,1.5,2,3,5\}$. The replay comparison instead fixes $T_j=1$ and the final update for every condition. Its joint optimization is described below. Previously examined test partitions are retained as historical diagnostics, not reused as fresh validation.
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}L{.23\linewidth}Y L{.26\linewidth}@{}}
+\toprule
+Component & Function & Learned in this study\\
+\midrule
+External language model & Propose annotations, consolidation operations, and answers & No weight updates\\
+MiniLM encoder & Represent candidate text and context & Frozen or locally adapted\\
+Retention head & Durable, temporary, ignore, or uncertain & Locally fitted parameters\\
+Memory-type head & Fact, behavior, preference, relationship, project, or routine & Locally fitted parameters\\
+Persistence validator & Check source identity, scope, and allowed transitions & Deterministic code\\
+\bottomrule
+\end{tabularx}
+\caption{Training and runtime roles. The pretrained encoder and external language model are third-party components. Task-specific heads and adapted weights are experimental local artifacts, not released model checkpoints.}
+\label{tab:components}
+\end{table}
+
+The retention labels encode persistence policy; the type labels describe content. Neither head extracts candidate boundaries, resolves whether two mentions refer to the same event, or decides whether a new statement contradicts a prior one. Those capabilities must be evaluated separately. The external language model still proposes consolidation operations; local classifiers have no authority over those writes.
+
+The decision rule abstains if maximum retention probability is below $0.8$, the chosen retention is uncertain, or a retained candidate's maximum type probability is below $0.8$. These are experimental operating points. High probability on synthetic text does not establish calibration on real conversations.
+
+Records retain source spans, grouping identifiers, label provenance, and annotation-policy version. Human annotations, designed synthetic labels, and model-generated labels remain distinguishable. The loader rejects exact normalized candidate text across partitions and refuses provisional teacher labels unless explicitly enabled. This validation cannot establish that a user-role record was written by a human or that two directory-derived groups are independent. The source and grouping audits below address these separate assumptions.
+
+Temperature is chosen on development negative log likelihood. Test labels do not participate in fitting or temperature selection. Metrics include macro-averaged F1, multiclass Brier score, calibration error, coverage, and accepted-prediction error. Exact deduplication does not eliminate semantic leakage among templated examples.
+
+The operational boundary remains observational: predictions are returned to the caller and never modify memory state. A host can inspect disagreement before a learned decision suppresses useful information or retains an unsupported assertion.
+
+\input{learning_methods}
+
+\section{Conditional properties}
+The following results concern an abstract state machine. They assume atomic transactions, immutable observations, compliant writers, and correct owner authorization by the host. They are consequences of those assumptions, not a machine-checked proof that every implementation path satisfies them.
+
+\begin{proposition}[Scope preservation]
+If initial memories reference only observations in their own owner scope, and all source additions and update targets are checked against that scope, every reachable memory preserves the property.
+\end{proposition}
+\begin{proof}
+Induct on committed transitions. Insertion establishes the property through source validation. Contradiction creates a checked successor and a same-owner predecessor link. Reinforcement unions the existing source set with checked sources. Other transitions remove records or change metadata without adding sources. Rejected transactions leave the preceding state unchanged.
+\end{proof}
+
+\begin{proposition}[Atomic acknowledgement]
+If every consolidation writer acquires the same per-owner lock before selecting its pending snapshot, retains that lock through commit, and commits operations and acknowledgements atomically, no observation is acknowledged by two successful chunks.
+\end{proposition}
+\begin{proof}
+The lock orders successful consolidations for an owner. At the first committed acknowledgement, the observation ceases to be pending and later snapshots exclude it. A failed transaction rolls back both operations and acknowledgements. No second successful chunk can therefore select that observation as pending.
+\end{proof}
+This result permits several facts to cite one observation and permits repeated inference after failure.
+
+\begin{proposition}[Exact-replay exclusion]
+Suppose imports and deletion share an owner-scoped barrier. Deletion atomically writes a content tombstone and removes the source, and subsequent imports check tombstones. Once deletion commits, importing identical source text for that owner cannot restore it.
+\end{proposition}
+\begin{proof}
+The barrier orders an import before or after deletion. An import ordered before deletion is part of the source state examined and removed. An import ordered after deletion sees the committed tombstone and skips insertion. Identical source text cannot survive either ordering.
+\end{proof}
+Fingerprints are assumed collision resistant. The property excludes paraphrases, copies already returned, provider retention, and separately trained weights. In-flight reads are governed by their final eligibility snapshot; deletion cannot retract an output already authorized by an earlier snapshot.
+
+\begin{proposition}[Activation monotonicity]
+For fixed $n'\geq1$ and $H>0$, activation is nonincreasing in elapsed time. For fixed positive elapsed time it is nondecreasing in $n'$.
+\end{proposition}
+\begin{proof}
+For $d>0$,
+\[
+ \frac{\partial A}{\partial d}
+ =-\frac{\log2}{H(1+\log n')}A<0,\qquad
+ \frac{\partial A}{\partial n'}
+ =\frac{d\log2}{Hn'(1+\log n')^2}A>0.
+\]
+For $d\geq0$, the exponential formula gives $0<A\leq1$ and continuity at zero. Together with the derivatives, this establishes the stated weak inequalities.
+\end{proof}
+An older assertion is not necessarily less likely to be true.
+
+\begin{theorem}[Window coverage]
+Let source length $L>0$, width $W$, and overlap $0\leq O<W$ be integers. Generate windows starting at $j(W-O)$, stopping at the first whose end reaches $L$. They cover the source. Every contiguous span of at most $O+1$ code points lies wholly in at least one window.
+\end{theorem}
+\begin{proof}
+Consecutive starts differ by $S=W-O\leq W$, so windows have no gap. The first starts at zero and the last reaches $L$. For a span starting at $a$, choose the latest generated start $jS\leq a$. If it is the last start, its window contains the span because it reaches $L$. Otherwise $a<(j+1)S$, hence $a\leq jS+S-1$. For length $\ell\leq O+1$,
+\[
+ a+\ell\leq jS+S-1+O+1=jS+W.
+\]
+Thus the whole span fits.
+\end{proof}
+Coverage does not guarantee that embedding preserves meaning or retrieval selects the window.
+
+
+\begin{proposition}[Validated token-window coverage]
+Let accepted windows be intervals $[a_i,b_i)$ over a source of length $L>0$, with $a_1=0$, $b_n=L$, $a_{i+1}\leq b_i$, and strictly increasing starts and ends. Their union is $[0,L)$. If a correct tokenizer reports at most $T$ tokens for each window, and the encoder uses that tokenizer and special-token policy, no accepted window exceeds $T$ encoder tokens.
+\end{proposition}
+\begin{proof}
+The first interval covers the source prefix ending at $b_1$. Inductively, the next interval begins at or before the covered prefix ends and extends it to $b_{i+1}$. The final prefix therefore ends at $L$. The token statement follows from equality between the reported count and the encoder's count for each interval.
+\end{proof}
+This result guarantees complete source coverage, not containment of every multi-character fact in a single window. Variable overlap does not inherit the fixed-overlap theorem's $O+1$ span guarantee.
+
+\begin{proposition}[Civil-date subtraction]
+Represent each valid Gregorian calendar date as midnight UTC. Dividing the difference in their Unix-second representations by $86{,}400$ gives their signed difference in civil days, independent of daylight-saving transitions in the timezone used to resolve the dates.
+\end{proposition}
+\begin{proof}
+UTC midnights in this representation are separated by exactly $86{,}400$ Unix seconds for consecutive civil dates. Summing these equal differences between the two dates gives the claimed integer. The source timezone affects which civil dates are chosen, but not subtraction of those dates.
+\end{proof}
+The representation does not model leap seconds or elapsed local hours. It is used for civil-day questions only.
+
+\begin{theorem}[Selective-risk bound]
+Fix a classifier and acceptance rule before testing. Assume independent test draws from the deployment distribution with correct labels. Conditional on $m>0$ accepted examples, let $\widehat R$ be their mean zero-one error and $R$ the population error conditional on acceptance. For $\delta\in(0,1)$, conditional on that accepted count, with probability at least $1-\delta$,
+\[
+ R\leq\min\left\{1,\widehat R+
+ \sqrt{\frac{\log(1/\delta)}{2m}}\right\}.
+\]
+\end{theorem}
+\begin{proof}
+For a fixed rule, accepted examples are independent draws from the distribution conditional on acceptance. Their error indicators lie in $[0,1]$ with mean $R$. Hoeffding's inequality gives
+$\Prob(R-\widehat R\geq\epsilon\mid m)\leq e^{-2m\epsilon^2}$ \citep{hoeffding}.
+Substitute $\epsilon=\sqrt{\log(1/\delta)/(2m)}$ and cap at one.
+\end{proof}
+Selecting the rule using these test labels invalidates this experiment. The bound cannot certify deployment risk from templated synthetic data or unreviewed teacher labels.
+
+\begin{proposition}[Source-bound answer publication]
+Assume source hashes are collision-free on the compared records. Suppose every published fact is checked against a supplied source excerpt, selected sources retain their content hashes, and all selected sources pass an owner and eligibility check immediately before publication. Then every quoted fact in a successful answer is a substring of a source that was eligible at that final check.
+\end{proposition}
+\begin{proof}
+Quote validation establishes membership in a supplied excerpt and records its parent source hash and offsets. The final check establishes that the same source content remains eligible in the requested scope. Substring membership is preserved by content equality. If either check fails, no answer is published, so a successful output has the stated property.
+\end{proof}
+The result is snapshot-relative. It neither verifies the model-written interpretation nor eliminates the interval between the final database read and delivery to a caller.
+
+\section{Experimental design}
+The studies use authorized local conversation records and a sample from LongMemEval. Historical local partitions were assigned by directory-derived groups before fitting. Subsequent audits found machine-authored records and related projects across those partitions. We retain their measured values with that qualification. The replay comparison uses corrected source exclusions and connected-project separation; it remains developmental because these labels have been examined before.
+
+For public evaluation, twelve previously examined cases form the development set. Sixty additional cases are selected by a fixed hash ordering, with ten from each question type and no overlap with the nineteen cases used in earlier work. Each case receives a separate owner scope and its full supplied conversation history. Questions and reference answers never enter the memory store. Both readers use the same evidence-size ceiling, but their model-call budgets differ. The requested model is Luna 6 at medium effort through the local API. Date interpretation uses an explicit UTC reference. Scoring checks consistency with the supplied history and reference; it does not independently verify the truth of historical assistant recommendations. Model judgments are followed by Codex inspection, with no independent human adjudicator.
+
+Classification uses the pinned MiniLM sentence encoder and the same candidate-context format for training and serving. Frozen and contrastive baselines and their original temperature selection are reported historically. The chronological comparison trains the encoder and heads jointly from fresh checkpoints, with fixed temperature, update count, and acceptance rule. Synthetic examples and natural candidates are reported separately. All natural annotations remain provisional model labels.
+
+The local execution environment uses PostgreSQL 17 in Docker, Go 1.26.10 and a tokenizer-checked ONNX embedding adapter. A private four-slot serving variant accelerates the larger evaluation; its vectors and segmentation were checked against the serial adapter, including concurrent repeated requests. Shared machine and provider load prevents interpreting timings as an isolated throughput benchmark. Source versions, budgets and aggregate measurements are recorded in the accompanying manifest.
+
+\section{Results}
+\input{learning_results}
+\subsection{Historical source and reader diagnostics}
+The following measurements predate the authorship and related-project audits. Their numeric values are retained; the natural classifier partition does not establish independent-project transfer. The separate public question-answer study is not affected by the local directory grouping error.
+\input{current_results}
+
+\section{Discussion}
+The diagnostics distinguish separate constraints. Source access can recover information omitted by summaries, but a narrow budget can still exclude a required event. Short excerpts may improve budget utilization while separating related context across windows. Classification narrows a model's decision task, but performance on designed examples does not establish transfer to natural conversations.
+
+Observation time, event time, and validity time have different meanings. Explicit date resolution addresses arithmetic and preserves the source anchor. It does not extract every event or identify repeated descriptions of one event. Multi-session counting still requires semantic event identity and correction handling. The present classifier performs none of those operations.
+
+Deletion exposes a boundary between external memory and learned parameters. Persistence can remove source records and derived memories. Once private text contributes to weight updates, source deletion does not itself remove that information from weights. Training artifacts remain private, and weight-training experiments use fabricated examples and, separately, owner-authorized provisional annotations. Production training needs separate consent, minimization, model-retention, and retraining policies.
+
+Exact vector scans and explicit capacity bounds simplify small-scale operation. They do not establish suitability for large corpora. Authentication, retention policy, scheduling, and provider access remain host responsibilities. Learned mutation policies would have to preserve these boundaries.
+
+\input{platform_comparison}
+
+\section{Limitations}
+The proofs apply to the stated abstract machine. Regression tests give evidence of implementation conformance in selected cases, not exhaustive verification. No theorem establishes that an extracted statement is true, a summary complete, or a probability calibrated.
+
+The private corpus belongs to one owner and cannot be publicly reproduced. Pattern checks can accept incorrect qualifications. User-role metadata did not establish human authorship, and changing working directories obscured related projects. The corrected development cohorts are small, and source exclusions recognize known templates rather than certifying every remaining author. The original seven-case and twelve-case public probes influenced development. The sixty-case public measurement is historical; it is no longer untouched validation for subsequent changes. Synthetic wrapper splits share topics and vocabulary. All provisional labels and semantic judgments await independent human review. These constraints require exploratory reporting and continued advisory operation.
+
+\input{benchmark_protocol}
+
+\section{Conclusion}
+Cortex applies a sleep-inspired separation between rapid source capture and slower integration to an inspectable memory engine. Its implemented contribution is source-preserving storage, bounded retrieval, and validated transitions. The formal results are conditional software properties; they establish neither neural fidelity nor semantic truth.
+
+The replay prototype makes source-grounded rehearsal and controlled recombination executable hypotheses. The source audit also shows why additional training runs alone are insufficient: authorship, related-project grouping, and label quality determine what a measured gain means. Source-assisted answering has not shown a reliable advantage over its baseline. Production adoption requires simultaneous improvements in older-knowledge retention and unseen-conversation performance, with no increase in unsupported memories, against ordinary and repeated-example controls. Independent human judgments, fresh confirmation, and downstream tests remain necessary. No proof in this paper guarantees that the learning process will converge to that outcome.
+
+\clearpage
+\appendix
+\section{Implementation and reproducibility}
+The accompanying manifest records implementation identity, environment, encoder revision, and artifact hashes. These identify an experiment; they do not define the scientific claims. Public source includes classification policy, training and labeling tools, and regression tests. Private conversations, per-example predictions, provider responses, database exports, and trained artifacts are excluded.
+
+A complete observation's source windows publish in one transaction after source eligibility is checked. Retrieval checks eligibility again after provider work. The service assumes a trusted host and binds to localhost by default. Exposed deployments must supply authentication and owner authorization.
+
+Two offsetting grading discrepancies left an earlier public total unchanged: an unsupported abstention passed for a preference question, while a response containing the correct degree subject failed because it qualified whether graduation was established. The case-level correction shows why aggregate agreement alone is inadequate.
+
+\section{Earlier diagnostic studies}
+The following pilot studies establish the earlier failure analysis and use smaller, separately described samples. Their totals are not pooled with the expanded study.
+\input{results}
+\input{followup}
+
+\bibliographystyle{plainnat}
+\begingroup
+\footnotesize
+\raggedright
+\setlength{\bibsep}{0pt}
+\bibliography{references}
+\endgroup
+\end{document}
