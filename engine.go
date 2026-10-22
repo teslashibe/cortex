@@ -163,6 +163,9 @@ func (e *Engine) Consolidate(ctx context.Context, userID string, opts Consolidat
 				}
 			}
 			if callErr == nil {
+				ops, callErr = resolveConsolidationAliases(ops, chunk[:n], memories)
+			}
+			if callErr == nil {
 				var completed Consolidation
 				completed, callErr = completeConsolidationWithModel(ctx, conn, userID, run.ID, ops, response.Usage.TotalTokens, response.Model)
 				if callErr == nil {

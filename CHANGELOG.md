@@ -7,6 +7,7 @@
 - Calculate civil-day and completed-calendar-month differences from source-bound date expressions; expose event-count inputs separately from model judgments.
 - Recheck source eligibility after answer generation and discard partial results when evidence changes.
 - Preserve nonempty whitespace-only source windows during embedding so one such excerpt cannot interrupt indexing.
+- Use short request-local consolidation references, resolve them to exact stored IDs before validation, and keep historical source IDs out of inference context.
 - Expand private conversation evaluation and project-separated provisional classifier training. The classifier remains advisory.
 - Publish a versioned academic manuscript connecting the design to complementary learning systems and sleep research, with measured results and explicit limits.
 

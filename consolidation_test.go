@@ -30,7 +30,7 @@ func TestConsolidationContextOmitsHistoricalSourceIDs(t *testing.T) {
 		t.Fatal(err)
 	}
 	text := messages[1].Content
-	if strings.Contains(text, "historical-source-id") || !strings.Contains(text, "current-source-id") || !strings.Contains(text, "memory-to-reinforce") || !strings.Contains(text, "Known fact") {
+	if strings.Contains(text, "historical-source-id") || strings.Contains(text, "current-source-id") || strings.Contains(text, "memory-to-reinforce") || !strings.Contains(text, `"id":"s1"`) || !strings.Contains(text, `"id":"m1"`) || !strings.Contains(text, "Known fact") {
 		t.Fatalf("incorrect prompt projection: %s", text)
 	}
 	if len(memories[0].Sources) != 1 || memories[0].Sources[0] != "historical-source-id" {
@@ -132,7 +132,7 @@ func TestConsolidationContext(t *testing.T) {
 	if err := json.Unmarshal([]byte(strings.TrimPrefix(messages[1].Content, prompts.Consolidation+"\n")), &context); err != nil {
 		t.Fatal(err)
 	}
-	if context.UserID != "u" || context.Observations[0].Content != content || context.Observations[0].Refs["sender"] != "assistant" || !context.Observations[0].At.Equal(at) || len(context.Memories[0].Sources) != 0 || context.Memories[0].ID != "mem_1" || context.Memories[0].Summary != "Likes tea" || !context.Memories[0].LastSeenAt.Equal(at) {
+	if context.UserID != "u" || context.Observations[0].Content != content || context.Observations[0].Refs["sender"] != "assistant" || !context.Observations[0].At.Equal(at) || len(context.Memories[0].Sources) != 0 || context.Memories[0].ID != "m1" || context.Memories[0].Summary != "Likes tea" || !context.Memories[0].LastSeenAt.Equal(at) {
 		t.Fatalf("lost evidence: %+v", context)
 	}
 	// The context fits by itself, but escaping it inside the chat envelope does not.
@@ -143,6 +143,32 @@ func TestConsolidationContext(t *testing.T) {
 	obs[0].Content = strings.Repeat("x", MaxContextBytes)
 	if _, err := consolidationMessages("test-model", "u", obs, mem); err == nil {
 		t.Fatal("oversized context accepted")
+	}
+}
+
+func TestConsolidationAliasesAreCollisionFreeAndRequestScoped(t *testing.T) {
+	obs := []Observation{{ID: "s1", IdempotencyKey: "private-import-key"}, {ID: "real-second"}}
+	mem := []Memory{{ID: "m1"}}
+	o, m, _, _ := consolidationAliases(obs, mem)
+	if o[0].ID == "s1" || m[0].ID == "m1" || o[0].IdempotencyKey != "" || obs[0].IdempotencyKey != "private-import-key" {
+		t.Fatal("alias collision or input mutation")
+	}
+	ops, err := resolveConsolidationAliases([]Op{{Kind: OpReinforce, OldID: m[0].ID, Sources: []string{o[0].ID, "real-second"}}}, obs, mem)
+	if err != nil || ops[0].OldID != "m1" || ops[0].Sources[0] != "s1" || ops[0].Sources[1] != "real-second" {
+		t.Fatalf("bad resolution: %+v %v", ops, err)
+	}
+	for _, refs := range [][]string{{"foreign"}, {o[0].ID, "s1"}} {
+		if _, err := resolveConsolidationAliases([]Op{{Sources: refs}}, obs, mem); err == nil {
+			t.Fatal("accepted unknown or duplicate resolved source")
+		}
+	}
+	if _, err := resolveConsolidationAliases([]Op{{OldID: "foreign", Sources: []string{o[0].ID}}}, obs, mem); err == nil {
+		t.Fatal("accepted unknown update target")
+	}
+	other := []Observation{{ID: "different-source"}}
+	resolved, err := resolveConsolidationAliases([]Op{{Sources: []string{"s1"}}}, other, nil)
+	if err != nil || resolved[0].Sources[0] != "different-source" {
+		t.Fatal("alias escaped its request")
 	}
 }
 

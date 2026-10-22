@@ -30,6 +30,7 @@ type Model interface {
 }
 
 func consolidationMessages(model, userID string, observations []Observation, memories []Memory) ([]llm.Message, error) {
+	observations, memories, _, _ = consolidationAliases(observations, memories)
 	// Historical source IDs cannot support a new operation. Hide only those
 	// IDs from inference so the model cannot copy them from an existing memory;
 	// retain the full provenance in storage and preserve all other context.
@@ -57,6 +58,69 @@ func consolidationMessages(model, userID string, observations []Observation, mem
 		return nil, fmt.Errorf("consolidation request: %w", err)
 	}
 	return messages, nil
+}
+
+// Aliases are request-local, disjoint from real identifiers, and never stored.
+// Models may return either an alias or an exact real identifier for compatibility
+// with existing Model implementations. Both resolve through the same allowlist.
+func consolidationAliases(observations []Observation, memories []Memory) ([]Observation, []Memory, map[string]string, map[string]string) {
+	used := map[string]bool{}
+	for _, o := range observations {
+		used[o.ID] = true
+	}
+	for _, m := range memories {
+		used[m.ID] = true
+	}
+	alias := func(prefix string, n int) string {
+		v := fmt.Sprintf("%s%d", prefix, n+1)
+		for used[v] {
+			v += "_"
+		}
+		used[v] = true
+		return v
+	}
+	obs := append([]Observation(nil), observations...)
+	mem := append([]Memory(nil), memories...)
+	sources, targets := map[string]string{}, map[string]string{}
+	for i, o := range observations {
+		id := alias("s", i)
+		obs[i].ID = id
+		obs[i].IdempotencyKey = ""
+		sources[id] = o.ID
+		sources[o.ID] = o.ID
+	}
+	for i, m := range memories {
+		id := alias("m", i)
+		mem[i].ID = id
+		targets[id] = m.ID
+		targets[m.ID] = m.ID
+	}
+	return obs, mem, sources, targets
+}
+
+func resolveConsolidationAliases(ops []Op, observations []Observation, memories []Memory) ([]Op, error) {
+	_, _, sources, targets := consolidationAliases(observations, memories)
+	out := append([]Op(nil), ops...)
+	for i, op := range ops {
+		out[i].Sources = make([]string, len(op.Sources))
+		seen := map[string]bool{}
+		for j, ref := range op.Sources {
+			id, ok := sources[ref]
+			if !ok || seen[id] {
+				return nil, fmt.Errorf("operation %d has an unavailable or duplicate source reference", i)
+			}
+			out[i].Sources[j] = id
+			seen[id] = true
+		}
+		if op.OldID != "" {
+			id, ok := targets[op.OldID]
+			if !ok {
+				return nil, fmt.Errorf("operation %d has an unavailable memory reference", i)
+			}
+			out[i].OldID = id
+		}
+	}
+	return out, nil
 }
 
 func chunkObservations(obs []Observation, size int, byDay bool) [][]Observation {
