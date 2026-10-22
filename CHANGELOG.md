@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.4.0
+
+- Add an optional evidence reader with bounded query planning, source-checked quotation extraction, and cited answer composition.
+- Improve evidence diversity with an additional lexical channel, simple plural and month aliases, speaker preference, and per-source limits.
+- Calculate civil-day and completed-calendar-month differences from source-bound date expressions; expose event-count inputs separately from model judgments.
+- Recheck source eligibility after answer generation and discard partial results when evidence changes.
+- Preserve nonempty whitespace-only source windows during embedding so one such excerpt cannot interrupt indexing.
+- Expand private conversation evaluation and project-separated provisional classifier training. The classifier remains advisory.
+- Publish a versioned academic manuscript connecting the design to complementary learning systems and sleep research, with measured results and explicit limits.
+
 ## v1.3.0
 
 - Add optional exact-tokenizer source segmentation with full-coverage validation and separate vector namespaces.

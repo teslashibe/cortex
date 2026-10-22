@@ -336,3 +336,7 @@ maintenance.** Older binaries can write data without these new policies.
 ## Papers
 
 See the [academic manuscript, source, and historical papers](docs/papers/README.md).
+
+### Evidence answers
+
+The optional [evidence reader](docs/evidence-reader.md) answers a question with exact source quotations, date-calculation inputs, and explicit coverage limits. It uses at most three model calls and does not mutate memory. The host must authorize sending raw excerpts to the configured model.

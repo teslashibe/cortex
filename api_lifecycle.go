@@ -37,6 +37,24 @@ func (a *API) postEvidenceRecall(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, 200, out)
 }
+
+func (a *API) postEvidenceAnswer(w http.ResponseWriter, r *http.Request) {
+	var body struct {
+		User     string `json:"user_id"`
+		Question string `json:"question"`
+		AnswerOptions
+	}
+	if err := decodeBounded(w, r, &body); err != nil {
+		writeErr(w, http.StatusBadRequest, err)
+		return
+	}
+	out, err := a.engine.AnswerEvidence(r.Context(), body.User, body.Question, body.AnswerOptions)
+	if err != nil {
+		writeErr(w, http.StatusBadRequest, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, out)
+}
 func (a *API) postEventDates(w http.ResponseWriter, r *http.Request) {
 	var body struct {
 		User       string      `json:"user_id"`

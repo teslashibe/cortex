@@ -34,7 +34,9 @@ func (c *EmbeddingClient) Embed(ctx context.Context, input []string) ([][]float6
 		return nil, errors.New("embedding batch must contain 1 to 32 inputs")
 	}
 	for _, s := range input {
-		if strings.TrimSpace(s) == "" {
+		// A source window can consist entirely of whitespace. Preserve those
+		// nonempty spans so complete source indexing does not fail mid-batch.
+		if s == "" {
 			return nil, errors.New("empty embedding input")
 		}
 	}
