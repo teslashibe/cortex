@@ -40,6 +40,8 @@ def load_rows(path, allow_provisional=False):
             raise ValueError('candidate must contain 1..512 code points')
         if r.get('label_source') not in ('human', 'synthetic', 'teacher'):
             raise ValueError('label_source must be human, synthetic, or teacher')
+        if r.get('annotation_errors') or r.get('review_status') == 'pending_invalid':
+            raise ValueError('invalid provisional annotation needs review')
         if r['label_source'] == 'teacher' and not allow_provisional:
             raise ValueError('teacher labels require --allow-provisional; they are not gold labels')
         if r.get('retention') not in LABELS['retention']:

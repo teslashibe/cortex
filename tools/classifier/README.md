@@ -83,6 +83,9 @@ for another provider; credentials come from `LLM_API_KEY`. The tool does not ret
 provider failures or guess offsets for repeated text. Its output is a review
 queue, not a finished training split. Select and correct candidates, record the
 review, and allocate complete groups before using the training tool.
+Malformed annotations remain in the journal as `pending_invalid`, with explicit
+errors; training refuses them until reviewed. The tool never fills in a missing
+type by guessing.
 
 ## Local inference
 

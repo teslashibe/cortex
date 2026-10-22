@@ -3,9 +3,15 @@ from pathlib import Path
 import tempfile
 import unittest
 from train import load_rows, private_path, input_text, checked_inputs
+from label import annotation_errors
 
 
 class SplitSafety(unittest.TestCase):
+    def test_incomplete_teacher_label_stays_invalid(self):
+        self.assertEqual(annotation_errors({'retention':'temporary','kind':None}),
+                         ['retained_candidate_missing_kind'])
+        self.assertEqual(annotation_errors({'retention':'temporary','kind':'project'}), [])
+
     def test_exact_budget_and_context_preservation(self):
         row = {'text': 'tea', 'context': 'I do not like tea at work'}
         self.assertEqual(input_text(row), 'Candidate: tea\nContext: I do not like [candidate] at work')
