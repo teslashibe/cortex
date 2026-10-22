@@ -100,10 +100,14 @@ func TestAnswerCalculations(t *testing.T) {
 		}
 	}
 	facts := []EvidenceFact{{ID: "a", Date: "2026-04-02"}, {ID: "b", Date: "2026-04-06"}}
-	for _, c := range []EvidenceCalculation{{Operation: "days", FromFact: "missing", ToFact: "b"}, {Operation: "count", EventFacts: []string{"a", "a"}}, {Operation: "count", EventFacts: []string{"foreign"}}, {Operation: "none", FromFact: "a"}, {Operation: "bad"}} {
+	for _, c := range []EvidenceCalculation{{Operation: "days", FromFact: "missing", ToFact: "b"}, {Operation: "count", EventFacts: []string{"a", "a"}}, {Operation: "count", EventFacts: []string{"foreign"}}, {Operation: "bad"}} {
 		if err := calculateEvidence(&c, facts, AnswerOptions{}); err == nil {
 			t.Fatalf("accepted invalid %+v", c)
 		}
+	}
+	declined := EvidenceCalculation{Operation: "none", FromFact: "a", Value: 999, EventFacts: []string{"b"}}
+	if err := calculateEvidence(&declined, facts, AnswerOptions{}); err != nil || declined.Value != 0 || declined.FromFact != "" || len(declined.EventFacts) != 0 {
+		t.Fatalf("unused model arithmetic was not discarded: %+v %v", declined, err)
 	}
 	c := EvidenceCalculation{Operation: "days", FromFact: "a", ToFact: "b", Value: 1000}
 	if err := calculateEvidence(&c, facts, AnswerOptions{}); err != nil || c.Value != 4 {

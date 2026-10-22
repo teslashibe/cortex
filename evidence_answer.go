@@ -531,9 +531,9 @@ func calculateEvidence(c *EvidenceCalculation, facts []EvidenceFact, opts Answer
 	}
 	switch c.Operation {
 	case "none":
-		if c.FromFact != "" || c.ToFact != "" || c.ToAsOf || len(c.EventFacts) > 0 {
-			return errors.New("unexpected calculation inputs")
-		}
+		// A declined calculation may still contain unused model fields. They
+		// have no authority: erase them, just as the proposed Value is erased.
+		*c = EvidenceCalculation{Operation: "none"}
 		return nil
 	case "count":
 		if c.FromFact != "" || c.ToFact != "" || c.ToAsOf || len(c.EventFacts) == 0 {
