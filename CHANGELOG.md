@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Add an exact-selection consolidation API with required host permission checks before inference and inside the atomic memory commit
+- Bound the selected path to one model call, with no automatic format repair or input reduction
+- Add saved consolidation outcome reads for host reconciliation after cancellation or a lost response
+
 ## v1.4.0
 
 - Add an optional evidence reader with bounded query planning, source-checked quotation extraction, cited answer composition, and one validated format repair.
