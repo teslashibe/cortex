@@ -16,3 +16,5 @@ Build with `xelatex main.tex` twice, or open this directory in the Codex LaTeX e
 The evaluation corpus, actual session messages, extracted memories, prompts,
 model responses and database exports remain outside Git. This directory contains
 only the paper, source, version metadata and aggregate results within the paper.
+
+See the [grading erratum](ERRATUM.md) before interpreting the public-case table.

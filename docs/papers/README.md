@@ -1,5 +1,7 @@
 # Papers
 
+- [Academic manuscript: October 2026](v3-october-2026/paper.pdf), with conditional proofs, retrieval experiments, classification results, and a conclusion; [LaTeX source](v3-october-2026/main.tex)
+
 - [Revision 2.2: October 2026](v2.2-october-2026/paper.pdf), Cortex v1.1.0 and local-session evaluation; [LaTeX source](v2.2-october-2026/main.tex)
 
 - [Revision 2.1: October 2026](v2.1-october-2026/paper.pdf), the v1.0.1 paper with the proposed next evaluation and release plan; [LaTeX source](v2.1-october-2026/main.tex)
@@ -13,3 +15,7 @@ commit and distinguish newly measured results from earlier ones.
 
 Revision 2.2 reports the v1.1.0 implementation and development diagnostics.
 Its manifest identifies the exact code commit. No private session content is published.
+
+The academic manuscript replaces release-by-release narration with a scientific
+model and experimental account. Historical PDFs remain unchanged. Revision 2.2
+has a [case-level grading erratum](v2.2-october-2026/ERRATUM.md).

@@ -1,0 +1,236 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=25mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,microtype,amsmath,amssymb,amsthm,booktabs,array}
+\usepackage[round,authoryear]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\setlength{\parindent}{1.2em}
+\setlength{\parskip}{3pt}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\ind}{\mathbf{1}}
+\hypersetup{pdftitle={Cortex: Provenance-Preserving Memory with Selective Classification for Language Agents},pdfauthor={Brendan Playford}}
+\title{Cortex: Provenance-Preserving Memory with\\Selective Classification for Language Agents}
+\author{Brendan Playford}
+\date{October 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+Persistent memory for language agents must preserve attribution, reconcile corrections, retrieve evidence under a finite context budget, and support deletion. Compressing a conversation into summaries creates an additional failure mode: a relevant statement may never enter the stored representation. We describe Cortex, a memory system that separates attributed observations, derived memories, and model decisions. Its retrieval layer combines lexical and semantic ranks over summaries and bounded source excerpts. A selective classifier estimates retention and semantic type while deterministic validation governs state transitions. We formalize the state model and prove conditional properties of scope preservation, atomic consolidation, exact-replay exclusion, temporal activation, and excerpt coverage. These proofs concern an abstract transition system; they do not establish semantic correctness or constitute formal verification of the implementation. An exploratory evaluation combines selected private conversations, a seven-case public memory probe, and a synthetic classification experiment. The experiments expose limitations in grading, temporal reasoning, and transfer from synthetic labels. The learned classifier remains observational until independently reviewed data support its use.
+\end{abstract}
+
+\section{Introduction}
+Language agents frequently need information absent from their current context: a user's preference, a correction to an earlier statement, or a detail from a previous task. External memory can retain such information without changing model parameters. Its reliability depends on separate decisions: what to retain, which source supports it, whether a later statement supersedes it, and which evidence to retrieve for a new query.
+
+Summary-based memory introduces an information bottleneck. A fluent summary may omit a detail that later becomes relevant. Improving retrieval over those summaries cannot recover that detail. Conversely, retrieving original conversations exposes the reader to quotations, obsolete statements, and irrelevant requests. A useful memory system needs a compact representation and access to attributed evidence, with explicit lifecycle rules for each.
+
+This work gives a common state model for observations, derived memories, and source excerpts; separates statistical decisions from validated persistence; and implements a private evaluation and training workflow. The empirical study is exploratory. Its purpose is to identify failure mechanisms and establish an auditable baseline.
+
+\section{Related work}
+Cognitive Architectures for Language Agents describes modular memory and decision procedures within an agent architecture \citep{coala}. MemGPT uses hierarchical memory and control flow to manage a context window \citep{memgpt}. These works motivate treating memory as more than a collection of vector embeddings. Cortex concentrates on persistence and evidence. Scheduling, user authorization, and the interaction loop belong to its host.
+
+LongMemEval separates indexing, retrieval, and reading, and evaluates information extraction, multi-session reasoning, temporal reasoning, updates, and abstention \citep{longmem}. This separation guides our experiments: answer failure alone does not identify the responsible component. Our small public probe is not comparable to a complete benchmark evaluation.
+
+Sentence-BERT supplies a practical representation for semantic similarity \citep{sbert}. SetFit adapts a sentence encoder through contrastive learning before fitting a classification head \citep{setfit}. We use these methods as baselines for classifying source spans. Temperature scaling is selected on a development partition to examine probability calibration \citep{calibration}.
+
+Memory-R1 learns memory operations using downstream rewards \citep{memoryr1}. MemRL adapts episodic-memory utility without updating the reasoning model's weights \citep{memrl}. Both directions make feedback quality consequential. We keep outcome utility, supervised labels, and model weights distinct. Grading discrepancies in our public probe provide a reason to audit rewards before optimizing a memory policy against them.
+
+\section{Problem formulation}
+An observation is a tuple
+\[
+ o=(i,u,x,t_o,\rho),
+\]
+where $i$ is its identifier, $u$ its owner scope, $x$ immutable source text, $t_o$ observation time, and $\rho$ provenance such as speaker and conversation identity. Observation time does not establish the date of an event described in $x$.
+
+A derived memory is
+\[
+ m=(j,u,s,k,c,S,t_\ell,n,z),
+\]
+where $s$ is a summary, $k$ a semantic type, $c\in[0,1]$ evidence confidence, $S$ a nonempty set of supporting observation identifiers, $t_\ell$ the last supporting observation time, $n$ a reinforcement count, and $z$ lifecycle metadata. The supported types are fact, behavior, preference, relationship, project, and routine. They describe an annotation policy; they are not mutually exclusive properties of natural language in general.
+
+An atomic candidate is an exact span $x[a:b]$ with half-open Unicode code-point offsets. Atomicity is an annotation goal, not a property guaranteed by span validation. Retention belongs to
+\[
+ \mathcal{R}=\{\text{durable},\text{temporary},\text{ignore},\text{uncertain}\}.
+\]
+Retention and type answer different questions. A one-time project request can be temporary. A quotation can resemble a preference without supporting an inference about the user's preference.
+
+For query $q$ and evidence budget $B$, a conceptual objective is
+\[
+ \max_C \E[\mathrm{answer\ quality}\mid q,C]
+ \quad\text{subject to}\quad
+ \mathrm{tokens}(C)\leq B,\quad C\subseteq\mathcal{E}_u,
+\]
+where $\mathcal{E}_u$ is currently eligible evidence for owner $u$. Rank fusion approximates selection; scope and lifecycle constraints are enforced separately. Quality must distinguish unsupported retention, omitted facts, stale answers, attribution mistakes, and reader errors.
+
+\section{Memory operations and retrieval}
+\subsection{Consolidation}
+Consolidation processes a bounded snapshot of pending observations. A model proposes insertion, reinforcement, or contradiction operations. Validation requires known operation types, bounded summaries, finite confidence values, sources within the current chunk, and update targets in the same owner scope. Contradiction records a successor while preserving the earlier memory's provenance.
+
+Accepted operations and acknowledgement of their exact source snapshot commit in one transaction. Inference occurs outside that transaction. A malformed successful response may receive one format-repair request; the result passes the same validation. This bounds recovery without treating provider calls as exactly-once events.
+
+The host decides when consolidation runs and whether observations may be sent to an embedding provider or classifier. Ordinary retrieval does not create a training label.
+
+\subsection{Summary and source retrieval}
+A query can retrieve derived memories or source excerpts. Lexical overlap and cosine similarity produce ranked lists within each representation. Reciprocal rank fusion assigns
+\[
+ R(d)=\sum_{c\in\mathcal{C}}
+ \frac{\ind\{d\text{ appears in }c\}}{\kappa+\operatorname{rank}_c(d)},
+ \qquad \kappa=60,
+\]
+following \citet{rrf}. The score orders candidates; it is not a relevance probability.
+
+Source text is divided into overlapping windows of $W=512$ code points with overlap $O=128$. Windows retain parent identifiers, offsets, attribution, and observation time. Stored vectors include encoder identity and source hash. Changes to weights or preprocessing require a new model identity.
+
+Code-point limits do not imply token limits. The host must verify that its encoder accepts the selected windows without truncation. Our local encoder has a 256-wordpiece limit; a pathological symbol sequence can exceed it despite satisfying the code-point bound.
+
+An observation supporting any superseded, archived, or expired memory is excluded from source retrieval. This conservative rule can suppress useful information when a source supports several memories. Unassociated observations can still contain obsolete claims, so eligibility alone does not establish current truth.
+
+\subsection{Activation and outcome utility}
+For an unpinned memory with base half-life $H>0$, define
+\[
+ A(m,t)=2^{-d/(H(1+\log n'))},\quad
+ d=\max(0,t-t_\ell),\quad n'=\max(1,n).
+\]
+Time reduces activation while leaving evidence confidence unchanged. Pinning or a disabled half-life sets activation to one. Explicit expiry takes precedence over pinning.
+
+Outcome utility is separate. Starting from $U_0=1/2$, an explicitly used memory with a known binary outcome updates as
+\[
+ U_{N+1}=\frac{(N+2)U_N+r_{N+1}}{N+3}
+        =\frac{1+\sum_{i=1}^{N+1}r_i}{N+3}.
+\]
+Duplicate events do not update utility again. The statistic records attributed outcomes; it does not establish that a memory caused success or update model weights.
+
+\section{Selective classification}
+The classifier estimates retention and type distributions for a candidate and its surrounding text. Its training loss is
+\[
+ \mathcal{L}(\theta)=
+ -\sum_i\log p_\theta(r_i\mid x_i)
+ -\sum_{i:k_i\text{ annotated}}\log p_\theta(k_i\mid x_i).
+\]
+Here $\theta$ denotes the linear heads conditional on a fixed encoder. Encoder adaptation is a separate contrastive stage using type-labeled pairs; the two cross-entropy terms are fitted afterward. The type loss excludes ignored or unresolved candidates without meaningful type labels. The experiment compares a frozen sentence encoder with linear heads against contrastive encoder adaptation followed by the same heads. Neither approach learns conflict resolution or generates summaries.
+
+The decision rule abstains if maximum retention probability is below $0.8$, the chosen retention is uncertain, or a retained candidate's maximum type probability is below $0.8$. These are experimental operating points. High probability on synthetic text does not establish calibration on real conversations.
+
+Records retain source spans, grouping identifiers, label provenance, and annotation-policy version. Human annotations, designed synthetic labels, and model-generated labels remain distinguishable. Whole groups belong to training, development, or test. The loader rejects exact normalized candidate text across partitions and refuses provisional teacher labels unless explicitly enabled.
+
+Temperature is chosen on development negative log likelihood. Test labels do not participate in fitting or temperature selection. Metrics include macro-averaged F1, multiclass Brier score, calibration error, coverage, and accepted-prediction error. Exact deduplication does not eliminate semantic leakage among templated examples.
+
+The operational boundary remains observational: predictions are returned to the caller and never modify memory state. A host can inspect disagreement before a learned decision suppresses useful information or retains an unsupported assertion.
+
+\section{Conditional properties}
+The following results concern an abstract state machine. They assume atomic transactions, immutable observations, compliant writers, and correct owner authorization by the host. They are consequences of those assumptions, not a machine-checked proof that every implementation path satisfies them.
+
+\begin{proposition}[Scope preservation]
+If initial memories reference only observations in their own owner scope, and all source additions and update targets are checked against that scope, every reachable memory preserves the property.
+\end{proposition}
+\begin{proof}
+Induct on committed transitions. Insertion establishes the property through source validation. Contradiction creates a checked successor and a same-owner predecessor link. Reinforcement unions the existing source set with checked sources. Other transitions remove records or change metadata without adding sources. Rejected transactions leave the preceding state unchanged.
+\end{proof}
+
+\begin{proposition}[Atomic acknowledgement]
+If every consolidation writer acquires the same per-owner lock before selecting its pending snapshot, retains that lock through commit, and commits operations and acknowledgements atomically, no observation is acknowledged by two successful chunks.
+\end{proposition}
+\begin{proof}
+The lock orders successful consolidations for an owner. At the first committed acknowledgement, the observation ceases to be pending and later snapshots exclude it. A failed transaction rolls back both operations and acknowledgements. No second successful chunk can therefore select that observation as pending.
+\end{proof}
+This result permits several facts to cite one observation and permits repeated inference after failure.
+
+\begin{proposition}[Exact-replay exclusion]
+Suppose imports and deletion share an owner-scoped barrier. Deletion atomically writes a content tombstone and removes the source, and subsequent imports check tombstones. Once deletion commits, importing identical source text for that owner cannot restore it.
+\end{proposition}
+\begin{proof}
+The barrier orders an import before or after deletion. An import ordered before deletion is part of the source state examined and removed. An import ordered after deletion sees the committed tombstone and skips insertion. Identical source text cannot survive either ordering.
+\end{proof}
+Fingerprints are assumed collision resistant. The property excludes paraphrases, copies already returned, provider retention, and separately trained weights. In-flight reads are governed by their final eligibility snapshot; deletion cannot retract an output already authorized by an earlier snapshot.
+
+\begin{proposition}[Activation monotonicity]
+For fixed $n'\geq1$ and $H>0$, activation is nonincreasing in elapsed time. For fixed positive elapsed time it is nondecreasing in $n'$.
+\end{proposition}
+\begin{proof}
+For $d>0$,
+\[
+ \frac{\partial A}{\partial d}
+ =-\frac{\log2}{H(1+\log n')}A<0,\qquad
+ \frac{\partial A}{\partial n'}
+ =\frac{d\log2}{Hn'(1+\log n')^2}A>0.
+\]
+At $d=0$ activation is one, giving the stated weak inequalities.
+\end{proof}
+An older assertion is not necessarily less likely to be true.
+
+\begin{theorem}[Window coverage]
+Let source length $L>0$, width $W$, and overlap $0\leq O<W$ be integers. Generate windows starting at $j(W-O)$, stopping at the first whose end reaches $L$. They cover the source. Every contiguous span of at most $O+1$ code points lies wholly in at least one window.
+\end{theorem}
+\begin{proof}
+Consecutive starts differ by $S=W-O\leq W$, so windows have no gap. The first starts at zero and the last reaches $L$. For a span starting at $a$, choose the latest generated start $jS\leq a$. If it is the last start, its window contains the span because it reaches $L$. Otherwise $a<(j+1)S$, hence $a\leq jS+S-1$. For length $\ell\leq O+1$,
+\[
+ a+\ell\leq jS+S-1+O+1=jS+W.
+\]
+Thus the whole span fits.
+\end{proof}
+Coverage does not guarantee that embedding preserves meaning or retrieval selects the window.
+
+\begin{theorem}[Selective-risk bound]
+Fix a classifier and acceptance rule before testing. Assume independent test draws from the deployment distribution with correct labels. Conditional on $m>0$ accepted examples, let $\widehat R$ be their mean zero-one error and $R$ the population error conditional on acceptance. For $\delta\in(0,1)$, conditional on that accepted count, with probability at least $1-\delta$,
+\[
+ R\leq\min\left\{1,\widehat R+
+ \sqrt{\frac{\log(1/\delta)}{2m}}\right\}.
+\]
+\end{theorem}
+\begin{proof}
+For a fixed rule, accepted examples are independent draws from the distribution conditional on acceptance. Their error indicators lie in $[0,1]$ with mean $R$. Hoeffding's inequality gives
+$\Prob(R-\widehat R\geq\epsilon\mid m)\leq e^{-2m\epsilon^2}$ \citep{hoeffding}.
+Substitute $\epsilon=\sqrt{\log(1/\delta)/(2m)}$ and cap at one.
+\end{proof}
+Selecting the rule using these test labels invalidates this experiment. The bound cannot certify deployment risk from templated synthetic data or unreviewed teacher labels.
+
+\section{Experimental design}
+\subsection{Memory and retrieval diagnostics}
+The private diagnostic contains 51 owner-authorized user-role messages from five selected local Codex and Claude conversations. Each conversation has a separate owner scope. Nineteen questions and expected-answer patterns were recorded before the original consolidation experiment. The sample is recent, bounded, and nonrandom. Some messages contain attributed quotations.
+
+A public probe selects the first file-order example from each of six LongMemEval-S question types and one abstention example. Full supplied histories total 3,512 turns. Answer labels and evidence-location annotations are excluded from ingestion. Seven examples cannot support a benchmark ranking.
+
+For the excerpt experiment, observations and derived memories are frozen from the preceding diagnostic. This controls consolidation variation while comparing full-source retrieval, source-window retrieval, and interleaved windows and memories. Each condition receives a 1,200-token serialized-evidence budget measured with \texttt{cl100k\_base}. This sets an experimental budget, not the provider's billing count. The reader is Luna 6 at medium effort through a local API gateway. Its prompt explicitly separates observation and event time. The pinned local \texttt{all-MiniLM-L6-v2} encoder produces 384-dimensional vectors.
+
+Local answers are checked against predefined patterns. Public answers receive explicit abstention handling and case-specific checks followed by inspection. These diagnostics do not assess every unsupported qualification. An earlier automatic judge used the official LongMemEval checking prompt with an alternate model; its decisions are audited separately.
+
+\subsection{Classification experiment}
+The corpus contains 648 fabricated candidates. Wrapper families belong wholly to training, development, or test: 432, 108, and 108 examples respectively. Labels express the generator's intended policy. Underlying topics recur across partitions, so this is not a domain-transfer test. Temporary requests have project type, a bias limiting conclusions about other temporary facts.
+
+Both classifiers use the same labels and linear-head fitting procedure. Linear-head fitting and inference use the CPU. Contrastive adaptation uses the available local accelerator with a fixed seed. A finite temperature grid is selected on development loss. A separate private review queue is extracted from the authorized conversations. Its annotations remain teacher-generated and pending review; agreement with them is not supervised accuracy.
+
+\section{Results}
+\input{results}
+
+\section{Discussion}
+The diagnostics distinguish separate constraints. Source access can recover information omitted by summaries, but a narrow budget can still exclude a required event. Short excerpts may improve budget utilization while separating related context across windows. Classification narrows a model's decision task, but performance on designed examples does not establish transfer to natural conversations.
+
+Temporal reasoning needs additional representation. Observation time, event time, and validity time have different meanings. Relative expressions require an anchor and source evidence. Multi-session counting also requires collecting relevant events, deduplicating them, and applying corrections. The present classifier performs none of these operations.
+
+Deletion exposes a boundary between external memory and learned parameters. Persistence can remove source records and derived memories. Once private text contributes to weight updates, source deletion does not itself remove that information from weights. Training artifacts remain private, and the initial weight-training experiment uses fabricated examples. Production training needs separate consent, minimization, model-retention, and retraining policies.
+
+Exact vector scans and explicit capacity bounds simplify small-scale operation. They do not establish suitability for large corpora. Authentication, retention policy, scheduling, and provider access remain host responsibilities. Learned mutation policies would have to preserve these boundaries.
+
+\section{Limitations}
+The proofs apply to the stated abstract machine. Regression tests give evidence of implementation conformance in selected cases, not exhaustive verification. No theorem establishes that an extracted statement is true, a summary complete, or a probability calibrated.
+
+The private corpus belongs to one owner and cannot be publicly reproduced. Pattern checks can accept incorrect qualifications. The public probe is small and selected, and repeated development against it creates adaptation risk. Synthetic wrapper splits share topics and vocabulary. Teacher annotations await human review. These constraints require exploratory reporting and continued shadow operation.
+
+\section{Conclusion}
+Cortex separates source evidence, derived memories, and statistical decisions within an explicit persistence boundary. Overlapping source windows preserve attributable access to details that summaries can omit. Validated transitions support conditional guarantees for owner scope, atomic acknowledgement, and exact-source replay after deletion. Retention activation and supervised classification address different questions and require separate evaluation.
+
+The empirical evidence motivates continued study of source retrieval and identifies weaknesses in automatic grading and temporal reasoning. The trained classifier is an experimental component without authority to change stored memories. The next empirical step is a larger independently reviewed corpus followed by a frozen evaluation of classification transfer and complete evidence retrieval for temporal and counting questions.
+
+\appendix
+\section{Implementation and reproducibility}
+The accompanying manifest records implementation identity, environment, encoder revision, and artifact hashes. These identify an experiment; they do not define the scientific claims. Public source includes classification policy, training and labeling tools, and regression tests. Private conversations, per-example predictions, provider responses, database exports, and trained artifacts are excluded.
+
+A complete observation's source windows publish in one transaction after source eligibility is checked. Retrieval checks eligibility again after provider work. The service assumes a trusted host and binds to localhost by default. Exposed deployments must supply authentication and owner authorization.
+
+Two offsetting grading discrepancies left an earlier public total unchanged: an unsupported abstention passed for a preference question, while a response containing the correct degree subject failed because it qualified whether graduation was established. The case-level correction shows why aggregate agreement alone is inadequate.
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+\end{document}

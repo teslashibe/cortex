@@ -1,0 +1,339 @@
+{
+  "retrieval": {
+    "questions": {
+      "local": 19,
+      "public": 7
+    },
+    "automatic_checks": {
+      "local": {
+        "whole_source": 19,
+        "window": 19,
+        "combined_window": 19
+      },
+      "public": {
+        "whole_source": 5,
+        "window": 5,
+        "combined_window": 5
+      }
+    },
+    "public_complete_after_inspection": {
+      "whole_source": 4,
+      "window": 4,
+      "combined_window": 5
+    },
+    "public_partial_after_inspection": {
+      "whole_source": 1,
+      "window": 1,
+      "combined_window": 0
+    },
+    "reader": "gpt-6-luna-medium",
+    "budget_tokens": 1200,
+    "budget_tokenizer": "cl100k_base",
+    "source_length": 512,
+    "overlap": 128,
+    "implementation_equivalence_queries": 26
+  },
+  "classification": {
+    "synthetic_examples": 648,
+    "partitions": {
+      "train": 432,
+      "dev": 108,
+      "test": 108
+    },
+    "models": {
+      "frozen": {
+        "test": {
+          "retention": {
+            "n": 108,
+            "accuracy": 0.8888888888888888,
+            "macro_f1": 0.7307692307692308,
+            "brier": 0.14790674363717968,
+            "ece_10_bins": 0.08799900236445432,
+            "coverage_at_0.8": 0.9259259259259259,
+            "error_at_0.8": 0.05,
+            "labels": [
+              "durable",
+              "temporary",
+              "ignore",
+              "uncertain"
+            ],
+            "confusion": [
+              [
+                72,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                12,
+                0,
+                0
+              ],
+              [
+                12,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                12
+              ]
+            ]
+          },
+          "kind": {
+            "n": 84,
+            "accuracy": 1.0,
+            "macro_f1": 1.0,
+            "brier": 0.00596690819924069,
+            "ece_10_bins": 0.03257570361576533,
+            "coverage_at_0.8": 0.9642857142857143,
+            "error_at_0.8": 0.0,
+            "labels": [
+              "fact",
+              "behavior",
+              "preference",
+              "relationship",
+              "project",
+              "routine"
+            ],
+            "confusion": [
+              [
+                12,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                12,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                12,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                12,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                24,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                12
+              ]
+            ]
+          }
+        },
+        "model": "cortex-linear-865d40c20d3254c9",
+        "base_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+        "training_device": "cpu",
+        "packages": {
+          "torch": "2.14.1",
+          "transformers": "4.51.3",
+          "sentence-transformers": "3.4.1",
+          "scikit-learn": "1.9.1",
+          "setfit": "1.1.3"
+        }
+      },
+      "adapted": {
+        "test": {
+          "retention": {
+            "n": 108,
+            "accuracy": 0.9629629629629629,
+            "macro_f1": 0.9432432432432433,
+            "brier": 0.031775722641141126,
+            "ece_10_bins": 0.029380264566781087,
+            "coverage_at_0.8": 0.9444444444444444,
+            "error_at_0.8": 0.0,
+            "labels": [
+              "durable",
+              "temporary",
+              "ignore",
+              "uncertain"
+            ],
+            "confusion": [
+              [
+                72,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                12,
+                0,
+                0
+              ],
+              [
+                4,
+                0,
+                8,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                12
+              ]
+            ]
+          },
+          "kind": {
+            "n": 84,
+            "accuracy": 1.0,
+            "macro_f1": 1.0,
+            "brier": 0.002963558347053457,
+            "ece_10_bins": 0.009758435383810795,
+            "coverage_at_0.8": 0.9880952380952381,
+            "error_at_0.8": 0.0,
+            "labels": [
+              "fact",
+              "behavior",
+              "preference",
+              "relationship",
+              "project",
+              "routine"
+            ],
+            "confusion": [
+              [
+                12,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                12,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                12,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                12,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                24,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                12
+              ]
+            ]
+          }
+        },
+        "model": "cortex-setfit-46c40ef2b90e83f1",
+        "base_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+        "training_device": "mps:0",
+        "packages": {
+          "torch": "2.14.1",
+          "transformers": "4.51.3",
+          "sentence-transformers": "3.4.1",
+          "scikit-learn": "1.9.1",
+          "setfit": "1.1.3"
+        }
+      }
+    },
+    "local_provisional_labels": 84,
+    "human_reviewed_labels": 0,
+    "live": {
+      "linear-final": {
+        "model": "cortex-linear-865d40c20d3254c9",
+        "n": 84,
+        "retention_teacher_agreement": 0.10714285714285714,
+        "kind_teacher_agreement": 0.6351351351351351,
+        "kind_n": 74,
+        "abstained": 51,
+        "batch_seconds": [
+          0.18728195794392377,
+          0.09655741602182388,
+          0.13842579198535532,
+          0.21785112493671477,
+          0.04554754192940891
+        ],
+        "label_status": "provisional teacher labels, no human review",
+        "mode": "shadow"
+      },
+      "setfit-local": {
+        "model": "cortex-setfit-46c40ef2b90e83f1",
+        "n": 84,
+        "retention_teacher_agreement": 0.11904761904761904,
+        "kind_teacher_agreement": 0.527027027027027,
+        "kind_n": 74,
+        "abstained": 61,
+        "batch_seconds": [
+          0.16860675008501858,
+          0.08238325000274926,
+          0.12481191696133465,
+          0.20586341700982302,
+          0.044969792012125254
+        ],
+        "label_status": "provisional teacher labels, no human review",
+        "mode": "shadow"
+      }
+    },
+    "operating_mode": "shadow_only"
+  },
+  "tokenizer_audit": {
+    "observations": 3563,
+    "windows": 10145,
+    "full_observations_over_256_wordpieces": 1165,
+    "windows_over_256_wordpieces": 20,
+    "maximum_window_wordpieces": 427,
+    "classifier_inputs": 84,
+    "classifier_inputs_over_256_wordpieces": 1,
+    "maximum_classifier_input_wordpieces": 384
+  }
+}

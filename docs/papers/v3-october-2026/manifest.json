@@ -1,0 +1,39 @@
+{
+  "paper_revision": "3.0",
+  "title": "Cortex: Provenance-Preserving Memory with Selective Classification for Language Agents",
+  "software_release": "v1.2.0",
+  "implementation_commit": "e0485e6921a9cadf9d273a8288f9dc2f0f6badf1",
+  "created_at": "2026-10-22T00:58:34.504502+00:00",
+  "sha256": {
+    "main.tex": "c768a449c34fa030c9f2dc014ffce3b60d857d1602aa7c28e03ef7525fff9391",
+    "references.bib": "61eb6778ba3a9e2285a9376de935b49a1fe4a58747c5772234d7594a54696810",
+    "results.tex": "178963eb1e0550c661a642d50a63209cf635fff9aedf3a077a16a9e0e4b4a78d",
+    "retrieval_results.tex": "9df174862364e378b5a781345514d0fc30058baf55cc7008c1d35ac2164b5b2a",
+    "results.json": "9f7c60cf0f33773db81707dd733644c10eb335fc261680515218cc9c1e281d44",
+    "paper.pdf": "81050cc7c87b55f9c513ebc3c8b1a2901e6a8d90aec339295fd9e2bdc549625d"
+  },
+  "compiler": "XeLaTeX (TeX Live 2025), BibTeX; desktop compiler also succeeded",
+  "pages": 10,
+  "proofs": {
+    "propositions": 4,
+    "theorems": 2,
+    "scope": "Conditional properties of an abstract state machine, not formal verification or semantic accuracy guarantees"
+  },
+  "data_policy": "Private session inputs, teacher labels, outputs, database snapshots, and trained weights are excluded from Git. Aggregate results only.",
+  "model_training": {
+    "labeled_synthetic_examples": 648,
+    "human_reviewed_local_labels": 0,
+    "provisional_local_spans": 84,
+    "promotion": "none; shadow-only"
+  },
+  "evaluation": {
+    "reader": "gpt-6-luna-medium",
+    "encoder_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "private_questions": 19,
+    "public_questions": 7,
+    "budget": 1200,
+    "budget_tokenizer": "cl100k_base",
+    "independent_human_adjudication": false,
+    "query_equivalence_replay": 26
+  }
+}
