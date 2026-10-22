@@ -160,6 +160,10 @@ func unconsolidatedObservations(ctx context.Context, conn *pgxpool.Conn, userID 
 		return nil, fmt.Errorf("query observations: %w", err)
 	}
 	defer rows.Close()
+	return scanObservations(rows)
+}
+
+func scanObservations(rows pgx.Rows) ([]Observation, error) {
 	var out []Observation
 	for rows.Next() {
 		var o Observation
@@ -320,6 +324,10 @@ func completeConsolidation(ctx context.Context, conn *pgxpool.Conn, userID, runI
 }
 
 func completeConsolidationWithModel(ctx context.Context, conn *pgxpool.Conn, userID, runID string, ops []Op, tokens int, resolvedModel string) (Consolidation, error) {
+	return completeGuardedConsolidation(ctx, conn, userID, runID, ops, tokens, resolvedModel, nil)
+}
+
+func completeGuardedConsolidation(ctx context.Context, conn *pgxpool.Conn, userID, runID string, ops []Op, tokens int, resolvedModel string, guard func(context.Context, pgx.Tx) error) (Consolidation, error) {
 	var run Consolidation
 	tx, err := conn.Begin(ctx)
 	if err != nil {
@@ -333,6 +341,11 @@ func completeConsolidationWithModel(ctx context.Context, conn *pgxpool.Conn, use
 		&run.Counts.ObservationsProcessed, &run.Counts.MemoriesCreated, &run.Counts.MemoriesReinforced, &run.Counts.TokensUsed, &run.ErrorMessage, &run.ResolvedModel)
 	if err != nil {
 		return run, fmt.Errorf("load consolidation: %w", err)
+	}
+	if guard != nil {
+		if err := guard(ctx, tx); err != nil {
+			return run, err
+		}
 	}
 	if run.Status == "completed" {
 		return run, nil

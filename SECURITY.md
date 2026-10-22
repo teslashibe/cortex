@@ -18,6 +18,15 @@ access to this route must be authorized separately by the host when appropriate.
 Cortex does not provide encryption at rest or automatic source-permission
 revocation. Restrict database access and protect backups separately.
 
+`ConsolidateSelected` requires the host to supply an exact input selection and
+a permission guard. The guard must check all selected observations and every
+source of the selected memories. Its commit-phase policy locks must remain
+held by the supplied transaction until the memory write commits. Use qualified
+table names when the host policy tables live in another schema. The guard
+cannot coordinate a separate database or an external authorization service
+atomically. Memory reads and recall still require the host's current access
+checks; an earlier successful consolidation does not grant future access.
+
 When an optional `WindowSegmenter` is configured, window indexing and window
 recall send eligible raw sources to that endpoint, including lexical-only window
 recall. Use a trusted local segmenter or authorize the provider for those sources.

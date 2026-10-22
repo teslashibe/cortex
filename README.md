@@ -152,6 +152,50 @@ For an API walkthrough with fabricated observations and an explicit correction,
 see [the synthetic example](examples/README.md). Example data is separate from
 private conversation tests.
 
+### Host-selected consolidation
+
+The development API adds `Engine.ConsolidateSelected` for applications that
+authorize specific observations and memory context. It takes 1–200 unique
+observation IDs, 0–500 memory IDs, and a required `ConsolidationGuard` callback.
+An empty memory selection means no existing memory context. Missing, foreign,
+inactive or already-processed inputs fail before inference. The complete
+serialized request must fit within 1 MiB; this path never silently reduces the
+selection or truncates its content.
+
+The callback runs in two short database transactions, identified by
+`review.Phase`: `inference` before the model call and `commit` before applying
+its result. `ConsolidationReview` includes the run ID, namespace, selected IDs
+and a SHA-256 hash of the model and messages. Derive the namespace from the
+authenticated caller and lock the host's applicable permission rows in each
+callback. Those tables must be reachable through the same PostgreSQL database;
+they may live in a separate schema. Do not commit, roll back or retain the
+supplied transaction. The commit-phase locks remain held through the atomic
+memory changes and observation acknowledgement.
+`ConsolidationPromptHash(model, messages)` reproduces the reviewed hash so a
+host can verify the exact payload before dispatching a queued CLI call.
+
+Avoid calling another Cortex mutation while holding the host's policy locks.
+Consolidation already holds a namespace lock and may be waiting for those
+policy rows. Commit revocation first and perform any cleanup afterward; the
+host's read checks must hide revoked content while cleanup is pending.
+
+This operation calls the selected `Model` once. It uses Cortex's existing
+prompts, alias validation and memory operations, with no automatic format repair,
+chunk splitting, indexing or provider retry. Malformed output, changed input,
+revoked permission or cancellation leaves the selected observations pending.
+The result retains the run's selected and resolved model and reported usage.
+
+Persist the run ID from the inference callback before dispatching external
+work. `Store.Consolidation(ctx, namespace, runID)` reads its saved outcome
+without invoking a model. An uncertain result requires reconciliation; calling
+`ConsolidateSelected` again can perform new provider work. A crashed process's
+in-flight run is marked failed when the namespace is next claimed, following
+the existing consolidation recovery contract.
+
+This is a Go embedding API. It does not add an HTTP route or provide caller
+authentication, automatic source revocation, or cross-database transactions.
+The host must also check source access when displaying or recalling a memory.
+
 ## HTTP
 
 The listener is intended for a trusted host. Use `user` in query parameters for
